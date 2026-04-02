@@ -280,6 +280,7 @@ export default function OnboardingPage() {
                   setValidationError('');
                 }}
                 placeholder="Your business name"
+                aria-label="Business name"
                 autoFocus
                 className="w-full min-h-tap-min px-[var(--space-input-padding-x)] py-[var(--space-input-padding-y)] text-body text-charcoal placeholder:text-slate-light bg-cream rounded-md border border-transparent focus:border-terracotta outline-none transition-colors duration-fast"
               />
@@ -325,6 +326,7 @@ export default function OnboardingPage() {
                     value={state.city}
                     onChange={(e) => setState({ ...state, city: e.target.value })}
                     placeholder="What city are you in?"
+                    aria-label="City"
                     className="flex-1 text-body text-charcoal placeholder:text-slate-light bg-transparent border-b border-charcoal/12 focus:border-terracotta outline-none pb-1"
                   />
                 )}
@@ -485,6 +487,7 @@ export default function OnboardingPage() {
                 value={state.description}
                 onChange={(e) => setState({ ...state, description: e.target.value })}
                 placeholder="What makes you special? (optional)"
+                aria-label="Business description (optional)"
                 className="w-full min-h-tap-min px-[var(--space-input-padding-x)] py-[var(--space-input-padding-y)] text-body text-charcoal placeholder:text-slate-light bg-cream rounded-md border border-transparent focus:border-terracotta outline-none transition-colors duration-fast"
               />
 

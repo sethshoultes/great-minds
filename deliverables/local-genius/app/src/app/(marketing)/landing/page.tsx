@@ -55,7 +55,7 @@ export default function LandingPage() {
             href="#how-it-works"
             className="inline-flex items-center justify-center min-h-tap-primary px-8 text-terracotta font-semibold rounded-sm hover:bg-terracotta-light transition-colors duration-instant no-underline text-body"
           >
-            See how it works
+            Watch it work
           </Link>
         </div>
 

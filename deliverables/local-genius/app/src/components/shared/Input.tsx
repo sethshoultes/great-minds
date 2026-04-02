@@ -95,6 +95,18 @@ export default function Input({
     onVoiceEnd?.();
   };
 
+  // Keyboard support for mic: Space/Enter to toggle recording
+  const handleMicKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      if (isRecording) {
+        handleMicRelease();
+      } else {
+        handleMicPress();
+      }
+    }
+  };
+
   return (
     <div
       className="fixed left-0 right-0 bg-white border-t z-10"
@@ -138,6 +150,7 @@ export default function Input({
           onMouseUp={handleMicRelease}
           onTouchStart={handleMicPress}
           onTouchEnd={handleMicRelease}
+          onKeyDown={handleMicKeyDown}
           className={[
             'flex-shrink-0 flex items-center justify-center',
             'w-[44px] h-[44px]',
