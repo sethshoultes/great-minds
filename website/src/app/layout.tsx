@@ -16,11 +16,15 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Great Minds — AI Agency That Ships Products",
   description: "Drop in a PRD. Get back a product. Steve Jobs and Elon Musk debate your strategy. Sub-agents build it. Ship in one session.",
+  icons: {
+    icon: "/favicon.svg",
+  },
   openGraph: {
     title: "Great Minds — AI Agency That Ships Products",
     description: "Drop in a PRD. Get back a product.",
     url: "https://greatminds.company",
     type: "website",
+    images: ["/og-image.svg"],
   },
 };
 
