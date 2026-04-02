@@ -33,20 +33,20 @@ function Nav() {
           <span className="font-semibold text-sm tracking-tight hidden sm:inline">Great Minds</span>
         </Link>
         <div className="flex items-center gap-6">
-          <Link href="/team" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
-            Team
-          </Link>
           <Link href="/how" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
             How
           </Link>
+          <Link href="/team" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
+            Team
+          </Link>
           <Link href="/projects" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
-            Projects
+            Work
           </Link>
           <Link
             href="/install"
             className="text-sm font-medium px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors no-underline"
           >
-            Install
+            Submit PRD
           </Link>
         </div>
       </div>
@@ -63,13 +63,12 @@ function Footer() {
           <span>Great Minds Agency</span>
         </div>
         <div className="flex items-center gap-6 text-sm text-zinc-500">
-          <a href="https://github.com/sethshoultes/great-minds" target="_blank" rel="noopener" className="hover:text-zinc-300 transition-colors no-underline">
+          <Link href="/how" className="hover:text-zinc-300 transition-colors no-underline">How</Link>
+          <Link href="/team" className="hover:text-zinc-300 transition-colors no-underline">Team</Link>
+          <Link href="/work/localgenius" className="hover:text-zinc-300 transition-colors no-underline">LocalGenius</Link>
+          <a href="https://github.com/sethshoulters/great-minds" target="_blank" rel="noopener" className="hover:text-zinc-300 transition-colors no-underline">
             GitHub
           </a>
-          <a href="https://localgenius.company" target="_blank" rel="noopener" className="hover:text-zinc-300 transition-colors no-underline">
-            LocalGenius
-          </a>
-          <span>Austin, TX</span>
         </div>
       </div>
     </footer>
