@@ -228,6 +228,78 @@ export default function TeamPage() {
         </div>
       </section>
 
+      {/* Sub-Agents — the specialists */}
+      <section className="px-6 py-16 border-t border-zinc-800/50">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-amber-500 font-mono text-xs font-semibold tracking-widest uppercase mb-4">
+            Sub-Agents
+          </p>
+          <h2 className="text-2xl font-bold text-zinc-100 mb-3">
+            The specialists. Hired by the directors.
+          </h2>
+          <p className="text-sm text-zinc-400 mb-10 max-w-2xl">
+            Each director hires specialists for their domain. Steve hires for
+            taste. Elon hires for rigor. Sub-agents produce the actual
+            deliverables — code, copy, design, analysis.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {[
+              {
+                name: "Design Lead",
+                hiredBy: "Steve",
+                color: "text-orange-400",
+                border: "border-orange-500/20",
+                desc: "Owns the visual language — templates, design system, reveal moment. Every pixel works at 375px mobile and 1440px desktop.",
+              },
+              {
+                name: "Maya Torres",
+                title: "Brand Storyteller",
+                hiredBy: "Steve",
+                color: "text-orange-400",
+                border: "border-orange-500/20",
+                desc: "Customer personas and marketing messaging. Defines the brand voice, the words we use, and the words we never use.",
+              },
+              {
+                name: "Growth Strategist",
+                hiredBy: "Elon",
+                color: "text-emerald-400",
+                border: "border-emerald-500/20",
+                desc: "90-day launch plan, channel strategy, conversion targets. Designs the organic growth engine and referral mechanics.",
+              },
+              {
+                name: "Market Analyst",
+                hiredBy: "Elon",
+                color: "text-emerald-400",
+                border: "border-emerald-500/20",
+                desc: "TAM sizing, unit economics, competitive positioning, retention modeling. First-principles math, not hand-waving.",
+              },
+            ].map((agent) => (
+              <div
+                key={agent.name}
+                className={`p-5 rounded-lg bg-zinc-900/30 border ${agent.border} hover:border-zinc-700 transition-colors`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h3 className="font-semibold text-zinc-100 text-sm">
+                      {agent.name}
+                    </h3>
+                    {"title" in agent && agent.title && (
+                      <p className="text-xs text-zinc-500">{agent.title}</p>
+                    )}
+                  </div>
+                  <span className={`text-xs font-mono ${agent.color}`}>
+                    [{agent.hiredBy}]
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  {agent.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="px-6 py-20 border-t border-zinc-800/50 text-center">
         <div className="max-w-xl mx-auto">
