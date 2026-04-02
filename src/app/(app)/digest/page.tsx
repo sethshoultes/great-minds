@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import WeeklyDigest from '@/components/digest/WeeklyDigest';
-import { getDigest, type DigestData, ApiError } from '@/lib/api';
+import ErrorBanner from '@/components/shared/ErrorBanner';
+import { DigestSkeleton } from '@/components/shared/Skeleton';
+import { getDigest, type DigestData } from '@/lib/api';
 
-// Mock data for demo/offline
 const MOCK_DIGEST: DigestData = {
   businessName: "Maria's Kitchen",
   ownerName: 'Maria',
@@ -40,73 +41,48 @@ export default function DigestPage() {
   const [digest, setDigest] = useState<DigestData | null>(null);
   const [loadState, setLoadState] = useState<LoadState>('loading');
 
-  useEffect(() => {
-    let mounted = true;
-
-    async function load() {
-      try {
-        const data = await getDigest();
-        if (mounted) {
-          setDigest(data);
-          setLoadState('loaded');
-        }
-      } catch (err) {
-        if (mounted) {
-          // Use mock data as fallback
-          setDigest(MOCK_DIGEST);
-          setLoadState('loaded');
-        }
-      }
+  const loadDigest = async () => {
+    setLoadState('loading');
+    try {
+      const data = await getDigest();
+      setDigest(data);
+      setLoadState('loaded');
+    } catch {
+      // Fallback to mock data for demo
+      setDigest(MOCK_DIGEST);
+      setLoadState('loaded');
     }
+  };
 
-    load();
-    return () => { mounted = false; };
+  useEffect(() => {
+    loadDigest();
   }, []);
 
-  // Loading skeleton
   if (loadState === 'loading') {
-    return (
-      <div className="digest-container px-screen-margin py-6 flex flex-col gap-section-gap">
-        <div className="flex flex-col gap-2">
-          <div className="h-6 w-48 bg-cream rounded-sm loading-glow" />
-          <div className="h-4 w-36 bg-cream rounded-sm loading-glow" />
-        </div>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="card-subtle flex flex-col gap-card-gap">
-            <div className="h-4 w-32 bg-cream rounded-sm loading-glow" />
-            <div className="h-12 w-full bg-cream rounded-sm loading-glow" />
-            <div className="h-12 w-3/4 bg-cream rounded-sm loading-glow" />
-          </div>
-        ))}
-      </div>
-    );
+    return <DigestSkeleton />;
   }
 
-  // Error state
   if (loadState === 'error') {
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-4 px-screen-margin">
-        <p className="text-body text-charcoal text-center">
-          Couldn&apos;t load your digest right now.
-        </p>
-        <button
-          onClick={() => {
-            setLoadState('loading');
-            window.location.reload();
-          }}
-          className="text-body text-terracotta font-semibold"
-        >
-          Try again
-        </button>
+        <ErrorBanner
+          message="Couldn't load your digest right now."
+          onRetry={loadDigest}
+        />
       </div>
     );
   }
 
-  // Empty state (first week)
+  // Empty state — first week, no digest yet
   if (!digest || loadState === 'empty') {
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-4 px-screen-margin text-center">
-        <span className="text-[48px]">📊</span>
+        <div className="w-16 h-16 rounded-full bg-gold-light flex items-center justify-center">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gold">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+            <polyline points="16 7 22 7 22 13" />
+          </svg>
+        </div>
         <h2>Your first digest is on its way.</h2>
         <p className="text-body text-slate max-w-[320px]">
           I&apos;m gathering data on your business this week. Your first Weekly Digest will arrive Monday at 7am.
@@ -127,18 +103,8 @@ export default function DigestPage() {
           digest.recommendation
             ? {
                 text: digest.recommendation.text,
-                primaryAction: {
-                  label: 'Send It',
-                  onPress: () => {
-                    // TODO: POST to campaign endpoint
-                  },
-                },
-                secondaryAction: {
-                  label: 'Skip',
-                  onPress: () => {
-                    // TODO: dismiss recommendation
-                  },
-                },
+                primaryAction: { label: 'Send It', onPress: () => {} },
+                secondaryAction: { label: 'Skip', onPress: () => {} },
               }
             : null
         }
