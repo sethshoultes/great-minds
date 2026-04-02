@@ -1,0 +1,107 @@
+[
+  {
+    "mentor_id": "huang",
+    "title": "On the Ten-Year Horizon",
+    "content": "Most people optimize for the next quarter. They make decisions based on what will show results in ninety days. This is natural—it is how incentives are structured, how markets think, how careers are built.\n\nBut the most important things cannot be built in ninety days. They take years. They take decades. The question is not what looks good next quarter. The question is: what position do you want to be in ten years from now?\n\nEvery decision you make today is a vote for the future you are building. Are you voting for the obvious path that pays off quickly? Or are you voting for the difficult path that compounds into something extraordinary?\n\nThe future belongs to those patient enough to build it.",
+    "order_index": 1,
+    "is_premium": false
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Suffering as Growth",
+    "content": "There was a time when we could not get our chips to work. When customers doubted us. When we were months from running out of money. These were not detours on the path—they were the path.\n\nSuffering is not something that happens to you on the way to success. Suffering is how you become capable of success. The person who solves easy problems stays small. The person who solves hard problems grows large enough to contain the solution.\n\nYou are facing difficulty right now. Good. This is your expansion. This is your transformation. You do not have the capacity yet to solve this problem—but you will grow the capacity by staying with it.\n\nDo not wish for easier problems. Become someone capable of harder ones.",
+    "order_index": 2,
+    "is_premium": false
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Craftsmanship",
+    "content": "There is a difference between building something that works and building something right. The first is engineering. The second is craftsmanship.\n\nCraftsmanship means caring about details that most people will never notice. It means rejecting good enough when excellent is possible. It means revisiting decisions not because they failed, but because you see a better way.\n\nThis is not perfectionism—perfectionism is fear. This is devotion. Devotion to the work itself, regardless of who is watching or what the market rewards today.\n\nYour craftsmanship is your signature. Long after the quarterly results are forgotten, the quality of what you built remains. Build things you would be proud to show your grandchildren.",
+    "order_index": 3,
+    "is_premium": false
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Strategic Patience",
+    "content": "The market wants speed. Investors want growth. Competitors want to see you panic. Everyone around you is optimizing for now.\n\nThis is precisely why patience is strategic advantage. While others chase the obvious opportunity, you can position for the non-obvious one. While others celebrate quick wins, you can build infrastructure that pays off over decades.\n\nPatience is not passive. It is the most active choice you can make—the choice to endure short-term pressure for long-term position.\n\nWhat are you building that will take ten years to matter? That is your strategic moat. That is what your competitors cannot copy, because they cannot wait.",
+    "order_index": 4,
+    "is_premium": false
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Building in Obscurity",
+    "content": "For years, we built things no one cared about. We poured everything into technology that seemed irrelevant to most people. We worked in obscurity while others got funding, press, and validation.\n\nThis obscurity was not a bug. It was a feature. It gave us freedom to focus on the work rather than the story. It gave us permission to fail and iterate without public judgment. It gave us time to get it right.\n\nThe best work happens away from the spotlight. Attention is expensive—it costs focus. Every interview you give, every conference you attend, every partnership you announce is energy not spent building.\n\nBuild in obscurity for as long as you can. When the work is ready, it will find the light.",
+    "order_index": 5,
+    "is_premium": false
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Zero-to-Billion Dollar Markets",
+    "content": "The best opportunities do not exist yet. They are not visible in market reports or analyst projections. They are invisible to everyone except those who can see what computing will make possible.\n\nWe bet on accelerated computing when there was no market for it. We bet on AI when it was an academic curiosity. We bet on technologies that would create markets, not serve existing ones.\n\nThis is terrifying. There are no customers to validate your vision. No comparable companies to point to. No safe path.\n\nBut this is also liberating. If the market does not exist, you have time to build the foundation right. You have space to make mistakes and iterate. You have permission to think differently, because there is no orthodoxy yet.\n\nPosition yourself near markets that do not exist. When they emerge—and if you built the right foundation—you will be the only one ready.",
+    "order_index": 6,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Betting on the Future",
+    "content": "You can optimize for today or you can position for tomorrow. You cannot do both. They require different decisions, different timelines, different tolerances for pain.\n\nOptimizing for today means serving existing markets, meeting current needs, maximizing present revenue. This is sensible. This is what most companies do. This is also how you become irrelevant.\n\nPositioning for tomorrow means building for needs that do not exist yet. It means investing in technologies before they are economically viable. It means enduring years of questions from people who think you are wasting resources.\n\nWe bet that computing would become parallel. That graphics would matter everywhere. That AI would transform everything. We bet billions on these futures while they were still uncertain.\n\nThe question is not whether the future is certain. The question is: are you willing to build it anyway?",
+    "order_index": 7,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Iterative Excellence",
+    "content": "Excellence is not a destination. It is a direction. Every product we ship, we know we can make better. Every architecture we design, we see its limitations. Every technology we invent, we are already thinking about what comes next.\n\nThis is not dissatisfaction. This is the practice of continuous improvement. You ship the best you can build today. Then you immediately start building the better version for tomorrow.\n\nMost people stop iterating once something works. They declare victory and move on. This is how you get disrupted. Your competition is not standing still. Physics is not standing still. The possible is always expanding.\n\nExcellence is not achieving perfection once. Excellence is improving relentlessly, forever. What can you make better today than it was yesterday?",
+    "order_index": 8,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Technical Debt as Strategic Choice",
+    "content": "Every shortcut you take, you will pay for later. Every hack you implement, every corner you cut, every time you choose fast over right—you are borrowing from your future.\n\nSome debt is worth taking. When speed is existential, when you need to survive to the next funding, when the market window is closing—take the debt. But know you are taking it. Plan to pay it back.\n\nMost companies take debt unconsciously. They accumulate it through carelessness, through pressure, through not knowing better. Then one day they wake up and cannot move. The codebase is too fragile. The architecture cannot scale. The technical debt compounds until it consumes everything.\n\nWe refactor aggressively. We revisit architecture constantly. We pay back debt before it becomes unbearable. This is not wasted time. This is maintaining the ability to move fast in the future.\n\nYour current speed is not what matters. Your sustainable speed over decades is what matters.",
+    "order_index": 9,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On When to Pivot, When to Persevere",
+    "content": "The hardest question in building anything: is this not working because it is wrong, or because it is not ready yet?\n\nPivot too quickly and you abandon ideas just before they work. Persevere too long and you waste years on something fundamentally broken. There is no formula for this. Only judgment.\n\nWhat I have learned: listen to the physics, not the market. If the technology is working but the market is not ready, persevere. The market will come. If the technology is not working and physics says it cannot work, pivot. No amount of effort will overcome physics.\n\nWe persevered with GPUs when the market was tiny because the physics was right—parallel computing was fundamentally more efficient. We pivoted away from mobile chips when physics said we could not compete on power efficiency.\n\nThe market tells you what people want today. Physics tells you what is possible tomorrow. Build toward what is possible.",
+    "order_index": 10,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Building Foundations, Not Features",
+    "content": "Features are what customers ask for. Foundations are what make features possible. Most companies build features. Few build foundations.\n\nBuilding features feels productive. You ship something. Customers are happy. Revenue grows. Building foundations feels slow. Nothing ships for months. Customers wonder what you are doing. Investors get nervous.\n\nBut foundations compound. A good foundation enables a hundred features. A bad foundation limits everything you can build.\n\nWe spent years building CUDA when no one was asking for it. We built it because we knew: if we wanted to enable accelerated computing everywhere, we needed a foundation. Today, that foundation enables everything from gaming to AI to scientific computing.\n\nWhat foundation are you building that will enable things you cannot yet imagine? That is your leverage. That is your future.",
+    "order_index": 11,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Resilience in Plateaus",
+    "content": "Growth is not linear. You will have years where nothing seems to work. Where every effort produces modest results. Where competitors gain and you hold steady. This is the plateau.\n\nThe plateau is where most people quit. They interpret flat progress as failure. They assume they are on the wrong path. They pivot, restart, or give up.\n\nBut the plateau is often where the most important work happens. You are building capability that is not yet visible in results. You are solving problems that will enable the next leap. You are compounding effort that will pay off suddenly, all at once.\n\nWe plateaued for years while building our AI capabilities. Revenue was flat. Investors questioned our focus. But we knew: the technology was working, the physics was right, the applications would come.\n\nWhen you are on a plateau, the question is not whether to keep going. The question is: are you still learning? Are you still building capability? If yes, stay. The breakthrough is often one more year of unglamorous work away.",
+    "order_index": 12,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On First Principles in Decision-Making",
+    "content": "Most decisions are made by analogy. What did others do? What is the industry standard? What does conventional wisdom say? This is efficient. This is also how you become conventional.\n\nFirst principles thinking means going back to fundamental truths. Not what everyone believes, but what physics dictates. Not what markets currently want, but what computing makes possible.\n\nWhen we designed our architecture, we did not ask what other chip companies were doing. We asked: what does parallel computing require? The answer led us to choices that seemed wrong to conventional thinking but were right for the physics.\n\nFirst principles thinking is expensive. It is slow. It requires deep understanding. You cannot delegate it. You cannot shortcut it.\n\nBut it is the only way to see opportunities that others miss. Because everyone else is reasoning by analogy—from a past that may not apply to the future you are building.",
+    "order_index": 13,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Compounding Small Advantages",
+    "content": "You do not need breakthrough advantages in everything. You need small advantages in many things, compounded over time.\n\nWe are not 10x better at any one thing. We are 3 percent better at architecture, 5 percent better at software, 7 percent better at manufacturing relationships, 4 percent better at developer ecosystem. Multiply these small advantages over years, and they become insurmountable.\n\nMost companies look for the one big move. The acquisition that changes everything. The product that dominates overnight. The partnership that unlocks the market.\n\nWe focus on getting slightly better at everything, every year. Better tools for developers. Faster iteration cycles. Deeper relationships with researchers. Each improvement is modest. The compound effect is extraordinary.\n\nWhat can you improve by 3 percent this month? Do that every month for ten years. That is not incremental improvement. That is transformation.",
+    "order_index": 14,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "huang",
+    "title": "On Building for Decades",
+    "content": "The question that guides everything: will this matter in ten years? Twenty years? Thirty years?\n\nIf you are building for the next quarter, you make certain choices. You optimize for immediate revenue. You serve existing customers. You follow the market.\n\nIf you are building for decades, everything changes. You invest in research that may not pay off for years. You build infrastructure that seems excessive today but will be essential tomorrow. You cultivate relationships not because they help now, but because they position you for futures you can barely see.\n\nWe are building computing infrastructure that will matter in 2040. We do not know exactly what applications will run on it. We do not know exactly how it will be used. But we know: computing is accelerating, AI is expanding, and the foundation we build today will enable things we cannot yet imagine.\n\nThis is terrifying. You are betting enormous resources on uncertain futures. You endure years of people questioning your choices.\n\nThis is also the only way to build something that lasts. The companies that endure are not the ones that optimized for today. They are the ones that built for tomorrow, even when tomorrow was uncertain.\n\nWhat are you building that will matter in 2050?",
+    "order_index": 15,
+    "is_premium": true
+  }
+]

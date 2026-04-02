@@ -20,11 +20,18 @@ Multi-agent design & development agency. Two creative directors (Steve Jobs + El
 ```
 great-minds/
   [system files above]
-  launch.sh            — tmux launch script
+  launch.sh            — claude-swarm launch wrapper
+  personas/            — Canonical persona knowledge bases (from think-like)
+    steve-jobs.md      — Steve Jobs full persona (135 lines)
+    elon-musk.md       — Elon Musk full persona (191 lines)
+    marcus-aurelius.md — Marcus Aurelius full persona (616 lines)
+    jensen-huang.md    — Jensen Huang full persona (352 lines)
+    mentorPrompts.ts   — System prompt patterns (reference)
+    meditations/       — Meditation content per mentor (JSON)
   memory/              — Persistent memory files
   prds/                — Input PRDs from the client
   rounds/              — Round transcripts per project
-  team/                — Agent definitions (created by Steve & Elon)
+  team/                — Agent role definitions (created by Steve & Elon)
   deliverables/        — Final output files per project
     {project}/
       drafts/          — Sub-agent work-in-progress

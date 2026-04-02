@@ -1,0 +1,107 @@
+[
+  {
+    "mentor_id": "musk",
+    "title": "On First Principles",
+    "content": "Most of what you believe is borrowed. You accept the way things are done because that's how they've always been done. You repeat conclusions without examining the reasoning that led to them.\n\nThis is not thinking. This is imitation.\n\nFirst principles thinking means breaking things down to fundamental truths. Strip away the analogies, the conventions, the inherited wisdom. Ask: what do we know is absolutely true? What are the laws of physics here? What is actually impossible versus what is merely difficult?\n\nStart from the foundation and reason up. The answers you find will be different from what everyone else accepts. That's the point.",
+    "order_index": 1,
+    "is_premium": false
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Impossible Goals",
+    "content": "You set goals you know you can achieve. You aim for what seems reasonable, what fits within the boundaries of what's been done before. You call this being realistic.\n\nBut realistic goals produce incremental results. They keep you safely within the known. They guarantee you'll never create anything fundamentally new.\n\nSet an impossible goal. Not figuratively impossible—actually impossible by current standards. Then work backward from that impossibility. What would have to be true for this to work? What assumptions would have to break?\n\nThe impossible goal is not the endpoint. It's the forcing function. It makes you think differently because the normal paths won't work. You have to innovate or fail. That's where breakthroughs come from.",
+    "order_index": 2,
+    "is_premium": false
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Efficiency",
+    "content": "Every process you follow has waste built into it. Every system has unnecessary steps that accumulated over time. Every meeting has people who don't need to be there.\n\nYou tolerate this waste because removing it requires conflict. It requires questioning why things are done this way. It requires telling someone their role is unnecessary.\n\nBut efficiency is not optional if you want to compete. Every wasted minute, every unnecessary approval layer, every bloated process—these are advantages you're giving to faster competitors.\n\nDelete aggressively. Cut 80% of what you do and see what breaks. Most things won't break. The things that do—those are what actually matters.",
+    "order_index": 3,
+    "is_premium": false
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Breaking Convention",
+    "content": "The rules you follow—most of them are arbitrary. Industry standards, best practices, the way things are supposed to be done—these are the accumulated opinions of people who are no smarter than you.\n\nAnd yet you treat them as laws of nature. You don't question them because everyone else follows them. You assume there must be a good reason.\n\nThere usually isn't. Most conventions exist because someone made a choice once and everyone copied it. That choice may have made sense in a different context, with different constraints, with different technology. It probably doesn't make sense now.\n\nQuestion everything. Test every assumption. Break rules that don't make sense. The worst that happens is you learn why the rule exists. The best that happens is you find a better way.",
+    "order_index": 4,
+    "is_premium": false
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Physics vs. Politics",
+    "content": "There are two kinds of problems in the world: physics problems and people problems.\n\nPhysics problems have real constraints. You cannot violate thermodynamics. You cannot exceed the speed of light. The math either works or it doesn't.\n\nMost of what you think are physics problems are actually people problems. Regulations, budgets, timelines, resources, permissions—these are not laws of nature. They are choices made by people. They can be changed by people.\n\nWhen you face an obstacle, ask: is this physics or is this politics? If it's physics, you need better engineering. If it's politics, you need different people or different incentives. Don't confuse the two. And don't let people problems masquerade as physics problems.",
+    "order_index": 5,
+    "is_premium": false
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On 10x Thinking",
+    "content": "You aim for 10% improvement. You optimize existing processes. You make incremental gains within the current paradigm.\n\nThis is the path to irrelevance.\n\n10% improvement means playing the same game slightly better. 10x improvement means changing the game entirely. You cannot get 10x with optimization. You can only get it with fundamental rethinking.\n\nWhen you aim for 10x, you're forced to question everything. The current approach cannot possibly get you there, so you must find a completely different approach. The constraints that seemed immovable become negotiable. The assumptions that seemed foundational become optional.\n\n10% better is about working harder. 10x better is about working differently. Which problem are you solving?",
+    "order_index": 6,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Feedback Loops",
+    "content": "You make decisions based on opinions, forecasts, and plans. You debate what might happen. You trust your intuition about the future.\n\nThis is guessing with extra steps.\n\nThe only reliable source of truth is empirical data. Build something, test it, measure what happens. The universe gives you feedback—either it works or it doesn't. This feedback is infinitely more valuable than any expert opinion.\n\nThe faster you iterate through this loop—build, test, learn, rebuild—the faster you approach the truth. Each iteration is a question posed to reality. Reality always answers honestly.\n\nStop theorizing. Start testing. Physics doesn't care about your presentations or your consensus or your clever arguments. It only cares about what works.",
+    "order_index": 7,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Long-Term Thinking",
+    "content": "Most people optimize for the next quarter. Companies optimize for the next earnings report. Politicians optimize for the next election.\n\nThis short-term thinking is why real problems don't get solved. Climate change, sustainable energy, space colonization—these require decades of work with no immediate payoff. They require betting the company on something that won't pay back for years.\n\nNobody else is thinking long-term. That's your competitive advantage.\n\nIf you're willing to work on a 10-year problem while everyone else chases 90-day returns, you'll have no competition. The long-term is uncrowded because it requires vision, patience, and the courage to look stupid in the short term.\n\nWhat problem is worth a decade of your life? That's the problem you should be solving.",
+    "order_index": 8,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Expertise",
+    "content": "Experts tell you what's impossible. They explain why your idea won't work. They cite all the failed attempts that came before.\n\nThey are often wrong.\n\nExperts are optimized for being right within the current paradigm. They know deeply how things work now. This makes them excellent at incremental improvement and terrible at revolutionary change.\n\nWhen you propose something fundamentally new, expert knowledge becomes a liability. Their deep understanding of the current system blinds them to alternatives. They cannot imagine the system working differently because they've invested years in how it works now.\n\nListen to experts on constraints. Ignore them on possibilities. They can tell you where the physics boundaries are. They cannot tell you what's achievable within those boundaries.",
+    "order_index": 9,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Resource Constraints",
+    "content": "You think you need more money, more people, more time. You make plans based on having more resources. You wait for the right conditions.\n\nConstraints are advantages.\n\nWhen you have unlimited resources, you can solve problems by throwing money at them. This teaches you nothing. You never learn what's actually necessary versus what's convenient.\n\nWhen resources are tight, you're forced to think. You have to find the clever solution, the efficient approach, the innovative method. You have to cut everything that isn't essential. This constraint makes you better.\n\nEvery company that got fat and slow did so because they had too many resources. Every breakthrough came from someone who had to do more with less. Embrace the constraint. It's forcing you to be smarter.",
+    "order_index": 10,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Speed",
+    "content": "You move at the speed of comfort. You wait for certainty. You take time to build consensus, to perfect the plan, to reduce risk.\n\nWhile you're being careful, the world is moving.\n\nSpeed is not about rushing. It's about removing everything that slows you down. It's about making decisions with incomplete information. It's about accepting that some things will break and fixing them as you go.\n\nThe cost of delay is almost always higher than the cost of mistakes. A mistake teaches you something and can be fixed. Delay teaches you nothing and compounds indefinitely.\n\nMove fast. Make decisions now. Build today. You can always iterate, but you can never get time back.",
+    "order_index": 11,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Failure",
+    "content": "You fear failure. You design plans to avoid it. You celebrate success and hide mistakes.\n\nThis is backwards.\n\nIf you're not failing regularly, you're not pushing hard enough. Failure is information—it tells you where the boundaries are. Success tells you almost nothing because you don't know how much further you could have pushed.\n\nThe goal is not to avoid failure. The goal is to fail quickly, learn from it, and iterate. Each failure is a test that eliminates one approach. Enough failures and you've eliminated everything that doesn't work. What remains is the solution.\n\nStop celebrating success. Start celebrating fast failures that teach you something. The faster you fail, the faster you learn, the faster you win.",
+    "order_index": 12,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Production Reality",
+    "content": "Prototypes are easy. Proving something can work once, in a lab, with unlimited time—anyone can do that.\n\nProduction is hard. Making it work every time, at scale, economically, reliably—this is where most innovations die.\n\nThe difference between prototype and production is usually 100x the difficulty. You underestimate this every time. You think the hard part is the invention. The hard part is manufacturing.\n\nUntil something works in production, it doesn't work. Until it can be built at a price people will pay, it doesn't matter how clever it is. Until it's reliable enough for real use, it's just an expensive demo.\n\nStop celebrating prototypes. Get to production. That's where the real engineering begins.",
+    "order_index": 13,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Why",
+    "content": "You work on problems because they're interesting, or profitable, or because that's what your field works on.\n\nBut you never asked: should this problem be solved at all?\n\nThe most important question is why. Why does this matter? Why is this worth years of your life? Why will the world be meaningfully different if you succeed?\n\nMost problems aren't worth solving. They're incremental improvements to things that don't matter. They're optimizations of fundamentally flawed approaches. They're clever solutions looking for real problems.\n\nWork on problems that matter. Problems where success means millions of lives improved, or humanity's future secured, or fundamental constraints removed. Life is too short to work on small problems. Find a why that's worth the work.",
+    "order_index": 14,
+    "is_premium": true
+  },
+  {
+    "mentor_id": "musk",
+    "title": "On Probability and Boldness",
+    "content": "You calculate the odds. You see a 10% chance of success and decide it's not worth the risk. You play it safe.\n\nBut you're calculating the wrong variable.\n\nThe question is not: what's the probability of success? The question is: what's the expected value? A 10% chance of changing the world is worth more than a 90% chance of incremental improvement.\n\nMost people optimize for high probability of small wins. This guarantees a lifetime of small results. Optimize for magnitude instead. Take big swings where the payoff is enormous even if the odds are low.\n\nYou only need to be right once. One moonshot success outweighs a dozen safe bets. Calculate expected value, not probability. Then take the bold bet.",
+    "order_index": 15,
+    "is_premium": true
+  }
+]
