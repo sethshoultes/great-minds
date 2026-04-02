@@ -55,12 +55,54 @@ DATABASE_URL=postgresql://localgenius:localgenius@localhost:5432/localgenius npm
 
 Full specs: `engineering/tech-stack.md`, `engineering/data-model.md`, `engineering/api-design.md`, `engineering/infrastructure.md`
 
+## Testing
+
+```bash
+# Run all tests (99 tests across 13 files)
+npm test
+
+# Watch mode (re-runs on file changes)
+npm run test:watch
+```
+
+Tests cover:
+- **API routes** (7 files): auth, conversations, content generation, reviews, digest, analytics, health
+- **Components** (6 files): ConversationThread, MessageBubble, ApprovalCard, WeeklyDigest, Button, Input
+- All tests mock the database and AI service — no external dependencies needed
+
+## Demo Mode
+
+After seeding, the app runs with a complete demo dataset:
+
+```bash
+npm run db:seed   # Creates Maria's Kitchen with reviews, conversations, analytics
+npm run dev       # Start the app
+```
+
+Login: `maria@mariaskitchen.com` / `localgenius123`
+
+Demo data includes: 8 Google/Yelp reviews, conversation history (onboarding + fish tacos post), 14 days of analytics events, and 5 completed actions.
+
+## Deployment
+
+```bash
+# Preview deploy
+./scripts/deploy.sh
+
+# Production deploy (requires passing tests)
+./scripts/deploy.sh production
+```
+
+Or manually via Vercel CLI: `vercel` (preview) / `vercel --prod` (production).
+
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
 | `npm run dev` | Development server |
 | `npm run build` | Production build |
+| `npm test` | Run all tests (vitest) |
+| `npm run test:watch` | Tests in watch mode |
 | `npm run db:push` | Push schema to database |
-| `npm run db:seed` | Seed demo data |
+| `npm run db:seed` | Seed demo data (Maria's Kitchen) |
 | `npm run db:studio` | Drizzle Studio (DB GUI) |
