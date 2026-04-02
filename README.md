@@ -1,91 +1,117 @@
-# LocalGenius
+# Great Minds Agency
 
-AI-powered digital presence platform for local businesses. One conversational interface replaces the 6-8 disconnected tools most small businesses juggle — website builder, social media scheduler, review manager, email marketing, SEO, analytics, booking, and local ads. The owner talks to LocalGenius like they'd talk to a marketing employee, and it handles the rest.
+A multi-agent AI agency that takes a product idea from concept to deployed software — autonomously.
 
-## Prerequisites
+Drop in a PRD. The agents debate strategy, hire sub-agents, build deliverables, write code, run tests, and deploy. You review the output.
 
-- **Node.js** >= 20.0.0
-- **pnpm** (enable via `corepack enable`)
-- **PostgreSQL** — local Docker or [Neon](https://neon.tech) serverless instance
+## The Team
 
-## Setup
+| Agent | Role | Persona |
+|-------|------|---------|
+| **Marcus Aurelius** | Moderator / Chief of Staff | Stoic philosopher-emperor. Drives the state machine, mediates conflicts, gates quality. |
+| **Steve Jobs** | Chief Design & Brand Officer | Product design, brand identity, messaging, customer experience. "Is this insanely great?" |
+| **Elon Musk** | Chief Product & Growth Officer | Product/market fit, engineering, team structure, growth metrics. "Does physics allow this?" |
+| **Jensen Huang** | Board Member (60-min cron) | Strategic reviews, GitHub issues, advisory. "What's the data moat?" |
+| **Organizer** | System maintenance (20-min cron) | File hygiene, memory consolidation, idle agent nudging. |
+
+## How It Works
+
+```
+PRD → Debate (2 rounds) → Plan (hire sub-agents) → Build (parallel) → Review → Ship
+```
+
+1. **You** drop a PRD in `prds/`
+2. **Marcus** orchestrates the pipeline
+3. **Steve & Elon** debate strategy, then direct sub-agent teams
+4. **Sub-agents** produce deliverables and write code in parallel
+5. **Jensen** checks in hourly with strategic perspective and files GitHub issues
+6. **Output**: strategy docs + engineering specs + working software + deployment
+
+## Architecture
+
+Built on [claude-swarm](https://github.com/sethshoultes/claude-swarm) — tmux orchestration with git worktrees for parallel, conflict-free agent development.
+
+```
+Human (you)
+  ├── Jensen Huang — Board Member (cron, GitHub issues, advisory)
+  └── Marcus Aurelius — Moderator (tmux: admin)
+       ├── Steve Jobs — Creative Director (tmux: worker1)
+       │    └── sub-agents (designer, copywriter, reviewer...)
+       ├── Elon Musk — Product Director (tmux: worker2)
+       │    └── sub-agents (analyst, strategist, architect...)
+       └── Organizer/Haiku — system maintenance (cron)
+```
+
+## System Files
+
+| File | Purpose |
+|------|---------|
+| `SOUL.md` | Agency identity, values, partner dynamics |
+| `AGENTS.md` | Full agent roster, hierarchy, communication rules |
+| `USER.md` | Client profile |
+| `HEARTBEAT.md` | Cron schedule — orchestrator, organizer, Jensen, dream cycle |
+| `BOOTSTRAP.md` | Startup sequence when agency initializes |
+| `STATUS.md` | Live state — what's running, what's blocked, progress |
+| `MEMORY.md` | Persistent memory index — agency learns across projects |
+
+## Directory Structure
+
+```
+great-minds/
+  [system files]
+  personas/           — Canonical persona knowledge bases (5-15K words each)
+  team/               — Agent role definitions + hiring templates
+  memory/             — Persistent learnings across projects
+  prds/               — Input PRDs
+  rounds/             — Debate transcripts, decisions, board reviews
+  engineering/        — Technical architecture docs
+  deliverables/       — Strategy docs, workshop plans, final outputs
+```
+
+## Quick Start
 
 ```bash
-# Clone and install
-git clone <repo-url>
-cd localgenius
-pnpm install
+# Prerequisites: tmux, Claude Code CLI, git
+# Install claude-swarm
+mkdir -p ~/.local/bin
+curl -o ~/.local/bin/claude-swarm https://raw.githubusercontent.com/sethshoultes/claude-swarm/main/claude-swarm
+chmod +x ~/.local/bin/claude-swarm
+export PATH="$HOME/.local/bin:$PATH"
 
-# Configure environment
-cp .env.example .env.local
-# Edit .env.local with your credentials (see .env.example for all required vars)
+# Clone and launch
+git clone https://github.com/sethshoultes/great-minds.git
+cd great-minds
 
-# Push database schema
-pnpm db:push
+# Drop a PRD in prds/
+cp prds/TEMPLATE.md prds/my-project.md
+# Edit prds/my-project.md with your product idea
 
-# Start development server
-pnpm dev
+# Launch the agency
+./launch.sh my-project
 ```
 
-The API runs at `http://localhost:3000`. Health check: `GET /api/health`.
+## First Project: LocalGenius
 
-## Project Structure
+Our first client project produced:
 
-```
-src/
-  app/
-    api/                    # Next.js App Router API endpoints
-      auth/                 # Registration, login, token refresh
-      onboarding/           # 5-step onboarding flow
-      conversations/        # The single thread (core product)
-      content/generate/     # AI content generation
-      reviews/              # Review management + responses
-      digest/               # Weekly Digest
-      analytics/            # Metrics, attribution, benchmarks
-      health/               # Health check
-  api/
-    middleware/             # Auth (JWT) + tenant (RLS) middleware
-    routes/                # Additional route helpers
-    integrations/          # External platform integrations (Google, Meta, Yelp)
-  db/
-    schema.ts              # Drizzle ORM schema (14 tables)
-    migrations/            # Generated SQL migrations
-    seeds/                 # Seed data for development
-  services/               # Business logic (AI generation, review sync, digest builder)
-  lib/                    # Shared utilities
-  config/                 # App configuration
-scripts/                  # Operational scripts
-engineering/              # Architecture docs (tech-stack, data-model, api-design, infrastructure)
-```
+- **8 strategy deliverables** (195KB) — product design, market fit, personas, team, marketing goals, messaging
+- **8 engineering docs** (192KB) — tech stack, data model, API design, infrastructure
+- **Full Next.js application** (169+ source files, 139 tests) — [sethshoultes/localgenius](https://github.com/sethshoultes/localgenius)
+- **2 board reviews** with 4 GitHub issues from Jensen
+- **Live deployment** at [localgenius-beige.vercel.app](https://localgenius-beige.vercel.app)
 
-## Key Architecture Decisions
+All from a single PRD, in one session.
 
-| Decision | Rationale |
-|----------|-----------|
-| Next.js API routes | Single deployable for 3 engineers (see `engineering/tech-stack.md`) |
-| PostgreSQL + Drizzle ORM | Multi-tenant RLS, relational data model (see `engineering/data-model.md`) |
-| Anthropic Claude | Sonnet 4.6 interactive, Haiku 4.5 batch. AI costs at 2.1% of revenue. |
-| REST (not GraphQL) | Predictable query patterns, 2 screens, simpler for small team |
+## Personas
 
-## API Reference
+Agent personas are sourced from [think-like](https://github.com/sethshoultes/think-like) — deeply researched, 5,000-15,000 word knowledge bases covering biography, philosophy, decision-making frameworks, communication style, and key quotes.
 
-Full endpoint documentation: [`engineering/api-design.md`](engineering/api-design.md)
+## Related Projects
 
-## Database Schema
+- [claude-swarm](https://github.com/sethshoultes/claude-swarm) — Multi-agent orchestration via tmux + git worktrees
+- [think-like](https://github.com/sethshoultes/think-like) — AI mentor personas and meditations platform
+- [localgenius](https://github.com/sethshoultes/localgenius) — First product built by the agency
 
-14 tables with multi-tenant RLS. Full schema with rationale: [`engineering/data-model.md`](engineering/data-model.md)
+## License
 
-Schema defined in: [`src/db/schema.ts`](src/db/schema.ts)
-
-## Scripts
-
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start development server |
-| `pnpm build` | Production build |
-| `pnpm lint` | Run ESLint |
-| `pnpm typecheck` | TypeScript type checking |
-| `pnpm db:generate` | Generate migration from schema changes |
-| `pnpm db:push` | Push schema directly to database |
-| `pnpm db:seed` | Seed development data |
-| `pnpm db:studio` | Open Drizzle Studio (database GUI) |
+MIT
