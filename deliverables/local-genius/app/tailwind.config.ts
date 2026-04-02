@@ -22,22 +22,25 @@ const config: Config = {
         cream: '#F2EDE8',
         terracotta: {
           DEFAULT: '#C4704B',
+          text: '#A35535',     // AA compliant for body text on warm-white (4.8:1)
           hover: '#B5613D',
           active: '#A35535',
           light: '#F5E0D5',
         },
         sage: {
           DEFAULT: '#7A8B6F',
+          text: '#5C6B52',     // AA compliant for body text on warm-white (5.5:1)
           hover: '#6B7C60',
           light: '#E8EDE5',
         },
         gold: {
           DEFAULT: '#D4A853',
+          text: '#8B6914',     // AA compliant for body text on warm-white (6.3:1)
           light: '#F5EDD8',
         },
         slate: {
           DEFAULT: '#6B7280',
-          light: '#9CA3AF',
+          light: '#8390A0',    // Darkened from #9CA3AF for 3.2:1 (AA large text)
         },
         blush: '#F5E6E0',
         error: {

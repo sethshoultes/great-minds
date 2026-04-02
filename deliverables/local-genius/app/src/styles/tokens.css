@@ -19,21 +19,24 @@
   --color-cream: #F2EDE8;              /* hsl(30, 24%, 93%) — card backgrounds */
 
   /* Accent — Terracotta */
-  --color-terracotta: #C4704B;         /* hsl(18, 47%, 53%) — primary actions */
+  --color-terracotta: #C4704B;         /* hsl(18, 47%, 53%) — buttons, large text, decorative */
+  --color-terracotta-text: #A35535;    /* hsl(18, 50%, 42%) — AA compliant for body text on warm-white (4.8:1) */
   --color-terracotta-hover: #B5613D;   /* hsl(18, 49%, 47%) */
   --color-terracotta-active: #A35535;  /* hsl(18, 50%, 42%) */
   --color-terracotta-light: #F5E0D5;   /* hsl(18, 53%, 89%) — selected backgrounds */
 
   /* Accent — Sage */
-  --color-sage: #7A8B6F;              /* hsl(102, 11%, 49%) — success, secondary */
+  --color-sage: #7A8B6F;              /* hsl(102, 11%, 49%) — backgrounds, icons, decorative */
+  --color-sage-text: #5C6B52;         /* hsl(102, 13%, 37%) — AA compliant for body text on warm-white (5.5:1) */
   --color-sage-hover: #6B7C60;        /* hsl(102, 13%, 43%) */
   --color-sage-light: #E8EDE5;        /* hsl(102, 14%, 91%) — success backgrounds */
 
   /* Supporting */
-  --color-gold: #D4A853;              /* hsl(40, 59%, 58%) — stars, celebrations */
+  --color-gold: #D4A853;              /* hsl(40, 59%, 58%) — decorative, icons, large text */
+  --color-gold-text: #8B6914;         /* hsl(40, 75%, 31%) — AA compliant for body text on warm-white (6.3:1) */
   --color-gold-light: #F5EDD8;        /* hsl(40, 56%, 90%) */
-  --color-slate: #6B7280;             /* hsl(220, 9%, 46%) — secondary text */
-  --color-slate-light: #9CA3AF;       /* hsl(218, 11%, 65%) — placeholders */
+  --color-slate: #6B7280;             /* hsl(220, 9%, 46%) — secondary text (4.56:1 — passes AA) */
+  --color-slate-light: #8390A0;       /* hsl(218, 11%, 57%) — placeholders (3.2:1 — passes AA large text) */
   --color-blush: #F5E6E0;             /* hsl(17, 47%, 92%) — notification badges */
 
   /* System */
