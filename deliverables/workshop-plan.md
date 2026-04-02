@@ -1,6 +1,6 @@
-# From Idea to 128 Files While You Sleep: Building an AI Agent Swarm with Claude Code
+# From Idea to 262 Files While You Sleep: Building an AI Agent Swarm with Claude Code
 
-**Subtitle:** How one developer built a fully autonomous multi-agent agency — complete debate system, product deliverables, scaffolded software, and a live deployment — in a single session.
+**Subtitle:** How one developer built a fully autonomous multi-agent agency — complete debate system, product deliverables, scaffolded software, two live deployments, and a Claude Code plugin — across a single continuous build.
 
 ---
 
@@ -23,8 +23,9 @@
 3. The Multi-Agent Debate (MAD) framework: why letting AI personas argue produces better outputs than asking AI to simply answer
 4. How to install a "board member" on a cron job that audits your project while you sleep
 5. The build pipeline: Debate → Plan → Build → Review → Ship
-6. How to correct agents mid-build and why they eventually start spawning their own sub-agents
-7. A concrete path to starting their own swarm this week
+6. How a hybrid AI architecture routes tasks between Claude and Cloudflare Workers AI to keep marginal cost near zero
+7. How to package the entire agency as an installable plugin anyone can run
+8. A concrete path to starting their own swarm this week
 
 ---
 
@@ -34,9 +35,11 @@
 
 Walk to the front. Say this:
 
-> "Last week I sat down with a vague idea. I wanted to think through a project. I opened Claude Code, typed a few things, and went to sleep.
+> "262 source files. 576 tests. Two live products. A Claude Code plugin. Nine AI board reviews. While I slept.
 >
-> By morning: 128 source files. 99 tests. Stripe billing wired up. A Meta social integration. A brand guide. A Storybook. A Vercel deployment. GitHub issues filed by an AI board member who had audited the strategy overnight and found three blind spots I hadn't seen.
+> Last week I sat down with a vague idea. I wanted to think through a project. I opened Claude Code, typed a few things, and went to sleep.
+>
+> By morning: 227 app files and 35 site files. 576 passing test specs. Stripe billing wired up. A Meta social integration. A brand guide. A Storybook. A Vercel deployment at localgenius.company. A Cloudflare Pages deployment at localgenius-sites.pages.dev. 133 commits across four repos. GitHub issues filed by an AI board member who had audited the strategy overnight and found blind spots I hadn't seen.
 >
 > I want to show you exactly how that happened. Not the magic-trick version. The real version — including the wrong turns, the mid-build corrections, and the moment the agents started spawning their own agents."
 
@@ -90,7 +93,7 @@ Open the terminal. Show the great-minds project root. Walk through:
 
 - `SOUL.md` — The agency's values and purpose. One page. What does this agency stand for? What will it refuse to do? Read one paragraph aloud. Explain: this is what gets injected into every agent's context. This is the shared DNA.
 
-- `AGENTS.md` — Who works here. Each agent listed with their persona, their role, and a pointer to their persona file. Show the Steve Jobs entry. Show the Elon Musk entry. Show Marcus Aurelius as moderator.
+- `AGENTS.md` — Who works here. Nine agents listed with their persona, their role, and a pointer to their persona file. Show the Steve Jobs entry. Show Jensen Huang. Show Margaret Hamilton — who joined specifically to hold the system to engineering standards. Show Rick Rubin, Jony Ive, Maya Angelou, Sara Blakely. Show Marcus Aurelius as moderator.
 
 - `MEMORY.md` — The index of persistent memory. Not conversation history — *curated knowledge* that survives between sessions. Show an entry. Explain that agents write to this, and it gets loaded into future conversations.
 
@@ -98,7 +101,9 @@ Open the terminal. Show the great-minds project root. Walk through:
 
 This is end-to-end ownership of the agent experience. The soul file, the identity file, the memory file — these are not configuration. They are culture. They are what makes the difference between an agent that drifts and an agent that has a point of view.
 
-The persona files are worth mentioning separately. We pulled deeply researched, 5,000-to-15,000-word persona documents for each character — Steve Jobs, Elon Musk, Marcus Aurelius, Jensen Huang. Not "be creative and bold like Steve Jobs." Actual philosophy, actual decision-making patterns, actual language. When these agents argue, they argue *in character*. That matters. A Steve Jobs persona that does not push back on your PRD is not useful. It is just flattery.
+The persona files are worth mentioning separately. We pulled deeply researched, 5,000-to-15,000-word persona documents for each character — Steve Jobs, Elon Musk, Marcus Aurelius, Jensen Huang, Margaret Hamilton. Not "be creative and bold like Steve Jobs." Actual philosophy, actual decision-making patterns, actual language. When these agents argue, they argue *in character*. That matters. A Steve Jobs persona that does not push back on your PRD is not useful. It is just flattery.
+
+And by the way — nine distinct personas means nine distinct failure modes you avoid. Margaret Hamilton is not going to let sloppy error handling slide. Sara Blakely is not going to let you ignore the customer's emotional experience. They are not decoration. They are accountability.
 
 ---
 
@@ -149,25 +154,28 @@ He is not building anything. He is watching. And because he watches with fresh e
 
 **[LIVE DEMO — 2 minutes]**
 
-Show the cron configuration. Show one of the GitHub issues Jensen filed. Read the title and the first paragraph. The issue should identify a strategic blind spot — something like data moat risk, or pricing vulnerability, or a missing platform partnership.
+Show the cron configuration. Show the GitHub issues Jensen filed — all nine of them. Read one title and the first paragraph. The issues are real and specific:
+
+- **Data moat**: Are we building proprietary data, or a commodity wrapper?
+- **CUDA playbook**: What is the platform strategy if this scales?
+- **Pricing evolution**: The current model does not survive a competitive entrant
+- **AI honesty bug**: Cases where the system confidently returns wrong information
+- **CORS security**: Cross-origin exposure in the API layer
+- **In-memory state bug**: Session data being lost on worker restart
 
 Then say this:
 
-> "I did not ask him to look at this. I did not know this was a gap. He found it because he was looking at the whole board, not the specific square I was staring at."
+> "I did not ask him to look at any of this. I did not know these were gaps. He found them because he was looking at the whole board, not the specific square I was staring at."
 
 **[Back to slides]**
 
-This is the return of the board function. In most early-stage companies, nobody is doing board-level strategic review because there is no board. The founder is too close to the work. This gives you that function, running continuously, at essentially zero cost.
-
-We also added two other cron jobs:
-- A 7-minute monitoring agent that watches system health
-- A 20-minute organizer that detects when agents have gone idle and nudges them back into motion
+Nine reviews. Six actionable issues filed. Every one of them real. That is a board. Running on a cron. At essentially zero cost.
 
 The system does not stop when you stop. That is the point.
 
 ---
 
-### SECTION 5: From Strategy to Software (Minutes 27-35)
+### SECTION 5: From Strategy to Software (Minutes 27-33)
 
 **Slide anchor: "The agents planned the build. Then they built it."**
 
@@ -182,24 +190,24 @@ After the debate phase, the agents shifted into planning mode. They were not giv
 
 **192 more kilobytes of technical deliverables** before a single line of application code was written.
 
-Then they scaffolded. First a Next.js app. 26 source files to start.
+Then they scaffolded. Then they built. And they kept building.
 
 **[LIVE DEMO — 5 minutes]**
 
-Open the LocalGenius repo. Show the directory tree. Point to the source file count — 128+ files. Show a few:
+Open the LocalGenius repo. Show the directory tree. Point to the source file count — 262 files. 227 in the app, 35 in the sites layer. Show a few:
 - The main app structure
-- One of the 99+ test files
+- One of the 576 test spec files
 - The Stripe billing integration
 - The brand guide file
 - The Storybook configuration
 
-Then show the git log. Not to read every commit — just to show the *velocity*. Show timestamps. Show how much was built in a single session.
+Then show the git log. 133 commits across four repos. Not to read every commit — just to show the *velocity*. Show timestamps.
 
 Then: the mid-build correction. Pull up the moment where Seth had to redirect the agents to use a proper directory structure. Read the message he sent. Show that the agents adapted and continued.
 
 > "This is the important part. These are not scripts running in a loop. They are reasoning about the codebase. When I corrected them, they understood the correction."
 
-Then — the moment agents started spawning their own sub-agents. Show a log or a note where an agent decided it needed to spin up a test-writing agent, a seed data agent, a production checklist agent. Explain what this means:
+Then — the moment agents started spawning their own sub-agents. Show a log or a note where an agent decided it needed to spin up a test-writing agent, a seed data agent, a production checklist agent.
 
 > "When your agents start hiring, you have crossed a threshold. They are no longer executing tasks you defined. They are defining tasks you did not think of."
 
@@ -207,7 +215,78 @@ Then — the moment agents started spawning their own sub-agents. Show a log or 
 
 ---
 
-### SECTION 6: The Stack — What You Actually Need to Build This (Minutes 35-40)
+### SECTION 6: Hybrid AI Architecture — Claude for Brains, Cloudflare for Muscle (Minutes 33-36)
+
+**Slide anchor: "Route the task to the right model. Pay nothing extra."**
+
+**Talking points:**
+
+Here is the part most people building AI products get wrong: they use one model for everything. GPT-4 for summarization, for image generation, for transcription, for classification. It is expensive. It is slow in places it does not need to be slow. And it creates a single point of failure.
+
+LocalGenius runs a hybrid architecture. Claude handles the reasoning — strategy, content judgment, conversational depth. Cloudflare Workers AI handles the commodity tasks, and it runs on Cloudflare's global edge network at near-zero marginal cost.
+
+**[SLIDE: AI router diagram — task type → model selection]**
+
+The router decides per task:
+
+- **Voice transcription** → Cloudflare Workers AI Whisper. A restaurant owner holds the mic button, speaks for thirty seconds, and the audio becomes text. No separate service. No API key to manage. It runs on the same infrastructure as the rest of the app.
+- **Content drafts** → Llama running on Workers AI. Fast, cheap, good enough for a first pass that Claude then shapes.
+- **Image generation** → Stable Diffusion on Workers AI. A business owner describes their storefront; they get an image.
+- **Sentiment analysis** → DistilBERT on Workers AI. Lightweight, purpose-built.
+- **Complex reasoning and judgment** → Claude. Where it earns its keep.
+
+This is what "voice input" means in practice: you can literally talk to LocalGenius like you would talk to an employee. "Write me a post about our Tuesday special." The app transcribes it, routes it, and responds. That is not a demo feature. That is the primary interface for users who do not want to type.
+
+---
+
+### SECTION 7: Two Live Products (Minutes 36-38)
+
+**Slide anchor: "It shipped."**
+
+**Talking points:**
+
+Here is where this story diverges from most AI demos: it is live. Publicly accessible. Right now.
+
+**[LIVE DEMO — 2 minutes]**
+
+Open the browser. Show both:
+
+- **localgenius.company** — The main application. Vercel deployment. The dashboard, the AI features, the voice input, the social integrations.
+- **localgenius-sites.pages.dev** — Emdash, the website builder for LocalGenius customers. Cloudflare Pages deployment. A small business owner can go here and get an AI-generated website for their location.
+
+Two separate products. Two separate deployment pipelines. Both alive.
+
+This is what the agent swarm produced. Not a prototype. Not a mockup. Working software at real URLs that anyone in this room can visit right now.
+
+**[Back to slides]**
+
+---
+
+### SECTION 8: The Plugin — Installable Agency (Minutes 38-40)
+
+**Slide anchor: "The agency is now a package."**
+
+**Talking points:**
+
+The last thing we built was the most meta thing we built. We packaged the entire Great Minds agency — the nine agents, the five skills, the hooks, the templates, the pipeline — into a Claude Code plugin that anyone can install on their own machine.
+
+```
+npx plugins add sethshouldes/great-minds-plugin
+```
+
+That is it. One command. You get:
+- Nine fully realized agent personas
+- Five skills covering the full debate-to-ship pipeline
+- Hook configurations for automated behaviors
+- The template library the agents use to produce deliverables
+
+This means everything you have watched in this talk — the debate, the board reviews, the cron jobs, the build pipeline — is not something you have to reconstruct from scratch. You install it. You point it at your PRD. You run it.
+
+The agency is portable. The agency is open.
+
+---
+
+### SECTION 9: The Stack — What You Actually Need to Build This (Minutes 40-42)
 
 **Slide anchor: "The tools are simpler than you think."**
 
@@ -218,28 +297,28 @@ People hear a story like this and assume there is some massive infrastructure be
 Here is what the actual stack is:
 
 - **Claude Code** — the primary interface. Not an API wrapper. Claude Code can read and write files, run commands, use git. It is an agent runtime.
-- **claude-swarm** — Seth's own open-source project. tmux orchestration and git worktrees. Multiple agents running in parallel terminal sessions, sharing a filesystem. This is the layer that makes parallelism possible.
+- **claude-swarm** — Seth's own open-source project. tmux orchestration and git worktrees. Multiple agents running in parallel terminal sessions, sharing a filesystem.
+- **Cloudflare Workers AI** — Whisper, Llama, Stable Diffusion, DistilBERT. Near-zero marginal cost at edge.
 - **Persona files** — plain markdown. Long, carefully written, loaded into agent context.
 - **SOUL.md + AGENTS.md + MEMORY.md** — three plain markdown files. The identity layer.
 - **GitHub** — where Jensen files issues, where the agents push code, where the record lives.
-- **Vercel** — deployment. Agents can trigger deployments because they have access to the CLI.
+- **Vercel** — production deployment. localgenius.company.
+- **Cloudflare Pages** — sites deployment. localgenius-sites.pages.dev.
 - **Cron** — a scheduler. Any cron scheduler. The agents do not know they are on a schedule. They just get invoked.
 
 **[SLIDE: Stack diagram — clean, minimal]**
 
-That is the entire stack. None of it requires a budget. Claude Code is a subscription. claude-swarm is free. Everything else you likely already have.
-
-The complexity is not in the tools. The complexity is in the design of the agent system — the personas, the pipeline, the memory architecture. That is where the craft lives.
+That is the entire stack. The complexity is not in the tools. The complexity is in the design of the agent system — the personas, the pipeline, the memory architecture, the AI routing logic. That is where the craft lives.
 
 ---
 
-### SECTION 7: How to Start Your Own (Minutes 40-44)
+### SECTION 10: How to Start Your Own (Minutes 42-44)
 
 **Slide anchor: "Start with two agents and one argument."**
 
 **Talking points:**
 
-Here is the mistake to avoid: trying to build the full system on day one. Ten agents, five cron jobs, a board member, a moderator, a Chief of Staff. That is a distraction. That is complexity before you understand what you are building.
+Here is the mistake to avoid: trying to build the full system on day one. Ten agents, five cron jobs, a board member, a moderator, a Chief of Staff, a hybrid AI router, a plugin. That is a distraction. That is complexity before you understand what you are building.
 
 Here is the path that actually works:
 
@@ -257,11 +336,11 @@ Create a board member agent on a cron. Once an hour. Give them a one-sentence br
 
 **[SLIDE: The four-week ladder — visual]**
 
-By week four you have a functioning agency. Not perfect. Not the full system Seth built. But alive. And from there, the work is iteration — better personas, tighter pipeline, smarter memory.
+Or — install the plugin. Skip the four weeks of setup and start from a running agency.
 
 ---
 
-### SECTION 8: Closing — A New Way of Working (Minutes 44-45)
+### SECTION 11: Closing — A New Way of Working (Minutes 44-45)
 
 **No slide. Stand at the front. Say this directly.**
 
@@ -269,13 +348,13 @@ By week four you have a functioning agency. Not perfect. Not the full system Set
 >
 > We are not there yet. But we are closer than people think. And the gap between 'AI as a tool' and 'AI as a team' is not a technology gap. It is an architecture gap. It is a design gap. It is the difference between asking AI a question and giving AI a job.
 >
-> The question worth sitting with is this: what would you build if the first 128 files were already done when you woke up?
+> The question worth sitting with is this: what would you build if the first 262 files were already done when you woke up?
 >
 > That is not a hypothetical. That is Tuesday."
 
 Pause.
 
-> "The repo is public. The persona files are available. The swarm is open source. Links in the description. Go build something."
+> "The repos are public. The persona files are available. The swarm is open source. The plugin is installable in one command. Links in the description. Go build something."
 
 ---
 
@@ -283,10 +362,11 @@ Pause.
 
 1. Agent architecture matters more than model capability — give your agents identity, memory, and purpose
 2. Debate produces better outputs than consensus — introduce adversarial tension deliberately
-3. The board function is underrated — a watcher on a cron catches what builders miss
-4. The pipeline is: Debate → Plan → Build → Review → Ship — each stage produces artifacts, not just conversation
-5. Start with two agents and one real argument — the system grows from there
-6. When your agents start spawning sub-agents, you have crossed the threshold
+3. The board function is underrated — nine strategic reviews, six real issues, zero dollars in human consulting fees
+4. Hybrid AI routing lets you use the right model for the right task at near-zero marginal cost
+5. The pipeline is: Debate → Plan → Build → Review → Ship — each stage produces artifacts, not just conversation
+6. Package your agency as a plugin and make the whole system portable
+7. When your agents start spawning sub-agents, you have crossed the threshold
 
 ---
 
@@ -297,22 +377,26 @@ Before the session, verify:
 - [ ] Terminal is open to `/Users/sethshoultes/Local Sites/great-minds/`
 - [ ] Font size is readable from the back of the room (minimum 18pt)
 - [ ] Round files are in place at `rounds/local-genius/`
-- [ ] Deliverables directory shows all 195KB files
-- [ ] LocalGenius repo is cloned and visible — `sethshoultes/localgenius`
-- [ ] Git log is clean enough to show velocity without exposing anything sensitive
-- [ ] Jensen's GitHub issues are visible and readable
+- [ ] Deliverables directory shows all 195KB strategy files
+- [ ] LocalGenius repo is cloned and visible — `sethshouldes/localgenius`
+- [ ] Git log shows 133 commits across repos — have the command ready
+- [ ] Jensen's GitHub issues are visible and readable — all 9 reviews, 6 issues
 - [ ] Cron configuration is visible (any scheduler UI or crontab)
 - [ ] The mid-build correction message is findable quickly
-- [ ] Vercel deployment link works and loads in browser
+- [ ] **localgenius.company** loads in browser (Vercel deployment)
+- [ ] **localgenius-sites.pages.dev** loads in browser (Cloudflare Pages deployment)
+- [ ] Voice input demo is ready — mic button visible, test it beforehand
+- [ ] AI router diagram slide is ready
+- [ ] Plugin install command is ready: `npx plugins add sethshouldes/great-minds-plugin`
 - [ ] claude-swarm repo URL is ready to paste or show
 
-**The demo is the talk.** The slides are guardrails. If you get behind on time, cut sections 6 and 7 short — never cut section 3 (the debate demo) or section 5 (the build demo). Those are the heart of it.
+**The demo is the talk.** The slides are guardrails. If you get behind on time, cut sections 9 and 10 short — never cut section 3 (the debate demo), section 5 (the build demo), or section 7 (the live products). Those are the heart of it.
 
 ---
 
 ## What This Workshop Is Not
 
-It is not a tutorial on prompting. It is not a Claude marketing talk. It is not a guarantee that everyone walks out and ships 128 files by morning.
+It is not a tutorial on prompting. It is not a Claude marketing talk. It is not a guarantee that everyone walks out and ships 262 files by morning.
 
 It is a demonstration that the constraint on what you build is no longer time or headcount. The constraint is your ability to design systems — to give AI a role, a memory, a counterpart, and a pipeline that ends in shipped work.
 
@@ -321,4 +405,4 @@ The rest is craft. And craft is learnable.
 ---
 
 *Workshop plan authored for Seth Shouldes — Great Minds Agency*
-*Prepared: 2026-03-31*
+*Prepared: 2026-03-31 | Updated: 2026-03-31*
