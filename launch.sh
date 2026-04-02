@@ -12,13 +12,20 @@ EXTRA_WORKERS="${2:-2}"  # 2 = Steve + Elon
 SHARED_DIR="/tmp/claude-shared"
 PROMPTS_DIR="$SHARED_DIR/prompts"
 
+# --- Ensure PATH includes ~/.local/bin ---
+export PATH="$HOME/.local/bin:$PATH"
+
 # --- Pre-flight checks ---
 if ! command -v claude-swarm &>/dev/null; then
-  echo "claude-swarm not found. Install from: https://github.com/sethshoultes/claude-swarm"
-  echo "  mkdir -p ~/.local/bin"
-  echo "  curl -o ~/.local/bin/claude-swarm https://raw.githubusercontent.com/sethshoultes/claude-swarm/main/claude-swarm"
-  echo "  chmod +x ~/.local/bin/claude-swarm"
-  exit 1
+  echo "claude-swarm not found. Installing..."
+  mkdir -p ~/.local/bin
+  curl -sL -o ~/.local/bin/claude-swarm https://raw.githubusercontent.com/sethshoultes/claude-swarm/main/claude-swarm
+  chmod +x ~/.local/bin/claude-swarm
+  if ! command -v claude-swarm &>/dev/null; then
+    echo "Error: install failed. Check ~/.local/bin/claude-swarm"
+    exit 1
+  fi
+  echo "claude-swarm installed successfully."
 fi
 
 if ! command -v tmux &>/dev/null; then
