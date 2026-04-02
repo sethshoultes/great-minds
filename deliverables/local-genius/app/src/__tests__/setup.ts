@@ -13,6 +13,23 @@ const localStorageMock = (() => {
 
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
+// Mock scrollIntoView — not implemented in jsdom
+Element.prototype.scrollIntoView = vi.fn();
+
+// Mock window.matchMedia — needed for reduced-motion checks
+Object.defineProperty(window, 'matchMedia', {
+  value: vi.fn().mockImplementation((query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});
+
 // Mock next/navigation
 vi.mock('next/navigation', () => ({
   usePathname: () => '/',

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Button from '@/components/shared/Button';
 import {
   discoverBusiness,
@@ -92,6 +93,7 @@ export default function OnboardingPage() {
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishedAll, setPublishedAll] = useState(false);
 
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const stepContainerRef = useRef<HTMLDivElement>(null);
 
@@ -226,7 +228,7 @@ export default function OnboardingPage() {
 
     setPublishedAll(true);
     setTimeout(() => {
-      window.location.href = '/';
+      router.push('/');
     }, 2000);
   };
 
@@ -530,13 +532,38 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          {/* Generating loading state (between Step 4 tap and Step 5 reveal) */}
+          {/* Generating loading state — "like a sign being painted" */}
           {step === 4 && isGenerating && (
-            <div className="flex-1 flex flex-col items-center justify-center gap-6 animate-in">
-              <h1 className="text-display text-charcoal text-center">
-                {state.businessName}
-              </h1>
-              <div className="loading-glow w-48 h-3 rounded-full" />
+            <div className="flex-1 flex flex-col items-center justify-center gap-8 animate-in">
+              <div className="relative">
+                <h1
+                  className="text-display text-charcoal text-center"
+                  style={{
+                    animation: 'fadeUp 1.5s cubic-bezier(0, 0, 0.2, 1) both',
+                  }}
+                >
+                  {state.businessName}
+                </h1>
+                <p
+                  className="text-body text-slate text-center mt-2"
+                  style={{
+                    animation: 'fadeUp 1.5s cubic-bezier(0, 0, 0.2, 1) 0.5s both',
+                  }}
+                >
+                  {state.reveal?.tagline || MOCK_REVEAL.tagline}
+                </p>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <div className="loading-glow w-48 h-1 rounded-full" />
+                <p
+                  className="text-caption text-slate"
+                  style={{
+                    animation: 'fadeUp 0.5s cubic-bezier(0, 0, 0.2, 1) 1s both',
+                  }}
+                >
+                  Building something beautiful...
+                </p>
+              </div>
             </div>
           )}
 
@@ -561,24 +588,66 @@ export default function OnboardingPage() {
                 <>
                   <h1 className="animate-in">Here&apos;s what I built for you.</h1>
 
-                  {/* Website */}
+                  {/* Website — designed to look like a real site preview */}
                   <div className="card animate-in reveal-stagger-1 flex flex-col gap-card-gap">
                     <span className="text-caption text-slate uppercase tracking-widest font-semibold">
                       Your Website
                     </span>
-                    <div className="aspect-video bg-cream rounded-sm overflow-hidden flex items-center justify-center">
-                      <div className="text-center p-6">
-                        <h3 className="text-h1 text-charcoal">{state.businessName}</h3>
-                        <p className="text-body text-slate mt-2">
-                          {state.reveal?.tagline || MOCK_REVEAL.tagline}
-                        </p>
-                        <p className="text-caption text-slate mt-3">
-                          {state.reveal?.businessDescription || MOCK_REVEAL.businessDescription}
-                        </p>
+                    <div className="rounded-md overflow-hidden border" style={{ borderColor: 'var(--border-default)' }}>
+                      {/* Fake browser chrome */}
+                      <div className="bg-cream px-3 py-2 flex items-center gap-2 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                        <div className="flex gap-1.5">
+                          <div className="w-2.5 h-2.5 rounded-full bg-slate-light/40" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-slate-light/40" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-slate-light/40" />
+                        </div>
+                        <div className="flex-1 bg-warm-white rounded-sm px-2 py-0.5 text-small text-slate text-center">
+                          {state.businessName.toLowerCase().replace(/[^a-z0-9]/g, '')}atx.com
+                        </div>
+                      </div>
+                      {/* Site preview */}
+                      <div className="bg-warm-white">
+                        {/* Hero with photo */}
+                        {state.photoPreviews[0] ? (
+                          <div className="relative h-40 overflow-hidden">
+                            <img src={state.photoPreviews[0]} alt="" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/70 to-transparent" />
+                            <div className="absolute bottom-0 left-0 right-0 p-4">
+                              <h3 className="text-h2 text-white font-semibold">{state.businessName}</h3>
+                              <p className="text-caption text-white/80">
+                                {state.reveal?.tagline || MOCK_REVEAL.tagline}
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="h-40 bg-cream flex items-center justify-center">
+                            <h3 className="text-h1 text-charcoal">{state.businessName}</h3>
+                          </div>
+                        )}
+                        {/* Content preview */}
+                        <div className="p-4 flex flex-col gap-3">
+                          <p className="text-caption text-charcoal leading-relaxed">
+                            {state.reveal?.businessDescription || MOCK_REVEAL.businessDescription}
+                          </p>
+                          <div className="flex gap-2">
+                            <div className="flex-1 bg-terracotta text-white text-small text-center py-2 rounded-sm font-semibold">
+                              Book a Table
+                            </div>
+                            <div className="flex-1 bg-cream text-charcoal text-small text-center py-2 rounded-sm">
+                              View Menu
+                            </div>
+                          </div>
+                          {state.discovery?.googleRating && (
+                            <div className="flex items-center gap-1 text-small text-slate">
+                              <span className="text-gold">★</span>
+                              {state.discovery.googleRating} · {state.discovery.reviewCount} reviews
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <p className="text-caption text-terracotta">
-                      {state.businessName.toLowerCase().replace(/[^a-z0-9]/g, '')}atx.com
+                      {state.businessName.toLowerCase().replace(/[^a-z0-9]/g, '')}atx.com — live now
                     </p>
                     <div className="flex gap-3">
                       <div className="flex-[3]"><Button variant="primary" label="View Site" fullWidth onClick={() => {}} /></div>
