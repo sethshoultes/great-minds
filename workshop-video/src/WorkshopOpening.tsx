@@ -146,12 +146,24 @@ function PersonaReveal({
 
   if (relFrame < 0 || relFrame > holdFrames) return null;
 
-  const opacity = interpolate(
-    relFrame,
-    [0, dissolveInFrames, holdFrames - dissolveOutFrames, holdFrames],
-    [0, 1, 1, dissolveOutFrames > 0 ? 0 : 1],
-    { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
-  );
+  // Build opacity keyframes — handle edge cases where dissolve times
+  // overlap or dissolveOut is zero (Sara Blakely: hard cut to black).
+  let opacity: number;
+  if (dissolveOutFrames === 0) {
+    // No dissolve out — just fade in and hold
+    opacity = interpolate(relFrame, [0, Math.max(dissolveInFrames, 1)], [0, 1], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+  } else {
+    const fadeOutStart = Math.max(dissolveInFrames + 1, holdFrames - dissolveOutFrames);
+    opacity = interpolate(
+      relFrame,
+      [0, Math.max(dissolveInFrames, 1), fadeOutStart, holdFrames],
+      [0, 1, 1, 0],
+      { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
+    );
+  }
 
   // Subtle Ken Burns — slow zoom in
   const scale = interpolate(relFrame, [0, holdFrames], [1, 1.06], {
