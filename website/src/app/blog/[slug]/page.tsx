@@ -1,7 +1,15 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getAllPosts, getPost, type Section } from '@/content/posts';
+import { getAllPosts, getPost } from '@/content/posts';
+import { remark } from 'remark';
+import remarkGfm from 'remark-gfm';
+import html from 'remark-html';
+
+async function renderMarkdown(md: string): Promise<string> {
+  const result = await remark().use(remarkGfm).use(html).process(md);
+  return result.toString();
+}
 
 export const dynamicParams = false;
 
@@ -30,7 +38,7 @@ export async function generateMetadata({
       publishedTime: post.date,
       authors: [post.author],
       url,
-      images: post.ogImage ? [post.ogImage] : ['/og-image.svg'],
+      images: post.image ? [post.image] : ['/og-image.svg'],
     },
     twitter: {
       card: 'summary_large_image',
@@ -41,59 +49,6 @@ export async function generateMetadata({
   };
 }
 
-function renderSection(section: Section, index: number) {
-  switch (section.type) {
-    case 'paragraph':
-      return <p key={index} className="text-zinc-300 leading-[1.8] mb-6">{section.text}</p>;
-
-    case 'heading':
-      return <h2 key={index} className="text-2xl font-bold text-zinc-100 mt-12 mb-4">{section.text}</h2>;
-
-    case 'subheading':
-      return <h3 key={index} className="text-lg font-semibold text-zinc-200 mt-8 mb-3">{section.text}</h3>;
-
-    case 'code':
-      return (
-        <pre key={index} className="bg-zinc-900 border border-zinc-800 rounded-lg p-5 my-6 overflow-x-auto">
-          <code className="text-sm text-zinc-300 font-mono leading-relaxed whitespace-pre">
-            {section.code}
-          </code>
-        </pre>
-      );
-
-    case 'quote':
-      return (
-        <blockquote key={index} className="border-l-2 border-amber-500/40 pl-5 my-8 py-1">
-          <p className="text-zinc-300 italic leading-relaxed">{section.text}</p>
-          {section.attribution && (
-            <cite className="block text-xs text-zinc-500 mt-2 not-italic">— {section.attribution}</cite>
-          )}
-        </blockquote>
-      );
-
-    case 'list':
-      return (
-        <ul key={index} className="my-6 space-y-2">
-          {section.items.map((item, i) => (
-            <li key={i} className="flex items-start gap-3 text-zinc-300 leading-relaxed">
-              <span className="text-amber-500 mt-1.5 text-xs">▸</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      );
-
-    case 'callout':
-      return (
-        <div key={index} className="my-8 p-5 rounded-lg bg-amber-500/5 border border-amber-500/20">
-          <p className="text-sm text-zinc-300 leading-relaxed">{section.text}</p>
-        </div>
-      );
-
-    default:
-      return null;
-  }
-}
 
 export default async function BlogPostPage({
   params,
@@ -160,11 +115,33 @@ export default async function BlogPostPage({
           </div>
         </header>
 
-        {/* Content */}
+        {/* Content — rendered from markdown */}
         <div className="px-6 pb-20">
-          <div className="max-w-[680px] mx-auto text-[1.0625rem]">
-            {post.sections.map((section, i) => renderSection(section, i))}
-          </div>
+          <div
+            className="max-w-[680px] mx-auto text-[1.0625rem] blog-content"
+            dangerouslySetInnerHTML={{
+              __html: await renderMarkdown(post.content),
+            }}
+          />
+          <style>{`
+            .blog-content { color: #d4d4d8; line-height: 1.8; }
+            .blog-content h1 { font-size: 1.875rem; font-weight: 700; color: #fafafa; margin: 2.5rem 0 1rem; }
+            .blog-content h2 { font-size: 1.5rem; font-weight: 600; color: #f4f4f5; margin: 2rem 0 0.75rem; }
+            .blog-content h3 { font-size: 1.25rem; font-weight: 600; color: #e4e4e7; margin: 1.5rem 0 0.5rem; }
+            .blog-content p { margin: 0.75rem 0; }
+            .blog-content ul, .blog-content ol { margin: 0.75rem 0; padding-left: 1.5rem; }
+            .blog-content li { margin: 0.25rem 0; }
+            .blog-content code { font-size: 0.875rem; background: #18181b; padding: 0.125rem 0.375rem; border-radius: 0.25rem; color: #a1a1aa; }
+            .blog-content pre { background: #18181b; border: 1px solid #27272a; border-radius: 0.5rem; padding: 1rem; overflow-x: auto; margin: 1rem 0; }
+            .blog-content pre code { background: none; padding: 0; color: #d4d4d8; }
+            .blog-content blockquote { border-left: 2px solid rgba(245,158,11,0.4); padding-left: 1rem; margin: 1rem 0; color: #a1a1aa; font-style: italic; }
+            .blog-content a { color: #f59e0b; }
+            .blog-content strong { color: #f4f4f5; }
+            .blog-content hr { border: none; border-top: 1px solid #27272a; margin: 2rem 0; }
+            .blog-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
+            .blog-content th { text-align: left; padding: 0.5rem; border-bottom: 2px solid #27272a; color: #a1a1aa; }
+            .blog-content td { padding: 0.5rem; border-bottom: 1px solid #27272a; }
+          `}</style>
         </div>
 
         {/* Tags */}
