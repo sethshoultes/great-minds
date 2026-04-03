@@ -75,18 +75,21 @@
   padding: 8px 12px;
   font-size: 18px;
   line-height: 1.5;
-  background-color: var(--dash-bg-input);
-  color: var(--dash-text);
-  border: 1px solid var(--dash-border);
+  background-color: var(--dash-bg-input) !important;
+  color: var(--dash-text) !important;
+  border: 1px solid var(--dash-border) !important;
   border-radius: var(--dash-radius-sm);
   font-family: inherit;
+  box-shadow: none !important;
   transition: border-color 150ms ease-out, background-color 150ms ease-out;
 }
 
 .dash-input:focus {
   outline: none;
-  border-color: var(--dash-accent);
-  background-color: rgba(53,130,196,0.1);
+  border-color: var(--dash-accent) !important;
+  background-color: var(--dash-bg-input) !important;
+  color: var(--dash-text) !important;
+  box-shadow: none !important;
 }
 
 .dash-input:focus-visible {
@@ -95,7 +98,8 @@
 }
 
 .dash-input::placeholder {
-  color: var(--dash-text-muted);
+  color: var(--dash-text-muted) !important;
+  opacity: 1;
 }
 
 /* === MODE INDICATOR === */

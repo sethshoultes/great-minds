@@ -569,13 +569,23 @@ class Dash_Index {
 			return array();
 		}
 
+		// Build a lookup of commands so we can attach callback info to action items.
+		$commands_lookup = array();
+		if ( class_exists( 'Dash_Commands' ) ) {
+			foreach ( Dash_Commands::get_instance()->get_commands() as $cmd ) {
+				if ( ! empty( $cmd['callback'] ) ) {
+					$commands_lookup[ $cmd['id'] ] = $cmd['callback'];
+				}
+			}
+		}
+
 		$items = array();
 		foreach ( $rows as $row ) {
 			if ( ! empty( $row['capability'] ) && ! user_can( $user, $row['capability'] ) ) {
 				continue;
 			}
 
-			$items[] = array(
+			$item = array(
 				'type'     => $row['item_type'],
 				'id'       => (int) $row['item_id'],
 				'title'    => $row['title'],
@@ -584,6 +594,19 @@ class Dash_Index {
 				'keywords' => $row['keywords'],
 				'status'   => $row['item_status'],
 			);
+
+			// For action items with a callback, pass the command ID so JS can fire it via AJAX.
+			if ( 'action' === $row['item_type'] ) {
+				// Reverse-lookup the command ID from the stored item_id hash.
+				foreach ( $commands_lookup as $cmd_id => $cb ) {
+					if ( abs( crc32( 'action:' . $cmd_id ) ) === (int) $row['item_id'] ) {
+						$item['action'] = $cmd_id;
+						break;
+					}
+				}
+			}
+
+			$items[] = $item;
 		}
 
 		return $items;
