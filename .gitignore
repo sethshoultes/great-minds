@@ -21,3 +21,4 @@ package-lock.json
 .env
 .env.local
 .vercel
+workshop-video/out/
