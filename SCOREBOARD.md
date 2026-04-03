@@ -21,7 +21,9 @@
 | Jensen board reviews | 18 |
 | Margaret QA reports | 80+ |
 | Workshop video | Rendered (2 compositions, MP4) |
-| Blog posts | 1 (memory architecture) |
+| Blog posts | 6 |
+| Agent personas | 10 + founder |
+| System files | TASKS.md, CRONS.md, SCOREBOARD.md, MEMORY.md, AGENTS.md, STATUS.md |
 
 ## Jensen Huang — Board Reviews
 
