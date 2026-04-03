@@ -46,6 +46,9 @@ function Nav() {
           <Link href="/work/localgenius" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
             Work
           </Link>
+          <Link href="/docs" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
+            Docs
+          </Link>
           <Link href="/blog" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
             Blog
           </Link>

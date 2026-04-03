@@ -2,6 +2,9 @@ import type { MetadataRoute } from 'next';
 import { getAllPosts } from '@/content/posts';
 import { allProfiles } from '@/app/team/agents';
 
+// Doc page slugs — matches sidebar nav in docs/layout.tsx
+const DOC_SLUGS = ['agents', 'pipeline', 'crons', 'memory', 'qa', 'plugin', 'operations'];
+
 /**
  * Sitemap — auto-generated from real data.
  * Next.js serves this at /sitemap.xml.
@@ -32,5 +35,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...teamPages, ...blogPosts];
+  const docPages: MetadataRoute.Sitemap = [
+    { url: `${base}/docs`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.8 },
+    ...DOC_SLUGS.map((slug) => ({
+      url: `${base}/docs/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
+  ];
+
+  return [...staticPages, ...teamPages, ...blogPosts, ...docPages];
 }
