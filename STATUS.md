@@ -1,8 +1,9 @@
 # Great Minds Agency — Status
 
 ## Current State
-- **state**: operational (maintaining + content)
+- **state**: REVIEW COMPLETE — Dash plugin ready for merge
 - **last consolidation**: 2026-04-03
+- **active project**: Dash (WP Command Bar) — QA passed, ready to ship
 - **localgenius-sites**: archived (consolidated into localgenius)
 - **greatminds-website**: deleted (website lives in great-minds/website/)
 - **workshop video**: rendered (workshop-opening.mp4 + title-card.mp4)
