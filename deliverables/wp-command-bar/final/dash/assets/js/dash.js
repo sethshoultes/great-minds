@@ -527,10 +527,12 @@
     dom = buildDOM();
 
     // Global keyboard shortcut: Cmd+K / Ctrl+K
+    // Use capture phase (true) to intercept before WP core's command palette
     document.addEventListener('keydown', function (e) {
-      // Open
+      // Open / close toggle
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
+        e.stopImmediatePropagation();
         if (isOpen) {
           close(dom);
         } else {
@@ -544,6 +546,7 @@
       // Escape
       if (e.key === 'Escape') {
         e.preventDefault();
+        e.stopImmediatePropagation();
         close(dom);
         return;
       }
@@ -568,7 +571,7 @@
         selectResult();
         return;
       }
-    });
+    }, true);
 
     // Input handler
     dom.input.addEventListener('input', function () {

@@ -135,6 +135,26 @@ function dash_enqueue_assets(): void {
 add_action( 'admin_enqueue_scripts', 'dash_enqueue_assets' );
 
 /**
+ * Disable WordPress core command palette (WP 6.3+).
+ *
+ * Core registers its own Cmd+K palette via the @wordpress/commands package.
+ * We replace it entirely with Dash.
+ */
+function dash_disable_core_command_palette(): void {
+	wp_dequeue_script( 'wp-commands' );
+	wp_deregister_script( 'wp-commands' );
+
+	// Also remove the inline style for the core command palette.
+	wp_dequeue_style( 'wp-commands' );
+	wp_deregister_style( 'wp-commands' );
+
+	// Remove the admin bar command palette trigger (WP 6.7+).
+	remove_action( 'in_admin_header', 'wp_admin_bar_command_palette' );
+	remove_action( 'admin_bar_menu', 'wp_admin_command_palette' );
+}
+add_action( 'admin_enqueue_scripts', 'dash_disable_core_command_palette', 99 );
+
+/**
  * Mark user as onboarded after first Cmd+K open.
  */
 add_action( 'wp_ajax_dash_mark_onboarded', function (): void {
