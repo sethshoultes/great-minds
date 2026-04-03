@@ -14,9 +14,9 @@
 | Total commits | 230+ |
 | Test specs (LocalGenius) | 770+ |
 | Test specs (Sites) | 83 |
-| GitHub repos | 3 (localgenius, great-minds, great-minds-plugin) |
+| GitHub repos | 4 (localgenius, great-minds, great-minds-plugin, shipyard-ai) |
 | Archived repos | 2 (localgenius-sites, greatminds-website) |
-| Live deployments | 2 (localgenius.company, greatminds.company) |
+| Live deployments | 3 (localgenius.company, greatminds.company, www.shipyard.company) |
 | Agent personas | 10 + founder |
 | PRs merged | 25+ |
 | Jensen board reviews | 23 |
