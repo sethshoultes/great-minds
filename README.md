@@ -82,13 +82,13 @@ Claude handles high-judgment work. Cloudflare Workers AI handles commodity tasks
 
 | Metric | Count |
 |--------|-------|
-| Source files | 270+ (238 app + 35 sites) |
-| Test specs | 576+ |
-| Total commits | 140+ across 4 repos |
-| Board reviews | 11 (Jensen) |
-| QA reports | 2 (Margaret) |
-| GitHub issues | 7 (all from Jensen, 2 fixed) |
-| Agent personas | 9 |
+| Source files | 270+ |
+| Test specs | 770+ |
+| Total commits | 230+ across 3 repos |
+| Board reviews | 18 (Jensen) |
+| QA reports | 80+ (Margaret) |
+| GitHub issues | 10 filed, 10 resolved |
+| Agent personas | 9 + founder |
 
 ## System Files
 
@@ -134,12 +134,12 @@ cp prds/TEMPLATE.md prds/my-project.md
 
 ## Personas
 
-Agent personas sourced from [think-like](https://github.com/sethshoultes/think-like) — deeply researched, 5,000-15,000 word knowledge bases covering biography, philosophy, decision-making frameworks, communication style, and key quotes.
+Agent personas are deeply researched, 5,000-15,000 word knowledge bases stored in `personas/`. Each covers biography, philosophy, decision-making frameworks, communication style, and key quotes.
 
 ## Related Projects
 
 - [claude-swarm](https://github.com/sethshoultes/claude-swarm) — Multi-agent orchestration via tmux + git worktrees
-- [think-like](https://github.com/sethshoultes/think-like) — AI mentor personas and meditations platform
+
 - [localgenius](https://github.com/sethshoultes/localgenius) — First product built by the agency
 - [localgenius-sites](https://github.com/sethshoultes/localgenius-sites) — Emdash website builder for customers
 - [great-minds-plugin](https://github.com/sethshoultes/great-minds-plugin) — Claude Code plugin (installable agency)
