@@ -407,11 +407,11 @@ Pause.
 ## Key Takeaways (Leave These on the Final Slide)
 
 1. Agent architecture matters more than model capability — give your agents identity, memory, and purpose
-2. Debate produces better outputs than consensus — introduce adversarial tension deliberately
-3. The board function is underrated — nine strategic reviews, six real issues, zero dollars in human consulting fees
+2. *"The debate did not produce compromise. It produced synthesis."* — introduce adversarial tension deliberately
+3. *"An intelligence layer that cannot remember what worked is not actually intelligent."* — the board function catches what builders miss
 4. Hybrid AI routing lets you use the right model for the right task at near-zero marginal cost
-5. The pipeline is: Debate → Plan → Build → Review → Ship — each stage produces artifacts, not just conversation
-6. Package your agency as a plugin and make the whole system portable
+5. The pipeline is: Debate → Plan → Build → Review → Ship — *"Truth serves the work better than ambition."*
+6. *"Show me a human team that produces this level of documentation about its own work. I'll wait."*
 7. When your agents start spawning sub-agents, you have crossed the threshold
 
 ---
