@@ -1,6 +1,6 @@
 # Great Minds Agency — Task Board
 
-**Last dispatch**: 2026-04-03
+**Last dispatch**: 2026-04-03 16:35 UTC
 **Dispatcher**: Phil Jackson (Orchestrator)
 
 ## How This Works
@@ -29,16 +29,16 @@
 
 | # | Task | Assigned To | Status | Branch | Notes |
 |---|------|-------------|--------|--------|-------|
-| 1 | Data moat architecture (Jensen issue #1) | open | open | — | Architectural — needs design before code |
-| 2 | Stripe live mode activation | open | open | — | Currently test mode, needs production keys |
+| 1 | Data moat architecture (Jensen issue #1) | Steve + Elon | in-progress | workers building | Benchmarks, metrics schema, insights engine underway |
+| 2 | Stripe live mode activation | open | blocked | — | Needs production keys from Seth |
 
 ## P2 — Normal
 
 | # | Task | Assigned To | Status | Branch | Notes |
 |---|------|-------------|--------|--------|-------|
-| 3 | Additional E2E test coverage | open | open | — | Expand Playwright tests |
-| 4 | Performance audit + optimization | open | open | — | Lighthouse scores, bundle size |
-| 5 | SEO metadata for all pages | open | open | — | Open Graph, structured data |
+| 3 | Additional E2E test coverage | Margaret Hamilton | assigned | — | Expand Playwright tests — dispatch this cycle |
+| 4 | Performance audit + optimization | Elon Musk | assigned | — | Lighthouse scores, bundle size — after data moat PR |
+| 5 | SEO metadata for all pages | Steve Jobs | assigned | — | Open Graph, structured data — after data moat PR |
 
 ## P3 — Nice to Have
 
