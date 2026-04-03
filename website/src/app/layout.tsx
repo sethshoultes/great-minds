@@ -46,6 +46,9 @@ function Nav() {
           <Link href="/work/localgenius" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
             Work
           </Link>
+          <Link href="/blog" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
+            Blog
+          </Link>
           <Link
             href="/install"
             className="text-sm font-medium px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors no-underline"

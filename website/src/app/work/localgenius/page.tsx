@@ -4,11 +4,11 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "LocalGenius Case Study — Great Minds Agency",
   description:
-    "PRD to production in one session. 761 tests. 1.2% AI cost. Three live products. This is what Great Minds ships.",
+    "PRD to production in one session. 734 tests. 1.2% AI cost. Three live products. This is what Great Minds ships.",
 };
 
 const toplineStats = [
-  { value: "761", label: "Tests passing", sub: "0 failures" },
+  { value: "734", label: "Tests passing", sub: "0 failures" },
   { value: "258+", label: "Source files", sub: "across 3 repos" },
   { value: "1.2%", label: "AI cost of revenue", sub: "across all models" },
   { value: "0", label: "TypeScript errors", sub: "0 ESLint errors" },
@@ -53,7 +53,7 @@ const timeline = [
     phase: "Ship",
     rounds: "10",
     summary:
-      "Both products deployed to production. CI/CD configured. 761 tests passing. Zero TypeScript errors. Zero ESLint errors. Joint summary written. Memory updated. The agency remembered what it learned.",
+      "Both products deployed to production. CI/CD configured. 736 tests passing. Zero TypeScript errors. Zero ESLint errors. Joint summary written. Memory updated. The agency remembered what it learned.",
     decision:
       "localgenius.company live on Vercel. localgenius-sites.pages.dev live on Cloudflare. Full CI/CD pipeline. Agency returned to idle.",
   },
@@ -72,8 +72,8 @@ const architecture = [
   },
   {
     layer: "AI Layer",
-    stack: ["Claude 3.5 Sonnet", "Llama 3.1 8B", "Workers AI (Llama)", "Whisper (STT)"],
-    role: "Hybrid inference: Claude primary, Llama 3.1 fallback, Workers AI for edge cost reduction.",
+    stack: ["Claude 3.5 Sonnet", "GPT-4o", "Workers AI (Llama)", "OpenRouter"],
+    role: "Hybrid inference: Claude primary, GPT-4o fallback, Workers AI for edge cost reduction.",
   },
   {
     layer: "Infrastructure",
@@ -110,7 +110,7 @@ const deliverables = [
   },
   {
     name: "Built Product",
-    desc: "Two production apps. 761 passing tests. Full CI/CD. Real infrastructure. Real AI. Real billing.",
+    desc: "Two production apps. 736 passing tests. Full CI/CD. Real infrastructure. Real AI. Real billing.",
     agent: "Engineer (Elon's team) + all directors",
   },
 ];
@@ -250,7 +250,7 @@ export default function LocalGeniusCaseStudy() {
           <p className="text-zinc-500 mb-12 leading-relaxed max-w-2xl">
             The core insight: don&apos;t pick one AI model. Route intelligently across
             models by task type and cost. Primary inference on Claude, fallback to
-            Llama 3.1, edge inference on Workers AI. Net cost: 1.2% of revenue.
+            GPT-4o, edge inference on Workers AI. Net cost: 1.2% of revenue.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-4">
