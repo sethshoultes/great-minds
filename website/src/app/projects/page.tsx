@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation';
 
 /**
- * /projects redirects to /work/localgenius.
- * The case study page is the canonical project showcase.
+ * /projects redirects to homepage projects section.
+ * Case studies live at /work/[slug].
  */
 export default function ProjectsPage() {
-  redirect('/work/localgenius');
+  redirect('/#projects');
 }

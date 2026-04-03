@@ -90,12 +90,12 @@ export default function HomePage() {
               Submit a PRD
               <span className="text-amber-800">→</span>
             </Link>
-            <Link
-              href="/work/localgenius"
+            <a
+              href="#projects"
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg border border-zinc-700 text-zinc-300 font-medium text-sm hover:border-zinc-500 hover:text-zinc-100 transition-colors no-underline"
             >
               See what we built
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -201,50 +201,80 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Proof — LocalGenius */}
-      <section className="px-6 py-24 border-t border-zinc-800/50">
+      {/* Proof — Projects */}
+      <section id="projects" className="px-6 py-24 border-t border-zinc-800/50">
         <div className="max-w-4xl mx-auto">
           <p className="text-amber-500 font-mono text-xs font-semibold tracking-widest uppercase mb-4">
-            First project
+            Shipped projects
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-zinc-100 mb-4 leading-tight">
-            LocalGenius. PRD to production
+            PRD in. Product out.
             <br />
-            <span className="text-zinc-500">in one session.</span>
+            <span className="text-zinc-500">Every time.</span>
           </h2>
           <p className="text-zinc-400 max-w-2xl mb-12 leading-relaxed">
-            The AI marketing employee for local businesses. Two deployed products.
-            Real users. Real revenue model. Built start-to-finish by Great Minds
-            while you watched.
+            Each project starts as a requirements document and ships as a working
+            product — debated, built, QA&apos;d, and deployed by the agency in a
+            single session.
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
-            {stats.map((stat) => (
-              <div key={stat.label}>
-                <div className="text-4xl sm:text-5xl font-bold text-zinc-50 font-mono tracking-tight">
-                  {stat.value}
-                </div>
-                <div className="text-xs text-zinc-500 mt-2 leading-snug">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-3">
+
+          <div className="grid sm:grid-cols-2 gap-4 mb-12">
+            {/* LocalGenius */}
             <Link
               href="/work/localgenius"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-300 text-sm font-medium hover:border-zinc-500 hover:text-zinc-100 transition-colors no-underline"
+              className="group p-6 rounded-xl border border-zinc-800/60 bg-zinc-900/30 hover:border-zinc-700 transition-colors no-underline"
             >
-              Read the case study →
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="font-bold text-zinc-100 group-hover:text-amber-500 transition-colors">
+                  LocalGenius
+                </h3>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-semibold">
+                  Live
+                </span>
+              </div>
+              <p className="text-zinc-500 text-sm leading-relaxed mb-4">
+                The AI marketing employee for local businesses. Two deployed
+                products. 761 tests. Hybrid AI across five models and two clouds.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Next.js</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Vercel</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Neon</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Claude</span>
+              </div>
+              <span className="text-amber-500 text-sm group-hover:text-amber-400 transition-colors">
+                Read case study →
+              </span>
             </Link>
-            <a
-              href="https://localgenius.company"
-              target="_blank"
-              rel="noopener"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-500 text-sm font-medium hover:border-zinc-500 hover:text-zinc-300 transition-colors no-underline"
+
+            {/* Dash */}
+            <Link
+              href="/work/dash"
+              className="group p-6 rounded-xl border border-zinc-800/60 bg-zinc-900/30 hover:border-zinc-700 transition-colors no-underline"
             >
-              localgenius.company
-              <span>↗</span>
-            </a>
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="font-bold text-zinc-100 group-hover:text-amber-500 transition-colors">
+                  Dash
+                </h3>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-semibold">
+                  Shipped
+                </span>
+              </div>
+              <p className="text-zinc-500 text-sm leading-relaxed mb-4">
+                Cmd+K command palette for WordPress admin. Client-side search
+                in &lt;50ms. Zero dependencies. 26KB. Built by 5 agents in one
+                session.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">PHP 8</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Vanilla JS</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">WordPress</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">FULLTEXT</span>
+              </div>
+              <span className="text-amber-500 text-sm group-hover:text-amber-400 transition-colors">
+                Read case study →
+              </span>
+            </Link>
           </div>
         </div>
       </section>
