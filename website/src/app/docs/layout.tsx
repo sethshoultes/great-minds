@@ -15,7 +15,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="flex flex-col lg:flex-row min-h-[calc(100vh-3.5rem)]">
       {/* Sidebar */}
-      <aside className="lg:w-56 flex-shrink-0 border-b lg:border-b-0 lg:border-r border-zinc-800/50 px-6 py-6 lg:py-10 lg:pl-8">
+      <aside className="lg:w-56 flex-shrink-0 border-b lg:border-b-0 lg:border-r border-zinc-800/50 px-6 py-6 lg:py-10 lg:pl-8 lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] lg:overflow-y-auto">
         <p className="text-amber-500 font-mono text-xs font-semibold tracking-widest uppercase mb-4">
           Docs
         </p>
