@@ -347,7 +347,45 @@ The agency is portable. The agency is open.
 
 ---
 
-### SECTION 10: The Stack — What You Actually Need to Build This (Minutes 41-43)
+### SECTION 10: Memory Architecture — Why More Isn't Better (Minutes 41-43)
+
+**Slide anchor: "Stale memory is worse than no memory."**
+
+**Talking points:**
+
+Most people building agent systems make the same mistake: they store everything. Every conversation, every decision, every file path. The agent's memory grows until it's loading thousands of tokens of context that's mostly wrong.
+
+Claude Code's leaked system prompt revealed a three-layer architecture:
+
+**[SLIDE: Three layers diagram]**
+
+- **Layer 1: The Index** — always loaded. Our MEMORY.md was 37 lines after 18 hours of work. Short pointers, max 150 chars each. If the index is longer than 50 lines, you're storing too much.
+- **Layer 2: Topic Files** — loaded on demand. `memory/operational-learnings.md`, `memory/architecture-decisions.md`. Fetched when relevant, never wholesale.
+- **Layer 3: Raw Transcripts** — 18 board reviews, 31 QA reports, round files. Searched, never loaded. They exist for the record, not for context.
+
+The key rules:
+
+> "If a fact is derivable from the codebase, don't store it."
+
+We never stored file paths, git history, or code patterns. That's what `git log` and `grep` are for.
+
+> "Memory is a hint to verify, not a source of truth."
+
+Our STATUS.md said "SHIPPED" while we were still building. Jensen's board reviews referenced features that existed in memory but not in code. The fix: always verify before acting on a memory.
+
+> "Categorize, don't chronologize."
+
+Our MEMORY.md has sections — Process, Consolidation, QA, Architecture, Agent Economics — not a timeline. Chronological memory becomes unreadable after hour one.
+
+And the dream cycle — a background consolidation process that runs every 60 minutes: orient, gather signal, consolidate, prune. Your agent's memory should clean itself up while it sleeps.
+
+**[Show the prompt template as a code block — let the audience photograph it]**
+
+> *"An intelligence layer that cannot remember what worked is not actually intelligent. One table fixes it."* — Jensen Huang, Board Review #9
+
+---
+
+### SECTION 11: The Stack — What You Actually Need to Build This (Minutes 43-44)
 
 **Slide anchor: "The tools are simpler than you think."**
 
@@ -373,7 +411,7 @@ That is the entire stack. The complexity is not in the tools. The complexity is 
 
 ---
 
-### SECTION 11: How to Start Your Own (Minutes 43-44)
+### SECTION 12: How to Start Your Own (Minutes 44-45)
 
 **Slide anchor: "Start with two agents and one argument."**
 
@@ -401,7 +439,7 @@ Or — install the plugin. Skip the four weeks of setup and start from a running
 
 ---
 
-### SECTION 12: Closing — A New Way of Working (Minutes 44-45)
+### SECTION 13: Closing — A New Way of Working (Final 60 seconds)
 
 **No slide. Stand at the front. Say this directly.**
 
