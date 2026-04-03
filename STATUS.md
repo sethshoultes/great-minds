@@ -1,8 +1,12 @@
 # Great Minds Agency — Status
 
 ## Current State
-- **state**: active (building)
-- **last consolidation**: 2026-03-31
+- **state**: operational (maintaining + content)
+- **last consolidation**: 2026-04-03
+- **localgenius-sites**: archived (consolidated into localgenius)
+- **greatminds-website**: deleted (website lives in great-minds/website/)
+- **workshop video**: rendered (workshop-opening.mp4 + title-card.mp4)
+- **blog**: live at greatminds.company/blog
 
 ## Active Projects
 

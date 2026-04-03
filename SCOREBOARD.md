@@ -1,7 +1,7 @@
 # Great Minds Agency — Scoreboard
 
 **Session started**: 2026-04-01
-**Last updated**: 2026-04-02 (final)
+**Last updated**: 2026-04-03
 
 ---
 
@@ -9,17 +9,19 @@
 
 | Metric | Count |
 |--------|-------|
-| Source files (LocalGenius) | 258+ |
-| Source files (Sites) | 35 |
-| Source files (GM Website) | 24 |
-| Total commits | 180+ |
-| Test specs | 734 |
-| GitHub repos | 4 |
-| Live deployments | 3 |
-| Agent personas | 9 |
-| Live pages (app) | 19 |
-| Live pages (sites) | 6 |
-| Live pages (GM website) | 7 |
+| Source files (LocalGenius) | 263 |
+| Source files (GM Website) | 30+ |
+| Total commits | 230+ |
+| Test specs | 734+ |
+| GitHub repos | 3 (localgenius, great-minds, great-minds-plugin) |
+| Archived repos | 2 (localgenius-sites, greatminds-website) |
+| Live deployments | 2 (localgenius.company, greatminds.company) |
+| Agent personas | 9 + founder |
+| PRs merged | 17 |
+| Jensen board reviews | 18 |
+| Margaret QA reports | 70+ |
+| Workshop video | Rendered (MP4) |
+| Blog posts | 1 (memory architecture) |
 
 ## Jensen Huang — Board Reviews
 
