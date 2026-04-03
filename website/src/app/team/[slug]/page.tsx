@@ -1,10 +1,13 @@
 import Link from "next/link";
+
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { agents, getAgent, getAdjacentAgents } from "../agents";
+import { allProfiles, getAgent, getAdjacentAgents } from "../agents";
+
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return agents.map((agent) => ({
+  return allProfiles.map((agent) => ({
     slug: agent.slug,
   }));
 }
@@ -12,9 +15,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const agent = getAgent(params.slug);
+  const { slug } = await params;
+  const agent = getAgent(slug);
   if (!agent) {
     return {};
   }
@@ -24,17 +28,18 @@ export async function generateMetadata({
   };
 }
 
-export default function AgentProfilePage({
+export default async function AgentProfilePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const agent = getAgent(params.slug);
+  const { slug } = await params;
+  const agent = getAgent(slug);
   if (!agent) {
     notFound();
   }
 
-  const { prev, next } = getAdjacentAgents(params.slug);
+  const { prev, next } = getAdjacentAgents(slug);
   const reportsToAgent = agent.reportsTo ? getAgent(agent.reportsTo.toLowerCase().replace(/\s+/g, "-")) : null;
 
   return (
@@ -48,6 +53,17 @@ export default function AgentProfilePage({
           >
             ← Team
           </Link>
+
+          {/* Profile image */}
+          <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl overflow-hidden mb-8">
+            <img
+              src={`/personas/${agent.slug}.webp`}
+              alt={agent.name}
+              width={160}
+              height={160}
+              className="w-full h-full object-cover"
+            />
+          </div>
 
           {/* Agent title and role */}
           <div className="mb-8">

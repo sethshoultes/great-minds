@@ -52,6 +52,15 @@ export default function TeamPage() {
                 href={`/team/${agent.slug}`}
                 className={`group block p-6 rounded-xl border ${agent.borderColor} ${agent.bgColor} hover:border-zinc-600 transition-colors no-underline`}
               >
+                <div className="w-16 h-16 rounded-lg overflow-hidden mb-4">
+                  <img
+                    src={`/personas/thumbs/${agent.slug}.webp`}
+                    alt={agent.name}
+                    width={64}
+                    height={64}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <p className={`font-mono text-xs font-semibold tracking-widest uppercase mb-2 ${agent.color}`}>
                   {agent.role}
                 </p>
