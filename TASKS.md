@@ -44,7 +44,7 @@
 
 | # | Task | Assigned To | Status | Branch | Notes |
 |---|------|-------------|--------|--------|-------|
-| 6 | Blog content expansion | open | open | — | More case studies, tutorials |
+| 6 | Blog content expansion | Phil Jackson | in-progress | feature/blog-content-expansion | 4 new posts: 2 case studies, 2 tutorials |
 | 7 | Analytics dashboard | open | open | — | Usage metrics for admin |
 
 ---
