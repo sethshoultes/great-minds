@@ -38,7 +38,7 @@ function Nav() {
         </Link>
         <div className="flex items-center gap-6">
           <Link href="/how" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
-            How
+            How It Works
           </Link>
           <Link href="/team" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
             Team
@@ -67,7 +67,7 @@ function Footer() {
           <span>Great Minds Agency</span>
         </div>
         <div className="flex items-center gap-6 text-sm text-zinc-500">
-          <Link href="/how" className="hover:text-zinc-300 transition-colors no-underline">How</Link>
+          <Link href="/how" className="hover:text-zinc-300 transition-colors no-underline">How It Works</Link>
           <Link href="/team" className="hover:text-zinc-300 transition-colors no-underline">Team</Link>
           <Link href="/work/localgenius" className="hover:text-zinc-300 transition-colors no-underline">LocalGenius</Link>
           <a href="https://github.com/sethshoulters/great-minds" target="_blank" rel="noopener" className="hover:text-zinc-300 transition-colors no-underline">
