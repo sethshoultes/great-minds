@@ -206,7 +206,7 @@ class Dash_Commands {
 	 * AJAX: Execute a server-side command.
 	 */
 	public function ajax_execute_command(): void {
-		check_ajax_referer( 'dash_search', 'nonce' );
+		check_ajax_referer( 'dash_search', '_wpnonce' );
 
 		$command_id = isset( $_POST['command'] ) ? sanitize_key( $_POST['command'] ) : '';
 

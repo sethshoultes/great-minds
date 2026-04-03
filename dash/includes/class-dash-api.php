@@ -67,7 +67,7 @@ class Dash_Api {
 	 * Returns the full command list filtered by user capabilities.
 	 */
 	public function ajax_get_commands(): void {
-		check_ajax_referer( 'dash_search', 'nonce' );
+		check_ajax_referer( 'dash_search', '_wpnonce' );
 
 		$commands = Dash_Commands::get_instance()->get_commands();
 		$user     = wp_get_current_user();
@@ -160,7 +160,7 @@ class Dash_Api {
 	 * AJAX: Get all categories.
 	 */
 	public function ajax_get_categories(): void {
-		check_ajax_referer( 'dash_search', 'nonce' );
+		check_ajax_referer( 'dash_search', '_wpnonce' );
 		wp_send_json_success( $this->get_categories() );
 	}
 

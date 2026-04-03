@@ -68,10 +68,10 @@ class Dash_Search {
 	 * with a fallback to LIKE for short queries.
 	 */
 	public function ajax_search(): void {
-		check_ajax_referer( 'dash_search', 'nonce' );
+		check_ajax_referer( 'dash_search', '_wpnonce' );
 
-		$query = isset( $_POST['q'] ) ? sanitize_text_field( wp_unslash( $_POST['q'] ) ) : '';
-		$type  = isset( $_POST['type'] ) ? sanitize_key( $_POST['type'] ) : '';
+		$query = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
+		$type  = isset( $_GET['type'] ) ? sanitize_key( $_GET['type'] ) : '';
 
 		if ( empty( $query ) ) {
 			wp_send_json_success( array() );
@@ -184,13 +184,13 @@ class Dash_Search {
 	 * Uses WP_User_Query with capability awareness.
 	 */
 	public function ajax_user_search(): void {
-		check_ajax_referer( 'dash_search', 'nonce' );
+		check_ajax_referer( 'dash_search', '_wpnonce' );
 
 		if ( ! current_user_can( 'list_users' ) ) {
 			wp_send_json_error( 'Insufficient permissions', 403 );
 		}
 
-		$query = isset( $_POST['q'] ) ? sanitize_text_field( wp_unslash( $_POST['q'] ) ) : '';
+		$query = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
 
 		if ( empty( $query ) ) {
 			wp_send_json_success( array() );
@@ -224,7 +224,7 @@ class Dash_Search {
 	 * AJAX: Get recent items for the current user.
 	 */
 	public function ajax_get_recent(): void {
-		check_ajax_referer( 'dash_search', 'nonce' );
+		check_ajax_referer( 'dash_search', '_wpnonce' );
 
 		$recent = $this->get_recent_items( get_current_user_id() );
 		wp_send_json_success( $recent );
@@ -234,7 +234,7 @@ class Dash_Search {
 	 * AJAX: Track an item selection for recent items.
 	 */
 	public function ajax_track_recent(): void {
-		check_ajax_referer( 'dash_search', 'nonce' );
+		check_ajax_referer( 'dash_search', '_wpnonce' );
 
 		$item = array(
 			'type'  => isset( $_POST['type'] ) ? sanitize_key( $_POST['type'] ) : '',

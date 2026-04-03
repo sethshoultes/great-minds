@@ -115,10 +115,11 @@ function dash_enqueue_assets(): void {
 	);
 
 	wp_localize_script( 'dash-command-bar', 'dashData', array(
-		'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
-		'nonce'     => wp_create_nonce( 'dash_search' ),
-		'threshold' => DASH_CLIENT_INDEX_THRESHOLD,
-		'isNewUser' => ! get_user_meta( get_current_user_id(), 'dash_onboarded', true ),
+		'ajaxUrl'         => admin_url( 'admin-ajax.php' ),
+		'nonce'           => wp_create_nonce( 'dash_search' ),
+		'indexUrl'        => admin_url( 'admin-ajax.php' ) . '?action=dash_get_index&_wpnonce=' . wp_create_nonce( 'dash_search' ),
+		'threshold'       => DASH_CLIENT_INDEX_THRESHOLD,
+		'onboardingSeen'  => (bool) get_user_meta( get_current_user_id(), 'dash_onboarded', true ),
 	) );
 
 	$css_file = DASH_PLUGIN_DIR . 'assets/css/dash.css';
@@ -137,7 +138,7 @@ add_action( 'admin_enqueue_scripts', 'dash_enqueue_assets' );
  * Mark user as onboarded after first Cmd+K open.
  */
 add_action( 'wp_ajax_dash_mark_onboarded', function (): void {
-	check_ajax_referer( 'dash_search', 'nonce' );
+	check_ajax_referer( 'dash_search', '_wpnonce' );
 	update_user_meta( get_current_user_id(), 'dash_onboarded', true );
 	wp_send_json_success();
 } );
