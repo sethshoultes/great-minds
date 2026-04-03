@@ -242,6 +242,26 @@ export default function HowPage() {
         </div>
       </section>
 
+      {/* What makes it different */}
+      <section className="px-6 py-20 border-t border-zinc-800/50">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-amber-500 font-mono text-xs font-semibold tracking-widest uppercase mb-4">
+            The Edge
+          </p>
+          <h2 className="text-3xl font-bold text-zinc-100 mb-6">
+            What makes it different.
+          </h2>
+          <div className="p-8 rounded-xl border border-amber-500/20 bg-amber-500/5 mb-10">
+            <p className="text-lg text-zinc-100 italic leading-relaxed">
+              Most teams agree too quickly. Steve and Elon don't.
+            </p>
+            <p className="text-sm text-zinc-400 mt-4 leading-relaxed">
+              Consensus is the enemy of excellence. The debate phase exists because real disagreement between thoughtful people produces decisions that survive first-principles scrutiny. You pay for conflict. What comes out the other side is defensible.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Principles */}
       <section className="px-6 py-20 border-t border-zinc-800/50">
         <div className="max-w-4xl mx-auto">

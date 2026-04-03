@@ -43,7 +43,7 @@ function Nav() {
           <Link href="/team" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
             Team
           </Link>
-          <Link href="/projects" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
+          <Link href="/work/localgenius" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
             Work
           </Link>
           <Link

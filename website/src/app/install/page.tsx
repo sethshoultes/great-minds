@@ -163,6 +163,43 @@ export default function InstallPage() {
         </div>
       </section>
 
+      {/* Submit a PRD flow */}
+      <section className="px-6 py-16 border-t border-zinc-800/50">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-amber-500 font-mono text-xs font-semibold tracking-widest uppercase mb-4">
+            The PRD Process
+          </p>
+          <h2 className="text-2xl font-bold text-zinc-100 mb-4">
+            What happens when you submit.
+          </h2>
+          <p className="text-zinc-500 text-sm mb-8 leading-relaxed max-w-2xl">
+            Your PRD enters the five-phase pipeline. The agency doesn't build until the strategy is locked. This is what you can expect:
+          </p>
+          <div className="space-y-3">
+            <div className="flex gap-4 p-5 rounded-lg bg-zinc-900/40 border border-zinc-800/40">
+              <span className="text-amber-500 font-mono text-sm font-bold flex-shrink-0 mt-0.5">Round 1–2:</span>
+              <p className="text-sm text-zinc-300"><strong>Debate.</strong> Steve and Elon read your PRD independently, form positions across all deliverable areas, then challenge each other. No consensus — just the best arguments.</p>
+            </div>
+            <div className="flex gap-4 p-5 rounded-lg bg-zinc-900/40 border border-zinc-800/40">
+              <span className="text-amber-500 font-mono text-sm font-bold flex-shrink-0 mt-0.5">Round 3:</span>
+              <p className="text-sm text-zinc-300"><strong>Plan.</strong> Marcus mediates conflicts. Decisions lock. Sub-agent teams get assigned with clear mandates and quality gates.</p>
+            </div>
+            <div className="flex gap-4 p-5 rounded-lg bg-zinc-900/40 border border-zinc-800/40">
+              <span className="text-amber-500 font-mono text-sm font-bold flex-shrink-0 mt-0.5">Round 4–8:</span>
+              <p className="text-sm text-zinc-300"><strong>Build.</strong> Sub-agents execute in parallel. Design, engineering, copy, brand — all shipping to deliverables/drafts/. You watch in real time.</p>
+            </div>
+            <div className="flex gap-4 p-5 rounded-lg bg-zinc-900/40 border border-zinc-800/40">
+              <span className="text-amber-500 font-mono text-sm font-bold flex-shrink-0 mt-0.5">Round 9:</span>
+              <p className="text-sm text-zinc-300"><strong>Review.</strong> Steve audits for taste and craft. Elon audits for feasibility and accuracy. Revisions go back with specific feedback — not vague notes.</p>
+            </div>
+            <div className="flex gap-4 p-5 rounded-lg bg-zinc-900/40 border border-zinc-800/40">
+              <span className="text-amber-500 font-mono text-sm font-bold flex-shrink-0 mt-0.5">Round 10:</span>
+              <p className="text-sm text-zinc-300"><strong>Ship.</strong> Production deployed. Learnings logged to memory. The agency compounds. You get all six deliverables in final/ ready to use.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How to write a PRD */}
       <section className="px-6 py-16 border-t border-zinc-800/50">
         <div className="max-w-4xl mx-auto">
