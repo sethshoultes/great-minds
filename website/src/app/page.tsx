@@ -100,6 +100,24 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Video */}
+      <section className="px-6 py-16 border-t border-zinc-800/50">
+        <div className="max-w-4xl mx-auto">
+          <div className="aspect-video rounded-xl overflow-hidden border border-zinc-800">
+            <iframe
+              src="https://www.youtube.com/embed/wkOqaFoOAfE"
+              title="Great Minds Agency Demo"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            />
+          </div>
+          <p className="text-center text-sm text-zinc-500 mt-4">
+            Watch the agency build a product from a single PRD
+          </p>
+        </div>
+      </section>
+
       {/* The Tension — this is the brand story */}
       <section className="px-6 py-24 border-t border-zinc-800/50">
         <div className="max-w-4xl mx-auto">
