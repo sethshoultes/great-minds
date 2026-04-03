@@ -55,6 +55,21 @@ Advance to the first slide.
 
 ---
 
+### THE OPENING FLAIR (Minutes 0-2)
+**See `workshop-opening.md` for the full second-by-second plan** (designed by Rick Rubin + Jony Ive).
+
+The sequence: Pure black → Marcus Aurelius fades in → Steve Jobs → Elon Musk → Jensen Huang → Margaret Hamilton → Rick Rubin → Jony Ive → Maya Angelou → Sara Blakely → hard cut to black → title card: **"262 files. One night. Nine minds."**
+
+Seth speaks nine words in the first 8 seconds: *"Last Tuesday night, I went to sleep with an idea. I woke up with a product."* Then silence while the personas appear. Each gets one line. The dissolves accelerate like a heartbeat. Music: one sustained note becoming a chord.
+
+The final line before the title card: *"262 files. 734 tests. Two live products. Three live websites. A Claude Code plugin. Sixteen strategic board reviews. While I slept."*
+
+Hard cut to black. Three seconds of silence. Then the title card fades in.
+
+Persona images are at `website/public/personas/*.webp` (optimized, 12-40KB each). Presentation PNGs at `deliverables/persona-images/*.png` (800px wide).
+
+---
+
 ### SECTION 1: The Shift in Thinking (Minutes 3-8)
 
 **Slide anchor: "You are not the bottleneck. Your architecture is."**
@@ -422,7 +437,11 @@ Before the session, verify:
 
 - [ ] Terminal is open to `/Users/sethshoultes/Local Sites/great-minds/`
 - [ ] Font size is readable from the back of the room (minimum 18pt)
+- [ ] Opening flair: 9 persona images loaded in presentation (from `deliverables/persona-images/`)
+- [ ] Opening flair: music cue ready (single sustained note — Einaudi/Richter style)
+- [ ] Opening flair: rehearsed the 2-minute sequence at least once
 - [ ] SCOREBOARD.md is up to date and visible
+- [ ] workshop-quotes.md printed or on secondary screen for reference
 - [ ] Round files are in place at `rounds/local-genius/`
 - [ ] Deliverables directory shows all 195KB strategy files
 - [ ] LocalGenius repo is cloned and visible — `sethshouldes/localgenius`
