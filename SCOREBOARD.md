@@ -19,10 +19,10 @@
 | Live deployments | 2 (localgenius.company, greatminds.company) |
 | Agent personas | 10 + founder |
 | PRs merged | 25+ |
-| Jensen board reviews | 22 |
+| Jensen board reviews | 23 |
 | Margaret QA reports | 80+ |
 | Workshop video | Rendered (2 MP4s) |
-| Blog posts | 6 |
+| Blog posts | 10 |
 | VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
 | Shipyard AI | New company on DO — website, pipeline, credit system |
 | GSD integration | 3 skills + context-guard hook in plugin |
