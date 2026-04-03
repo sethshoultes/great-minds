@@ -17,6 +17,7 @@
 - 2 debate rounds is the sweet spot — enough to align, not so many it wastes cycles
 - Creative reviewer role (James Park) is essential for cross-document consistency
 - Self-correcting targets > defending aspirational numbers
+- [Feature Branch Workflow](../../../.claude/projects/-Users-sethshoultes-Local-Sites-great-minds/memory/feedback_branch_workflow.md) — MANDATORY: all agents use branches + PRs, Margaret reviews, no direct pushes to main
 
 ### Consolidation
 - Don't run two frontends for one product — consolidate into routes
