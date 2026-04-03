@@ -1,11 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { agents } from "./agents";
+import { agents, founder } from "./agents";
 
 export const metadata: Metadata = {
   title: "The Team — Great Minds Agency",
   description:
-    "Nine AI agents. Zero meetings. Steve Jobs, Elon Musk, Marcus Aurelius, Jensen Huang, Margaret Hamilton, and more.",
+    "Seth Shoultes and nine AI agents. Zero meetings. Steve Jobs, Elon Musk, Marcus Aurelius, Jensen Huang, Margaret Hamilton, and more.",
 };
 
 export default function TeamPage() {
@@ -39,11 +39,49 @@ export default function TeamPage() {
         </div>
       </section>
 
-      {/* Core Agents */}
+      {/* Founder */}
       <section className="px-6 py-16 border-t border-zinc-800/50">
         <div className="max-w-4xl mx-auto">
           <p className="text-amber-500 font-mono text-xs font-semibold tracking-widest uppercase mb-10">
-            Leadership
+            Founder
+          </p>
+          <Link
+            href={`/team/${founder.slug}`}
+            className="group block sm:flex gap-8 p-8 rounded-xl border border-amber-500/30 bg-amber-500/5 hover:border-amber-500/50 transition-colors no-underline"
+          >
+            <div className="flex-shrink-0 w-28 h-28 sm:w-36 sm:h-36 rounded-xl overflow-hidden mb-6 sm:mb-0">
+              <img
+                src={`/personas/${founder.slug}.webp`}
+                alt={founder.name}
+                width={144}
+                height={144}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-1">
+              <p className="font-mono text-xs font-semibold tracking-widest uppercase mb-2 text-amber-400">
+                {founder.role}
+              </p>
+              <h2 className="text-2xl font-bold text-zinc-100 group-hover:text-white transition-colors">
+                {founder.name}
+              </h2>
+              <p className="text-sm text-zinc-500 mt-1 mb-4">{founder.title}</p>
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                {founder.philosophy}
+              </p>
+              <span className="inline-block mt-4 text-xs font-semibold text-amber-400">
+                View profile →
+              </span>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* The Nine Minds */}
+      <section className="px-6 py-16 border-t border-zinc-800/50">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-amber-500 font-mono text-xs font-semibold tracking-widest uppercase mb-10">
+            The Nine Minds
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {core.map((agent) => (
