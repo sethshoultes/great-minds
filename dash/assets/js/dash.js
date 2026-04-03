@@ -115,7 +115,7 @@
     indexLoading = true;
 
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', dashData.ajaxUrl + '?action=dash_get_index&_wpnonce=' + dashData.nonce, true);
+    xhr.open('GET', dashConfig.indexUrl, true);
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         indexLoading = false;
@@ -209,11 +209,11 @@
   /* ── Server-Side Fallback (AJAX) ── */
   function searchServer(query, mode, callback) {
     var xhr = new XMLHttpRequest();
-    var params = 'action=dash_search&q=' + encodeURIComponent(query) +
-      '&mode=' + encodeURIComponent(mode) +
-      '&_wpnonce=' + dashData.nonce;
-    xhr.open('POST', dashData.ajaxUrl, true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    var url = dashConfig.ajaxUrl +
+      '?action=dash_search&q=' + encodeURIComponent(query) +
+      '&type=' + encodeURIComponent(mode) +
+      '&_wpnonce=' + dashConfig.nonce;
+    xhr.open('GET', url, true);
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && xhr.status === 200) {
         try {
@@ -224,7 +224,7 @@
         }
       }
     };
-    xhr.send(params);
+    xhr.send();
   }
 
   /* ── Result Rendering ── */
@@ -352,9 +352,9 @@
 
   function executeAction(actionId) {
     var xhr = new XMLHttpRequest();
-    var params = 'action=dash_execute&command=' + encodeURIComponent(actionId) +
-      '&_wpnonce=' + dashData.nonce;
-    xhr.open('POST', dashData.ajaxUrl, true);
+    var params = 'action=dash_execute_command&command=' + encodeURIComponent(actionId) +
+      '&_wpnonce=' + dashConfig.nonce;
+    xhr.open('POST', dashConfig.ajaxUrl, true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send(params);
   }
@@ -477,7 +477,7 @@
   /* ── Onboarding Tooltip ── */
   function maybeShowOnboarding(dom) {
     if (onboardingShown) return;
-    if (dashData.onboardingSeen) return;
+    if (dashConfig.onboardingSeen) return;
 
     var tooltip = el('div', 'dash-tooltip', {
       id: 'dash-tooltip',
@@ -512,17 +512,17 @@
 
     // Mark as seen in user meta
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', dashData.ajaxUrl, true);
+    xhr.open('POST', dashConfig.ajaxUrl, true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.send('action=dash_onboarding_seen&_wpnonce=' + dashData.nonce);
+    xhr.send('action=dash_mark_onboarded&_wpnonce=' + dashConfig.nonce);
   }
 
   /* ── Initialize ── */
   var dom;
 
   function init() {
-    // Bail if dashData not available (PHP didn't enqueue)
-    if (typeof dashData === 'undefined') return;
+    // Bail if dashConfig not available (PHP didn't enqueue)
+    if (typeof dashConfig === 'undefined') return;
 
     dom = buildDOM();
 
