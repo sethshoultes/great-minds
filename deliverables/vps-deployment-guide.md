@@ -100,7 +100,7 @@ Hetzner CX32 at $8/month is 6x cheaper than DigitalOcean for equivalent specs. U
 ssh root@YOUR_SERVER_IP
 ```
 
-First time? Create a non-root user (recommended):
+**CRITICAL: Claude Code refuses `--dangerously-skip-permissions` as root.** You MUST create a non-root user to run the swarm. This is a security restriction in Claude Code — not optional:
 
 ```bash
 adduser deploy
