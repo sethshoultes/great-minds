@@ -14,7 +14,7 @@
 | Total commits | 230+ |
 | Test specs | 734+ |
 | GitHub repos | 3 (localgenius, great-minds, great-minds-plugin) |
-| Archived repos | 2 (localgenius-sites, greatminds-website) |
+| Archived repos | 2 (localgenius-sites, greatminds-website — merged into great-minds) |
 | Live deployments | 2 (localgenius.company, greatminds.company) |
 | Agent personas | 9 + founder |
 | PRs merged | 17 |
@@ -120,8 +120,8 @@
 | Repo | Stars | Status |
 |------|-------|--------|
 | sethshoultes/localgenius | — | Active |
-| sethshoultes/localgenius-sites | — | Active |
-| sethshoultes/greatminds-website | — | Active |
+| sethshoultes/localgenius-sites | — | Archived (consolidated into localgenius) |
+| sethshoultes/greatminds-website | — | Archived (merged into great-minds/website) |
 | sethshoultes/great-minds | — | Active |
 
 ## GitHub Issues
