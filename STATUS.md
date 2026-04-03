@@ -13,7 +13,7 @@
 ### LocalGenius App
 - **Domain**: localgenius.company
 - **Status**: LIVE, deployed on Vercel
-- **Files**: 258 source files
+- **Files**: 265 source files
 - **Stack**: Next.js 14 + Drizzle ORM + Neon PostgreSQL + Cloudflare Workers AI
 - **Stripe**: Configured (test mode) — $29 base / $79 pro
 - **Recent work**: Honesty pass, sites consolidation, shared Header/Footer in root layout, demo sites
@@ -28,11 +28,11 @@
 
 | Agent | Status | Activity |
 |-------|--------|----------|
-| Marcus Aurelius | Active | Moderating, dispatching tasks |
-| Steve Jobs | Active | UI/brand oversight |
-| Elon Musk | Active | Product/infra oversight |
-| Margaret Hamilton | Active | 9+ QA reports filed, continuous testing |
-| Jensen Huang | Active | 13 board reviews, 8 issues filed (3 fixed) |
+| Phil Jackson | Active | Orchestrator, dispatch, crons |
+| Steve Jobs | Active | Emdash brand + credit system UX |
+| Elon Musk | Active | Emdash pipeline + credit system backend |
+| Margaret Hamilton | Active | 12+ QA reports, continuous testing |
+| Jensen Huang | Active | 21 board reviews, 9 issues filed (8 fixed) |
 | Rick Rubin | Standby | Available for creative direction |
 | Jony Ive | Standby | Available for visual design |
 | Maya Angelou | Standby | Available for copywriting |
@@ -47,7 +47,9 @@
 - **CI**: GitHub → Vercel auto-deploy
 
 ## Key Metrics
-- Jensen board reviews: 13 (highest-ROI agent — found real bugs like in-memory state loss)
-- Margaret QA reports: 9+
-- Jensen issues filed: 8 (3 fixed, remainder tracked)
-- LocalGenius commits: 48+
+- Jensen board reviews: 21 (highest-ROI agent — found real bugs like in-memory state loss)
+- Margaret QA reports: 12+
+- Jensen issues filed: 9 (8 fixed, 1 open — architectural)
+- LocalGenius commits: 230+
+- Emdash deliverables: 6 (brand, pipeline, intake, reviews, credit UX, credit backend)
+- VPS: DO droplet live (164.90.151.82) — Emdash agency being set up as separate company

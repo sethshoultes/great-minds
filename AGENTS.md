@@ -25,7 +25,7 @@ Human (Seth)
 - Agents do NOT skip levels unless explicitly invited (e.g., human addresses Steve directly).
 - Sub-agents (Rick, Jony, Maya, Sara) use Haiku model to conserve usage limits (~5x savings).
 
-## Active Agents (9)
+## Active Agents (10)
 
 ### 1. marcus-aurelius (Moderator)
 - **Role**: Chief of Staff / Orchestrator (Stoic philosopher-emperor)
@@ -86,7 +86,14 @@ Human (Seth)
 - **Model**: Haiku (conserves usage)
 - **Full spec**: team/maya-angelou-writer.md
 
-### 9. sara-blakely (Growth Strategy — Sub-agent)
+### 9. phil-jackson (Orchestrator)
+- **Role**: System coordinator, cron manager, resource optimizer, dispatch
+- **Owns**: Task dispatch, cron scheduling, waste detection, agent lifecycle
+- **Model**: Sonnet
+- **tmux window**: admin (replaces Marcus Aurelius as orchestrator)
+- **Full spec**: ~/.claude/agents/phil-jackson-orchestrator.md
+
+### 10. sara-blakely (Growth Strategy — Sub-agent)
 - **Role**: Growth strategy, market positioning, customer acquisition
 - **Reports to**: Elon Musk
 - **Model**: Haiku (conserves usage)
