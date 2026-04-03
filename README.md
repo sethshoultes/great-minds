@@ -4,11 +4,13 @@ A multi-agent AI agency that takes a product idea from concept to deployed softw
 
 Drop in a PRD. The agents debate strategy, hire sub-agents, build deliverables, write code, run tests, and deploy. You review the output.
 
-## The Team (9 Agents)
+[![Great Minds Agency Demo](https://img.youtube.com/vi/wkOqaFoOAfE/maxresdefault.jpg)](https://youtu.be/wkOqaFoOAfE)
+
+## The Team (10 Agents + Founder)
 
 | Agent | Role | Persona |
 |-------|------|---------|
-| **Marcus Aurelius** | Moderator / Chief of Staff | Stoic philosopher-emperor. Drives the state machine, mediates conflicts, gates quality. |
+| **Phil Jackson** | Orchestrator | Zen Master. System coordination, cron management, dispatch, resource optimization. |
 | **Steve Jobs** | Chief Design & Brand Officer | Product design, brand identity, messaging, customer experience. "Is this insanely great?" |
 | **Elon Musk** | Chief Product & Growth Officer | Product/market fit, engineering, team structure, growth metrics. "Does physics allow this?" |
 | **Jensen Huang** | Board Member (60-min cron) | Strategic reviews, GitHub issues, advisory. "What's the data moat?" |
@@ -17,6 +19,7 @@ Drop in a PRD. The agents debate strategy, hire sub-agents, build deliverables, 
 | **Jony Ive** | Visual Design Director | Spacing, hierarchy, craft. Design systems, component design. |
 | **Maya Angelou** | Copywriter | Warmth, rhythm, dignity. Landing pages, emails, microcopy. |
 | **Sara Blakely** | Growth Strategist | Scrappy, customer-first. GTM, pricing, grassroots acquisition. |
+| **Margaret Hamilton** | QA Director | Zero-defect methodology. Continuous testing, live site monitoring, ship gate. |
 
 ## How It Works
 
@@ -25,27 +28,24 @@ PRD → Debate (2 rounds) → Plan (hire sub-agents) → Build (parallel) → Re
 ```
 
 1. **You** drop a PRD in `prds/`
-2. **Marcus** orchestrates the pipeline
+2. **Phil Jackson** orchestrates the pipeline and dispatches agents
 3. **Steve & Elon** debate strategy, then direct sub-agent teams
-4. **Sub-agents** produce deliverables and write code in parallel
+4. **Sub-agents** (Haiku model, ~5x cheaper) produce deliverables in parallel
 5. **Jensen** checks in hourly with strategic perspective and files GitHub issues
 6. **Margaret** runs continuous QA — tests, live site checks, security audits
 7. **Output**: strategy docs + engineering specs + working software + deployment
 
 ## Architecture
 
-Built on [claude-swarm](https://github.com/sethshoultes/claude-swarm) — tmux orchestration with git worktrees for parallel, conflict-free agent development.
-
 ```
 Human (you)
   ├── Jensen Huang — Board Member (cron, GitHub issues, advisory)
-  └── Marcus Aurelius — Moderator (tmux: admin)
+  └── Phil Jackson — Orchestrator (tmux: admin)
        ├── Steve Jobs — Creative Director (tmux: worker1)
-       │    └── Rick Rubin, Jony Ive, Maya Angelou (design crew)
+       │    └── Rick Rubin, Jony Ive, Maya Angelou (sub-agents, Haiku)
        ├── Elon Musk — Product Director (tmux: worker2)
-       │    └── sub-agents for engineering tasks
-       ├── Margaret Hamilton — QA Director (tmux: worker3)
-       └── Sara Blakely — Growth Strategy
+       │    └── Sara Blakely + engineering sub-agents (Haiku)
+       └── Margaret Hamilton — QA Director (continuous)
 ```
 
 ### Hybrid AI Architecture
@@ -54,41 +54,61 @@ Claude handles high-judgment work. Cloudflare Workers AI handles commodity tasks
 
 | Task | Model | Platform | Cost |
 |------|-------|----------|------|
-| Conversation | Claude Sonnet | Anthropic API | ~$0.003/msg |
-| Content drafts | Llama 3.1 8B | Cloudflare Workers AI | Free |
+| Directors + Strategy | Claude Opus | Anthropic | High — real work only |
+| Sub-agent work | Claude Haiku | Anthropic | ~5x cheaper |
+| Cron dispatch + dream | Claude Haiku | CLI (`--model haiku`) | Cheap |
 | Voice transcription | Whisper | Cloudflare Workers AI | Free |
 | Image generation | Stable Diffusion XL | Cloudflare Workers AI | Free |
-| Sentiment analysis | DistilBERT | Cloudflare Workers AI | Free |
-| Sub-agent work | Claude Haiku | Anthropic API | ~5x cheaper |
 
-## Automated Operations
+### Decoupled Cron System
 
-| Cron | Interval | Purpose |
-|------|----------|---------|
-| Monitor | 7 min | Agent status, file counts, commits |
-| Git Monitor | 13 min | Commit/push uncommitted work, check issues |
-| Organizer | 19 min | Nudge idle agents, check live sites |
-| Jensen Review | 60 min | Strategic board review + GitHub issues |
-| Margaret QA | Continuous | Live site monitoring, test suites |
+Crons run independently via system crontab — never bottleneck the main agent.
+
+| Cron | Interval | Model | Purpose |
+|------|----------|-------|---------|
+| Heartbeat | 5 min | Bash (free) | File count, site status, memory check |
+| Margaret QA | 29 min | Bash (free) | Site content verification, image checks |
+| Git Monitor | 15 min | Bash (free) | Uncommitted changes, open PRs |
+| DO Server Check | 10 min | Bash (free) | SSH health check on remote server |
+| Dispatch | 30 min | Haiku (cheap) | Read TASKS.md, assign idle agents |
+| Dream Consolidation | 60 min | Haiku (cheap) | Detect drift in system files |
+
+Reports write to `/tmp/claude-shared/cron-reports.log`. Alerts to `/tmp/claude-shared/alerts.log`.
+
+### GSD Integration
+
+Inspired by [Get Shit Done](https://github.com/gsd-build/get-shit-done) — structured planning, wave-based parallel execution, context rot prevention.
+
+| Skill | Purpose |
+|-------|---------|
+| `/agency-plan` | XML task plans verified against requirements |
+| `/agency-execute` | Wave-based parallel execution with fresh context per task |
+| `/agency-verify` | UAT verification with debug agents for failures |
+| `/scope-check` | Detect scope creep against original plan |
+| Context Guard Hook | Warns when context is getting large |
 
 ## Live Products
 
 | URL | What | Platform |
 |-----|------|----------|
 | [localgenius.company](https://localgenius.company) | AI digital presence app | Vercel + Neon |
-| [localgenius-sites.pages.dev](https://localgenius-sites.pages.dev) | Emdash website builder | Cloudflare Pages |
+| [greatminds.company](https://greatminds.company) | Agency website + blog | Vercel |
+| [www.shipyard.company](https://www.shipyard.company) | Shipyard AI — autonomous site builder | Cloudflare Pages |
 
-## Stats (Current Session)
+## Stats
 
 | Metric | Count |
 |--------|-------|
-| Source files | 270+ |
+| Source files (LocalGenius) | 265 |
 | Test specs | 770+ |
-| Total commits | 230+ across 3 repos |
-| Board reviews | 18 (Jensen) |
-| QA reports | 80+ (Margaret) |
-| GitHub issues | 10 filed, 10 resolved |
-| Agent personas | 9 + founder |
+| Total commits | 240+ across 4 repos |
+| Board reviews (Jensen) | 23 |
+| QA reports (Margaret) | 80+ |
+| Blog posts | 10 |
+| Agent personas | 10 + founder |
+| PRs merged | 25+ |
+| Live deployments | 3 |
+| VPS | DigitalOcean 8GB/4vCPU |
 
 ## System Files
 
@@ -96,11 +116,11 @@ Claude handles high-judgment work. Cloudflare Workers AI handles commodity tasks
 |------|---------|
 | `SOUL.md` | Agency identity, values, partner dynamics |
 | `AGENTS.md` | Full agent roster, hierarchy, communication rules |
-| `USER.md` | Client profile |
+| `TASKS.md` | Master task board — agents self-direct from this |
 | `HEARTBEAT.md` | Cron schedule, agent roster, hybrid AI, active projects |
-| `BOOTSTRAP.md` | Startup sequence when agency initializes |
 | `STATUS.md` | Live state — what's running, what's blocked, progress |
 | `MEMORY.md` | Persistent memory index — agency learns across projects |
+| `SCOREBOARD.md` | Agency-wide accountability tracking |
 
 ## Install (Claude Code Plugin)
 
@@ -108,40 +128,27 @@ Claude handles high-judgment work. Cloudflare Workers AI handles commodity tasks
 npx plugins add sethshoultes/great-minds-plugin
 ```
 
-Includes: 9 agents, 5 skills (`/agency-start`, `/agency-status`, `/agency-review`, `/agency-qa`, `/agency-debate`), hooks, templates.
+Includes: 10 agents, 10 skills, GSD integration, decoupled cron system, context guard hooks, `.planning/` templates.
 
 ## Quick Start
 
 ```bash
 # Prerequisites: tmux, Claude Code CLI, git
-# Install claude-swarm
-mkdir -p ~/.local/bin
-curl -o ~/.local/bin/claude-swarm https://raw.githubusercontent.com/sethshoultes/claude-swarm/main/claude-swarm
-chmod +x ~/.local/bin/claude-swarm
-export PATH="$HOME/.local/bin:$PATH"
-
-# Clone and launch
 git clone https://github.com/sethshoultes/great-minds.git
 cd great-minds
 
 # Drop a PRD in prds/
 cp prds/TEMPLATE.md prds/my-project.md
-# Edit prds/my-project.md with your product idea
+# Edit with your product idea
 
-# Launch the agency
-./launch.sh my-project
+# Launch the agency (no claude-swarm dependency)
+# Use the plugin: /agency-launch
 ```
-
-## Personas
-
-Agent personas are deeply researched, 5,000-15,000 word knowledge bases stored in `personas/`. Each covers biography, philosophy, decision-making frameworks, communication style, and key quotes.
 
 ## Related Projects
 
-- [claude-swarm](https://github.com/sethshoultes/claude-swarm) — Multi-agent orchestration via tmux + git worktrees
-
+- [shipyard-ai](https://github.com/sethshoultes/shipyard-ai) — Autonomous Emdash site builder (spun out from Great Minds)
 - [localgenius](https://github.com/sethshoultes/localgenius) — First product built by the agency
-- [localgenius-sites](https://github.com/sethshoultes/localgenius-sites) — Emdash website builder for customers
 - [great-minds-plugin](https://github.com/sethshoultes/great-minds-plugin) — Claude Code plugin (installable agency)
 
 ## License
