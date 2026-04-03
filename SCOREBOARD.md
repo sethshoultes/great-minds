@@ -9,18 +9,18 @@
 
 | Metric | Count |
 |--------|-------|
-| Source files (LocalGenius) | 263 |
-| Source files (GM Website) | 30+ |
+| Source files (LocalGenius) | 270+ |
+| Source files (GM Website) | 35+ |
 | Total commits | 230+ |
-| Test specs | 734+ |
-| GitHub repos | 3 (localgenius, great-minds, great-minds-plugin) |
-| Archived repos | 2 (localgenius-sites, greatminds-website — merged into great-minds) |
-| Live deployments | 2 (localgenius.company, greatminds.company) |
+| Test specs (LocalGenius) | 770+ |
+| Test specs (Sites) | 83 |
+| GitHub repos | 3 (localgenius, great-minds, localgenius-sites) |
+| Live deployments | 3 (localgenius.company, greatminds.company, sites.localgenius.company) |
 | Agent personas | 9 + founder |
-| PRs merged | 17 |
+| PRs merged | 17+ |
 | Jensen board reviews | 18 |
-| Margaret QA reports | 70+ |
-| Workshop video | Rendered (MP4) |
+| Margaret QA reports | 80+ |
+| Workshop video | Rendered (2 compositions, MP4) |
 | Blog posts | 1 (memory architecture) |
 
 ## Jensen Huang — Board Reviews
