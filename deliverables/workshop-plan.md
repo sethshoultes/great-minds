@@ -262,7 +262,53 @@ This is what the agent swarm produced. Not a prototype. Not a mockup. Working so
 
 ---
 
-### SECTION 8: The Plugin — Installable Agency (Minutes 38-40)
+### SECTION 8: The Scoreboard — Measuring What the Agency Built (Minutes 38-39)
+
+**Slide anchor: "The numbers don't lie."**
+
+**[LIVE DEMO — 1 minute]**
+
+Open `SCOREBOARD.md` in the terminal. Let the audience read it. This is the receipt.
+
+> "This is not a summary I wrote after the fact. This file was updated in real-time by the agents themselves as they worked. Every board review, every QA report, every issue filed and fixed — tracked automatically."
+
+**The numbers on screen:**
+
+| Metric | Count |
+|--------|-------|
+| Source files | 258+ |
+| Test specs | 734 |
+| Commits | 180+ |
+| Board reviews (Jensen) | 14 |
+| QA reports (Margaret) | 14 |
+| GitHub issues filed | 9 |
+| Issues fixed | 8 |
+| Live deployments | 3 |
+| Agent personas | 9 |
+
+**Jensen's track record:**
+
+Show the board review table. Every row is a real finding:
+- Review #4: AI system prompt was lying to customers about Google updates. Fixed.
+- Review #6: In-memory Map loses insight data on every restart. Fixed.
+- Review #8: CORS wildcard on voice endpoint — security risk. Fixed.
+- Review #13: Telemetry built but not wired to AI callsites. Fixed.
+
+> "Fourteen board reviews. Nine issues. Eight fixed. Every single one found a real problem that a human reviewer would have caught — eventually. Jensen caught them while the team was building. That is the value of a watcher on a cron."
+
+**Margaret's QA reports:**
+
+> "Twelve QA reports. Three P0 bugs caught — broken routing, TypeScript errors, consolidation breaks. All resolved before any user saw them. Ship readiness: GREEN."
+
+**The point:**
+
+The scoreboard is not vanity metrics. It is accountability. When you can see exactly what every agent produced, you can see where the system works and where it doesn't. The agents that produce nothing get replaced. The agents that produce real findings — Jensen, Margaret — earn their place.
+
+> "Show me a human team that produces this level of documentation about its own work. I'll wait."
+
+---
+
+### SECTION 9: The Plugin — Installable Agency (Minutes 39-41)
 
 **Slide anchor: "The agency is now a package."**
 
@@ -286,7 +332,7 @@ The agency is portable. The agency is open.
 
 ---
 
-### SECTION 9: The Stack — What You Actually Need to Build This (Minutes 40-42)
+### SECTION 10: The Stack — What You Actually Need to Build This (Minutes 41-43)
 
 **Slide anchor: "The tools are simpler than you think."**
 
@@ -312,7 +358,7 @@ That is the entire stack. The complexity is not in the tools. The complexity is 
 
 ---
 
-### SECTION 10: How to Start Your Own (Minutes 42-44)
+### SECTION 11: How to Start Your Own (Minutes 43-44)
 
 **Slide anchor: "Start with two agents and one argument."**
 
@@ -340,7 +386,7 @@ Or — install the plugin. Skip the four weeks of setup and start from a running
 
 ---
 
-### SECTION 11: Closing — A New Way of Working (Minutes 44-45)
+### SECTION 12: Closing — A New Way of Working (Minutes 44-45)
 
 **No slide. Stand at the front. Say this directly.**
 
@@ -376,6 +422,7 @@ Before the session, verify:
 
 - [ ] Terminal is open to `/Users/sethshoultes/Local Sites/great-minds/`
 - [ ] Font size is readable from the back of the room (minimum 18pt)
+- [ ] SCOREBOARD.md is up to date and visible
 - [ ] Round files are in place at `rounds/local-genius/`
 - [ ] Deliverables directory shows all 195KB strategy files
 - [ ] LocalGenius repo is cloned and visible — `sethshouldes/localgenius`
