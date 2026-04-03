@@ -108,49 +108,77 @@ class Dash_Search {
 
 		$table = Dash_Index::get_instance()->get_table_name();
 
-		$type_clause = '';
-		if ( ! empty( $type ) ) {
-			$type_clause = $wpdb->prepare( ' AND item_type = %s', $type );
-		}
-
 		if ( mb_strlen( $query ) >= 3 ) {
-			// FULLTEXT search with relevance scoring.
-			$search_term = '+' . $wpdb->esc_like( $query ) . '*';
-
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
-			$rows = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT item_type, item_id, title, url, icon, capability, keywords, item_status,
-						MATCH(title, keywords) AGAINST(%s IN BOOLEAN MODE) AS relevance
-					 FROM {$table}
-					 WHERE MATCH(title, keywords) AGAINST(%s IN BOOLEAN MODE)
-						{$type_clause}
-					 ORDER BY relevance DESC
-					 LIMIT %d",
-					$search_term,
-					$search_term,
-					self::MAX_RESULTS
-				),
-				ARRAY_A
-			);
+			// FULLTEXT search in NATURAL LANGUAGE MODE — no wildcards, uses index efficiently.
+			if ( ! empty( $type ) ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT item_type, item_id, title, url, icon, capability, keywords, item_status,
+							MATCH(title, keywords) AGAINST(%s IN NATURAL LANGUAGE MODE) AS relevance
+						 FROM {$table}
+						 WHERE MATCH(title, keywords) AGAINST(%s IN NATURAL LANGUAGE MODE)
+							AND item_type = %s
+						 ORDER BY relevance DESC
+						 LIMIT %d",
+						$query,
+						$query,
+						$type,
+						self::MAX_RESULTS
+					),
+					ARRAY_A
+				);
+			} else {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT item_type, item_id, title, url, icon, capability, keywords, item_status,
+							MATCH(title, keywords) AGAINST(%s IN NATURAL LANGUAGE MODE) AS relevance
+						 FROM {$table}
+						 WHERE MATCH(title, keywords) AGAINST(%s IN NATURAL LANGUAGE MODE)
+						 ORDER BY relevance DESC
+						 LIMIT %d",
+						$query,
+						$query,
+						self::MAX_RESULTS
+					),
+					ARRAY_A
+				);
+			}
 		} else {
 			// Short query: prefix match on title.
 			$like = $wpdb->esc_like( $query ) . '%';
 
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
-			$rows = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT item_type, item_id, title, url, icon, capability, keywords, item_status, 1 AS relevance
-					 FROM {$table}
-					 WHERE title LIKE %s
-						{$type_clause}
-					 ORDER BY title ASC
-					 LIMIT %d",
-					$like,
-					self::MAX_RESULTS
-				),
-				ARRAY_A
-			);
+			if ( ! empty( $type ) ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT item_type, item_id, title, url, icon, capability, keywords, item_status, 1 AS relevance
+						 FROM {$table}
+						 WHERE title LIKE %s AND item_type = %s
+						 ORDER BY title ASC
+						 LIMIT %d",
+						$like,
+						$type,
+						self::MAX_RESULTS
+					),
+					ARRAY_A
+				);
+			} else {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT item_type, item_id, title, url, icon, capability, keywords, item_status, 1 AS relevance
+						 FROM {$table}
+						 WHERE title LIKE %s
+						 ORDER BY title ASC
+						 LIMIT %d",
+						$like,
+						self::MAX_RESULTS
+					),
+					ARRAY_A
+				);
+			}
 		}
 
 		if ( ! is_array( $rows ) ) {

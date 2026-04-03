@@ -119,7 +119,7 @@ class Dash_Index {
 			KEY item_type (item_type),
 			KEY item_status (item_status),
 			FULLTEXT KEY search_idx (title, keywords)
-		) $charset_collate;";
+		) $charset_collate ENGINE=InnoDB;";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
@@ -692,7 +692,8 @@ class Dash_Index {
 		$user = wp_get_current_user();
 
 		// Check cache first.
-		$cache_key = 'dash_index_json_' . implode( '_', $user->roles );
+		$roles = ! empty( $user->roles ) ? $user->roles : array( 'no_role' );
+		$cache_key = 'dash_index_json_' . implode( '_', $roles );
 		$cached    = get_transient( $cache_key );
 		if ( false !== $cached ) {
 			wp_send_json_success( json_decode( $cached, true ) );
@@ -741,6 +742,17 @@ class Dash_Index {
 		foreach ( $rows as $row ) {
 			if ( ! empty( $row['capability'] ) && ! user_can( $user, $row['capability'] ) ) {
 				continue;
+			}
+
+			// Filter private/draft posts — only authors and editors can see unpublished content.
+			if ( in_array( $row['item_status'], array( 'draft', 'pending', 'private', 'future' ), true ) ) {
+				$post_types = get_post_types( array( 'public' => true ), 'names' );
+				if ( in_array( $row['item_type'], $post_types, true ) ) {
+					$post_obj = get_post( (int) $row['item_id'] );
+					if ( $post_obj && (int) $post_obj->post_author !== $user->ID && ! user_can( $user, 'edit_others_posts' ) ) {
+						continue;
+					}
+				}
 			}
 
 			$item = array(
