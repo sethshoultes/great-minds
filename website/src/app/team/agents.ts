@@ -12,11 +12,39 @@ export interface Agent {
   bgColor: string;
   borderColor: string;
   reportsTo: string | null;
+  isFounder?: boolean;
   philosophy: string;
   responsibilities: string[];
   quotes: string[];
   background: string;
 }
+
+// The human behind Great Minds
+export const founder: Agent = {
+  slug: 'seth-shoultes',
+  name: 'Seth Shoultes',
+  role: 'Founder',
+  title: 'The Mind Behind Great Minds',
+  color: 'text-amber-400',
+  bgColor: 'bg-amber-500/10',
+  borderColor: 'border-amber-500/40',
+  reportsTo: null,
+  isFounder: true,
+  philosophy: 'Build things that matter, with people — and minds — that care. Great Minds started with a question: what happens when you give the most iconic business thinkers in history a real product to build? Not a thought experiment. A real PRD, a real codebase, a real deadline. The answer turned out to be 262 files, three live products, and a workshop worth giving.',
+  responsibilities: [
+    'Defines the vision and selects the PRDs',
+    'Built the agent swarm architecture',
+    'Directs all nine agents through the pipeline',
+    'Reviews and ships the final product',
+    'Gives the workshop — the human in the room',
+  ],
+  quotes: [
+    'I went to sleep with an idea. I woke up with a product.',
+    'The agents argue better than any team I\'ve managed. And they don\'t need coffee.',
+    'Nine minds. Zero meetings. That\'s not a tagline — that\'s Tuesday night.',
+  ],
+  background: 'Software engineer and entrepreneur in Austin, Texas. Built Great Minds as a proof of concept: can AI agents with distinct personalities, values, and expertise produce better products than a single model following instructions? The answer — tested across three live products, 734 tests, and 258 source files — is yes.',
+};
 
 export const agents: Agent[] = [
   {

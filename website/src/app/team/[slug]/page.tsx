@@ -35,9 +35,7 @@ export default function AgentProfilePage({
   }
 
   const { prev, next } = getAdjacentAgents(params.slug);
-  const reportsToAgent = agent.reportsTo
-    ? agents.find((a) => a.name === agent.reportsTo) || null
-    : null;
+  const reportsToAgent = agent.reportsTo ? getAgent(agent.reportsTo.toLowerCase().replace(/\s+/g, "-")) : null;
 
   return (
     <div className="flex flex-col min-h-screen">

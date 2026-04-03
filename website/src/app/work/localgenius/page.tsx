@@ -4,12 +4,12 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "LocalGenius Case Study — Great Minds Agency",
   description:
-    "PRD to production in one session. 736 tests. 1.2% AI cost. Two live products. This is what Great Minds ships.",
+    "PRD to production in one session. 734 tests. 1.2% AI cost. Three live products. This is what Great Minds ships.",
 };
 
 const toplineStats = [
-  { value: "736", label: "Tests passing", sub: "0 skipped" },
-  { value: "166", label: "Source files", sub: "25,735 lines" },
+  { value: "734", label: "Tests passing", sub: "0 failures" },
+  { value: "258+", label: "Source files", sub: "across 3 repos" },
   { value: "1.2%", label: "AI cost of revenue", sub: "across all models" },
   { value: "0", label: "TypeScript errors", sub: "0 ESLint errors" },
   { value: "5", label: "AI models", sub: "2 clouds" },
@@ -39,7 +39,7 @@ const timeline = [
     summary:
       "Sub-agents executed in parallel. The engineer built the core product while the architect designed the Sites infrastructure. The designer produced the brand guide while the copywriter drafted all marketing copy. Directors intervened twice when output drifted.",
     decision:
-      "Hybrid AI architecture finalized: Claude (primary) + GPT-4o (fallback) + Workers AI (edge inference). Cost optimized to 1.2% of revenue.",
+      "Hybrid AI architecture finalized: Claude Sonnet (conversation) + Llama 3.1 (content drafts) + Workers AI (voice, images, edge inference). Cost optimized to 1.2% of revenue.",
   },
   {
     phase: "Review",
