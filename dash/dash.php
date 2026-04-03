@@ -114,10 +114,9 @@ function dash_enqueue_assets(): void {
 		true
 	);
 
-	wp_localize_script( 'dash-command-bar', 'dashConfig', array(
+	wp_localize_script( 'dash-command-bar', 'dashData', array(
 		'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
 		'nonce'     => wp_create_nonce( 'dash_search' ),
-		'indexUrl'  => admin_url( 'admin-ajax.php?action=dash_get_index&nonce=' . wp_create_nonce( 'dash_index' ) ),
 		'threshold' => DASH_CLIENT_INDEX_THRESHOLD,
 		'isNewUser' => ! get_user_meta( get_current_user_id(), 'dash_onboarded', true ),
 	) );

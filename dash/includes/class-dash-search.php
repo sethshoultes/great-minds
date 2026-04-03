@@ -70,8 +70,8 @@ class Dash_Search {
 	public function ajax_search(): void {
 		check_ajax_referer( 'dash_search', 'nonce' );
 
-		$query = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
-		$type  = isset( $_GET['type'] ) ? sanitize_key( $_GET['type'] ) : '';
+		$query = isset( $_POST['q'] ) ? sanitize_text_field( wp_unslash( $_POST['q'] ) ) : '';
+		$type  = isset( $_POST['type'] ) ? sanitize_key( $_POST['type'] ) : '';
 
 		if ( empty( $query ) ) {
 			wp_send_json_success( array() );
@@ -190,7 +190,7 @@ class Dash_Search {
 			wp_send_json_error( 'Insufficient permissions', 403 );
 		}
 
-		$query = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
+		$query = isset( $_POST['q'] ) ? sanitize_text_field( wp_unslash( $_POST['q'] ) ) : '';
 
 		if ( empty( $query ) ) {
 			wp_send_json_success( array() );
@@ -242,7 +242,7 @@ class Dash_Search {
 			'title' => isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '',
 			'url'   => isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '',
 			'icon'  => isset( $_POST['icon'] ) ? sanitize_text_field( wp_unslash( $_POST['icon'] ) ) : '',
-			'time'  => current_time( 'timestamp' ),
+			'time'  => time(),
 		);
 
 		if ( empty( $item['url'] ) ) {

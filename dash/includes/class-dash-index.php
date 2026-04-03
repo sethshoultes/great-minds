@@ -135,8 +135,7 @@ class Dash_Index {
 		update_option( 'dash_last_index_build', current_time( 'mysql' ) );
 
 		// Invalidate cached JSON.
-		delete_transient( 'dash_index_json' );
-		delete_transient( 'dash_index_count' );
+		$this->invalidate_index_cache();
 
 		return $count;
 	}
@@ -146,6 +145,8 @@ class Dash_Index {
 	 *
 	 * @return int Number of posts indexed.
 	 */
+	private const BATCH_SIZE = 500;
+
 	private function index_posts(): int {
 		$post_types = get_post_types( array( 'public' => true ), 'objects' );
 		$count      = 0;
@@ -153,36 +154,43 @@ class Dash_Index {
 		foreach ( $post_types as $post_type ) {
 			$capability = $post_type->cap->edit_posts ?? 'edit_posts';
 			$icon       = $this->get_post_type_icon( $post_type->name );
+			$offset     = 0;
 
-			$posts = get_posts( array(
-				'post_type'      => $post_type->name,
-				'post_status'    => array( 'publish', 'draft', 'pending', 'future', 'private' ),
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'orderby'        => 'modified',
-				'order'          => 'DESC',
-			) );
-
-			foreach ( $posts as $post_id ) {
-				$post = get_post( $post_id );
-				if ( ! $post ) {
-					continue;
-				}
-
-				$this->upsert_item( array(
-					'item_type'   => $post_type->name,
-					'item_id'     => $post->ID,
-					'title'       => $post->post_title ?: __( '(no title)', 'dash-command-bar' ),
-					'url'         => get_edit_post_link( $post->ID, 'raw' ) ?: '',
-					'icon'        => $icon,
-					'capability'  => $capability,
-					'keywords'    => $this->build_post_keywords( $post, $post_type ),
-					'item_status' => $post->post_status,
+			do {
+				$posts = get_posts( array(
+					'post_type'      => $post_type->name,
+					'post_status'    => array( 'publish', 'draft', 'pending', 'future', 'private' ),
+					'posts_per_page' => self::BATCH_SIZE,
+					'offset'         => $offset,
+					'fields'         => 'ids',
+					'no_found_rows'  => true,
+					'orderby'        => 'ID',
+					'order'          => 'ASC',
 				) );
 
-				++$count;
-			}
+				foreach ( $posts as $post_id ) {
+					$post = get_post( $post_id );
+					if ( ! $post ) {
+						continue;
+					}
+
+					$this->upsert_item( array(
+						'item_type'   => $post_type->name,
+						'item_id'     => $post->ID,
+						'title'       => $post->post_title ?: __( '(no title)', 'dash-command-bar' ),
+						'url'         => get_edit_post_link( $post->ID, 'raw' ) ?: '',
+						'icon'        => $icon,
+						'capability'  => $capability,
+						'keywords'    => $this->build_post_keywords( $post, $post_type ),
+						'item_status' => $post->post_status,
+					) );
+
+					++$count;
+				}
+
+				$offset += self::BATCH_SIZE;
+				wp_cache_flush();
+			} while ( count( $posts ) === self::BATCH_SIZE );
 		}
 
 		return $count;
@@ -357,7 +365,7 @@ class Dash_Index {
 		foreach ( $settings as $i => $setting ) {
 			$this->upsert_item( array(
 				'item_type'   => 'setting',
-				'item_id'     => $i + 1,
+				'item_id'     => abs( crc32( 'setting:' . $setting['url'] ) ),
 				'title'       => $setting['title'],
 				'url'         => $setting['url'],
 				'icon'        => 'dashicons-admin-settings',
@@ -383,7 +391,7 @@ class Dash_Index {
 		foreach ( $commands as $i => $command ) {
 			$this->upsert_item( array(
 				'item_type'   => 'action',
-				'item_id'     => $i + 1,
+				'item_id'     => abs( crc32( 'action:' . $command['id'] ) ),
 				'title'       => $command['title'],
 				'url'         => $command['url'] ?? '',
 				'icon'        => $command['icon'] ?? 'dashicons-admin-generic',
@@ -447,7 +455,7 @@ class Dash_Index {
 			)
 		);
 
-		delete_transient( 'dash_index_json' );
+		$this->invalidate_index_cache();
 	}
 
 	/**
@@ -477,7 +485,7 @@ class Dash_Index {
 			'item_status' => $post->post_status,
 		) );
 
-		delete_transient( 'dash_index_json' );
+		$this->invalidate_index_cache();
 	}
 
 	/**
@@ -521,11 +529,7 @@ class Dash_Index {
 	 * Used by client-side search for sites under the threshold.
 	 */
 	public function ajax_get_index(): void {
-		check_ajax_referer( 'dash_index', 'nonce' );
-
-		if ( ! is_user_logged_in() ) {
-			wp_send_json_error( 'Unauthorized', 401 );
-		}
+		check_ajax_referer( 'dash_search', '_wpnonce' );
 
 		$user = wp_get_current_user();
 
@@ -583,6 +587,27 @@ class Dash_Index {
 		}
 
 		return $items;
+	}
+
+
+	/**
+	 * Invalidate all role-based index caches.
+	 *
+	 * Clears per-role transient caches and the count cache
+	 * so fresh data is served on next request.
+	 */
+	private function invalidate_index_cache(): void {
+		global $wpdb;
+
+		// Delete all role-based index transients.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->query(
+			"DELETE FROM {$wpdb->options}
+			 WHERE option_name LIKE '\_transient\_dash\_index\_json\_%'
+				OR option_name LIKE '\_transient\_timeout\_dash\_index\_json\_%'"
+		);
+
+		delete_transient( 'dash_index_count' );
 	}
 
 	/**

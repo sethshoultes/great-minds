@@ -225,7 +225,7 @@ class Dash_Commands {
 		}
 
 		if ( ! $command ) {
-			wp_send_json_error( 'Unknown command: ' . $command_id );
+			wp_send_json_error( 'Unknown command', 400 );
 		}
 
 		if ( ! empty( $command['capability'] ) && ! current_user_can( $command['capability'] ) ) {
@@ -276,15 +276,8 @@ class Dash_Commands {
 	 * @return array
 	 */
 	private function cmd_clear_cache(): array {
-		global $wpdb;
-
-		// Delete expired transients.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		$deleted = $wpdb->query(
-			"DELETE a, b FROM {$wpdb->options} a
-			 INNER JOIN {$wpdb->options} b ON b.option_name = CONCAT('_transient_timeout_', SUBSTRING(a.option_name, 12))
-			 WHERE a.option_name LIKE '\_transient\_%' AND b.option_value < UNIX_TIMESTAMP()"
-		);
+		// Use WordPress core function for safe transient cleanup.
+		delete_expired_transients( true );
 
 		// Flush object cache if available.
 		if ( function_exists( 'wp_cache_flush' ) ) {
@@ -292,11 +285,7 @@ class Dash_Commands {
 		}
 
 		return array(
-			'message' => sprintf(
-				/* translators: %d: number of transients cleared */
-				__( 'Cache cleared. %d expired transients removed.', 'dash-command-bar' ),
-				max( 0, (int) $deleted )
-			),
+			'message' => __( 'Cache cleared. Expired transients removed and object cache flushed.', 'dash-command-bar' ),
 		);
 	}
 
