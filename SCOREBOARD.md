@@ -14,14 +14,16 @@
 | Total commits | 230+ |
 | Test specs (LocalGenius) | 770+ |
 | Test specs (Sites) | 83 |
-| GitHub repos | 3 (localgenius, great-minds, localgenius-sites) |
-| Live deployments | 3 (localgenius.company, greatminds.company, sites.localgenius.company) |
-| Agent personas | 9 + founder |
-| PRs merged | 17+ |
-| Jensen board reviews | 18 |
+| GitHub repos | 3 (localgenius, great-minds, great-minds-plugin) |
+| Archived repos | 2 (localgenius-sites, greatminds-website) |
+| Live deployments | 2 (localgenius.company, greatminds.company) |
+| Agent personas | 10 + founder |
+| PRs merged | 25+ |
+| Jensen board reviews | 20 |
 | Margaret QA reports | 80+ |
-| Workshop video | Rendered (2 compositions, MP4) |
-| Blog posts | 1 (memory architecture) |
+| Workshop video | Rendered (2 MP4s) |
+| Blog posts | 6 |
+| VPS | DigitalOcean droplet provisioned (164.90.151.82) |
 
 ## Jensen Huang — Board Reviews
 
