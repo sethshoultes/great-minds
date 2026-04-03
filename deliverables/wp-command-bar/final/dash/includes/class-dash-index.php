@@ -70,6 +70,27 @@ class Dash_Index {
 		add_action( 'delete_post', array( $this, 'on_delete_post' ) );
 		add_action( 'transition_post_status', array( $this, 'on_transition_post_status' ), 10, 3 );
 		add_action( 'wp_ajax_dash_get_index', array( $this, 'ajax_get_index' ) );
+
+		// Index admin menu pages once per hour (only in admin context where $menu globals exist).
+		add_action( 'admin_menu', array( $this, 'maybe_index_menu_pages' ), 9999 );
+	}
+
+	/**
+	 * Conditionally index admin menu pages if not done recently.
+	 *
+	 * Runs on admin_menu at low priority so all plugins have registered their pages.
+	 */
+	public function maybe_index_menu_pages(): void {
+		$last = get_option( 'dash_last_menu_index', 0 );
+		if ( ( time() - (int) $last ) < HOUR_IN_SECONDS ) {
+			return;
+		}
+
+		$count = $this->index_admin_menu_pages();
+		if ( $count > 0 ) {
+			$this->invalidate_index_cache();
+		}
+		update_option( 'dash_last_menu_index', time(), false );
 	}
 
 	/**
@@ -122,6 +143,7 @@ class Dash_Index {
 		$count = 0;
 		$count += $this->index_posts();
 		$count += $this->index_settings_pages();
+		$count += $this->index_admin_menu_pages();
 		$count += $this->index_quick_actions();
 
 		/**
@@ -148,7 +170,10 @@ class Dash_Index {
 	private const BATCH_SIZE = 500;
 
 	private function index_posts(): int {
-		$post_types = get_post_types( array( 'public' => true ), 'objects' );
+		// Index both public post types AND those with a UI (catches MemberPress, WooCommerce, etc.).
+		$public = get_post_types( array( 'public' => true ), 'objects' );
+		$with_ui = get_post_types( array( 'show_ui' => true ), 'objects' );
+		$post_types = array_merge( $public, $with_ui );
 		$count      = 0;
 
 		foreach ( $post_types as $post_type ) {
@@ -174,11 +199,17 @@ class Dash_Index {
 						continue;
 					}
 
+					$edit_url = get_edit_post_link( $post->ID, 'raw' );
+					if ( empty( $edit_url ) ) {
+						// Fallback for CPTs or non-admin context.
+						$edit_url = admin_url( 'post.php?post=' . $post->ID . '&action=edit' );
+					}
+
 					$this->upsert_item( array(
 						'item_type'   => $post_type->name,
 						'item_id'     => $post->ID,
 						'title'       => $post->post_title ?: __( '(no title)', 'dash-command-bar' ),
-						'url'         => get_edit_post_link( $post->ID, 'raw' ) ?: '',
+						'url'         => $edit_url,
 						'icon'        => $icon,
 						'capability'  => $capability,
 						'keywords'    => $this->build_post_keywords( $post, $post_type ),
@@ -377,6 +408,133 @@ class Dash_Index {
 		}
 
 		return $count;
+	}
+
+	/**
+	 * Index all registered admin menu and submenu pages.
+	 *
+	 * Catches plugin pages (MemberPress, WooCommerce, Yoast, etc.)
+	 * that register via add_menu_page / add_submenu_page.
+	 *
+	 * @return int Number of menu pages indexed.
+	 */
+	private function index_admin_menu_pages(): int {
+		global $menu, $submenu;
+
+		// These globals are only populated after admin_menu fires.
+		if ( empty( $menu ) ) {
+			return 0;
+		}
+
+		// Collect URLs we already indexed in index_settings_pages to avoid duplicates.
+		$indexed_urls = array();
+		global $wpdb;
+		$existing = $wpdb->get_col(
+			"SELECT url FROM {$this->table_name} WHERE item_type = 'setting'"
+		);
+		foreach ( $existing as $url ) {
+			$indexed_urls[ $url ] = true;
+		}
+
+		$count = 0;
+
+		// Index top-level menu items.
+		foreach ( $menu as $item ) {
+			// $item: [0]=title, [1]=capability, [2]=slug, [3]=page_title, [4]=classes, [5]=hookname, [6]=icon
+			if ( empty( $item[0] ) || empty( $item[2] ) ) {
+				continue;
+			}
+
+			// Skip separators.
+			if ( strpos( $item[4] ?? '', 'wp-menu-separator' ) !== false ) {
+				continue;
+			}
+
+			$title = wp_strip_all_tags( $item[0] );
+			$cap   = $item[1] ?? 'read';
+			$slug  = $item[2];
+			$icon  = $item[6] ?? 'dashicons-admin-generic';
+
+			// Build the URL from the slug.
+			$url = $this->menu_slug_to_url( $slug );
+			if ( isset( $indexed_urls[ $url ] ) ) {
+				continue;
+			}
+
+			$this->upsert_item( array(
+				'item_type'   => 'setting',
+				'item_id'     => abs( crc32( 'menu:' . $slug ) ),
+				'title'       => $title,
+				'url'         => $url,
+				'icon'        => $icon,
+				'capability'  => $cap,
+				'keywords'    => strtolower( $title ),
+				'item_status' => 'publish',
+			) );
+			$indexed_urls[ $url ] = true;
+			++$count;
+		}
+
+		// Index submenu items.
+		foreach ( $submenu as $parent_slug => $items ) {
+			foreach ( $items as $item ) {
+				// $item: [0]=title, [1]=capability, [2]=slug, [3]=page_title
+				if ( empty( $item[0] ) || empty( $item[2] ) ) {
+					continue;
+				}
+
+				$title = wp_strip_all_tags( $item[0] );
+				$cap   = $item[1] ?? 'read';
+				$slug  = $item[2];
+
+				$url = $this->menu_slug_to_url( $slug, $parent_slug );
+				if ( isset( $indexed_urls[ $url ] ) ) {
+					continue;
+				}
+
+				$this->upsert_item( array(
+					'item_type'   => 'setting',
+					'item_id'     => abs( crc32( 'menu:' . $parent_slug . ':' . $slug ) ),
+					'title'       => $title,
+					'url'         => $url,
+					'icon'        => 'dashicons-admin-generic',
+					'capability'  => $cap,
+					'keywords'    => strtolower( $title ),
+					'item_status' => 'publish',
+				) );
+				$indexed_urls[ $url ] = true;
+				++$count;
+			}
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Convert a menu slug to a full admin URL.
+	 *
+	 * @param string $slug        The menu page slug.
+	 * @param string $parent_slug Optional parent slug for submenu items.
+	 * @return string Full admin URL.
+	 */
+	private function menu_slug_to_url( string $slug, string $parent_slug = '' ): string {
+		// If slug is already a full URL.
+		if ( str_starts_with( $slug, 'http' ) ) {
+			return $slug;
+		}
+
+		// If slug is a .php file (e.g. edit.php, options-general.php).
+		if ( str_contains( $slug, '.php' ) ) {
+			return admin_url( $slug );
+		}
+
+		// Custom page slug — build admin.php?page=slug.
+		if ( $parent_slug && str_contains( $parent_slug, '.php' ) ) {
+			// Submenu under a core page like edit.php.
+			return admin_url( $parent_slug . '?page=' . $slug );
+		}
+
+		return admin_url( 'admin.php?page=' . $slug );
 	}
 
 	/**
