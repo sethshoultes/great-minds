@@ -5,6 +5,8 @@
   "scripts": {
     "studio": "remotion studio src/index.ts",
     "render": "remotion render src/index.ts WorkshopOpening out/workshop-opening.mp4",
+    "render:titlecard": "remotion render src/index.ts TitleCard out/title-card.mp4",
+    "render:all": "npm run render && npm run render:titlecard",
     "preview": "remotion preview src/index.ts"
   },
   "dependencies": {
