@@ -261,8 +261,11 @@ export const agents: Agent[] = [
   },
 ];
 
+/** All displayable profiles — founder + agents */
+export const allProfiles: Agent[] = [founder, ...agents];
+
 export function getAgent(slug: string): Agent | null {
-  return agents.find(a => a.slug === slug) || null;
+  return allProfiles.find(a => a.slug === slug) || null;
 }
 
 export function getAdjacentAgents(slug: string): { prev: Agent | null; next: Agent | null } {
