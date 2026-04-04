@@ -68,4 +68,7 @@
 @keyframes pinned-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .pinned-board *,.pinned-board *::before,.pinned-board *::after{box-sizing:border-box}
 @media(prefers-reduced-motion:reduce){.pinned-note,.pinned-note--new,.pinned-note--removing,.pinned-skeleton,.pinned-ack,.pinned-color-picker{animation:none!important;transition:none!important}.pinned-note:nth-child(odd),.pinned-note:nth-child(even),.pinned-note:nth-child(3n),.pinned-note:nth-child(4n){transform:none}}
+.pinned-add-btn{position:absolute;bottom:8px;right:8px;width:32px;height:32px;border-radius:50%;border:none;background:#16a34a;color:#fff;font-size:20px;line-height:1;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);z-index:20;transition:background .15s,transform .15s;display:flex;align-items:center;justify-content:center}
+.pinned-add-btn:hover{background:#15803d;transform:scale(1.1)}
+.pinned-add-btn:focus{outline:2px solid #2563eb;outline-offset:2px}
 @media(max-width:480px){.pinned-note{width:calc(50% - 12px);min-width:120px}}

@@ -76,6 +76,9 @@ function pinned_boot(): void {
 	// Enqueue admin assets.
 	add_action( 'admin_enqueue_scripts', 'pinned_enqueue_assets' );
 
+	// Ensure cron callback is always registered (autoloader alone won't load the file).
+	add_action( Pinned_Expiry::CRON_HOOK, [ Pinned_Expiry::class, 'process' ] );
+
 	// Update user presence on every admin page load.
 	add_action( 'admin_init', 'pinned_update_presence' );
 
@@ -111,7 +114,15 @@ function pinned_enqueue_assets( string $hook_suffix ): void {
 		return;
 	}
 
-	$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+	// Use .min assets if they exist and SCRIPT_DEBUG is off, otherwise use unminified.
+	$suffix = '';
+	if ( ! ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ) {
+		$min_css = PINNED_PLUGIN_DIR . 'assets/css/pinned.min.css';
+		$min_js  = PINNED_PLUGIN_DIR . 'assets/js/pinned.min.js';
+		if ( file_exists( $min_css ) && file_exists( $min_js ) ) {
+			$suffix = '.min';
+		}
+	}
 
 	wp_enqueue_style(
 		'pinned-css',
@@ -123,7 +134,7 @@ function pinned_enqueue_assets( string $hook_suffix ): void {
 	wp_enqueue_script(
 		'pinned-js',
 		PINNED_PLUGIN_URL . 'assets/js/pinned' . $suffix . '.js',
-		[ 'wp-api-fetch', 'wp-i18n' ],
+		[],
 		PINNED_VERSION,
 		true
 	);
@@ -132,21 +143,27 @@ function pinned_enqueue_assets( string $hook_suffix ): void {
 	$user_id = get_current_user_id();
 	$notes   = Pinned_Notes::get_for_user( $user_id );
 
+	// The JS reads window.pinnedConfig with keys: apiBase, nonce, userName, i18n.
+	$current_user = wp_get_current_user();
 	wp_localize_script(
 		'pinned-js',
-		'pinnedData',
+		'pinnedConfig',
 		[
-			'notes'   => $notes,
-			'nonce'   => wp_create_nonce( 'wp_rest' ),
-			'restUrl' => esc_url_raw( rest_url( 'pinned/v1' ) ),
-			'userId'  => $user_id,
-			'colors'  => [ 'yellow', 'blue', 'green', 'pink', 'orange' ],
-			'i18n'    => [
-				'addNote'    => __( 'Double-click to add a note', 'pinned' ),
-				'noNotes'    => __( 'No notes yet.', 'pinned' ),
-				'archived'   => __( 'Note archived.', 'pinned' ),
-				'deleted'    => __( 'Note deleted.', 'pinned' ),
-				'error'      => __( 'Something went wrong.', 'pinned' ),
+			'notes'    => $notes,
+			'nonce'    => wp_create_nonce( 'wp_rest' ),
+			'apiBase'  => esc_url_raw( rest_url( 'pinned/v1' ) ),
+			'userId'   => $user_id,
+			'userName' => $current_user->display_name,
+			'colors'   => [ 'yellow', 'blue', 'green', 'pink', 'orange' ],
+			'i18n'     => [
+				'newNotePlaceholder' => __( 'Type your note...', 'pinned' ),
+				'emptyHint'          => __( 'Double-click anywhere to add a note', 'pinned' ),
+				'deleteConfirm'      => __( 'Delete this note?', 'pinned' ),
+				'addNote'            => __( 'Double-click to add a note', 'pinned' ),
+				'noNotes'            => __( 'No notes yet.', 'pinned' ),
+				'archived'           => __( 'Note archived.', 'pinned' ),
+				'deleted'            => __( 'Note deleted.', 'pinned' ),
+				'error'              => __( 'Something went wrong.', 'pinned' ),
 			],
 		]
 	);

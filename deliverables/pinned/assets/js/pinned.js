@@ -272,6 +272,8 @@
     });
 
     board.addEventListener('click', function (e) {
+      var addBtn = e.target.closest('.pinned-add-btn');
+      if (addBtn) { e.stopPropagation(); createNote(board); return; }
       var dot = e.target.closest('.pinned-color-dot');
       if (dot) { e.stopPropagation(); var n = dot.closest('.pinned-note'); if (n) changeColor(n, dot.dataset.color); return; }
       var del = e.target.closest('.pinned-delete');

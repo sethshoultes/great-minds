@@ -98,10 +98,10 @@ class Pinned_Widget {
 	 */
 	private static function render_note( array $note, int $user_id ): void {
 		$age_class    = self::age_class( $note['created_at'] );
-		$color_class  = 'pinned-color-' . sanitize_html_class( $note['color'] ?? 'yellow' );
-		$pinned_class = ! empty( $note['is_pinned'] ) ? 'pinned-is-pinned' : '';
+		$color_class  = 'pinned-note--' . sanitize_html_class( $note['color'] ?? 'yellow' );
+		$pinned_class = ! empty( $note['is_pinned'] ) ? 'pinned-note--pinned' : '';
 		$acked        = in_array( $user_id, (array) ( $note['read_by'] ?? [] ), true );
-		$ack_class    = $acked ? 'pinned-acked' : '';
+		$ack_class    = $acked ? 'pinned-ack--done' : '';
 		$note_id      = (int) $note['id'];
 		?>
 		<article
@@ -174,12 +174,12 @@ class Pinned_Widget {
 		$age_seconds = time() - strtotime( $created_at );
 
 		if ( $age_seconds < DAY_IN_SECONDS ) {
-			return 'pinned-age-fresh';
+			return 'pinned-note--fresh';
 		}
 		if ( $age_seconds < 3 * DAY_IN_SECONDS ) {
-			return 'pinned-age-aging';
+			return 'pinned-note--aging';
 		}
-		return 'pinned-age-stale';
+		return 'pinned-note--stale';
 	}
 
 	/**
