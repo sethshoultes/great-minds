@@ -4,6 +4,13 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { allProfiles, getAgent, getAdjacentAgents } from "../agents";
 
+/** Agents that have a full-size image in /personas/ */
+const SLUGS_WITH_IMAGES = new Set([
+  'seth-shoultes', 'marcus-aurelius', 'steve-jobs', 'elon-musk',
+  'jensen-huang', 'margaret-hamilton', 'rick-rubin', 'jony-ive',
+  'maya-angelou', 'sara-blakely',
+]);
+
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
@@ -55,15 +62,23 @@ export default async function AgentProfilePage({
           </Link>
 
           {/* Profile image */}
-          <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl overflow-hidden mb-8">
-            <img
-              src={`/personas/${agent.slug}.webp`}
-              alt={agent.name}
-              width={160}
-              height={160}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          {SLUGS_WITH_IMAGES.has(agent.slug) ? (
+            <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-xl overflow-hidden mb-8">
+              <img
+                src={`/personas/${agent.slug}.webp`}
+                alt={agent.name}
+                width={160}
+                height={160}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className={`w-32 h-32 sm:w-40 sm:h-40 rounded-xl mb-8 flex items-center justify-center ${agent.bgColor} border ${agent.borderColor}`}>
+              <span className={`text-4xl sm:text-5xl font-bold ${agent.color}`}>
+                {agent.name.split(' ').map(n => n[0]).join('')}
+              </span>
+            </div>
+          )}
 
           {/* Agent title and role */}
           <div className="mb-8">
