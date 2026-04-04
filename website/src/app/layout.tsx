@@ -37,6 +37,9 @@ function Nav() {
           <span className="font-semibold text-sm tracking-tight hidden sm:inline">Great Minds</span>
         </Link>
         <div className="flex items-center gap-6">
+          <Link href="/services" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
+            Services
+          </Link>
           <Link href="/how" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
             How It Works
           </Link>
