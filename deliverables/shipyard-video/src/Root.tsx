@@ -101,8 +101,8 @@ export const RemotionRoot: React.FC = () => {
         component={ShipyardPromo}
         durationInFrames={TOTAL_DURATION}
         fps={FPS}
-        width={2560}
-        height={1440}
+        width={1920}
+        height={1080}
       />
     </>
   );

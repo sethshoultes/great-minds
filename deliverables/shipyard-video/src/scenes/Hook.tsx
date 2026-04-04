@@ -40,10 +40,10 @@ export const Hook: React.FC = () => {
         style={{
           backgroundColor: "#111111",
           borderRadius: 12,
-          padding: "40px 60px",
+          padding: "60px 80px",
           border: `1px solid ${colors.surfaceLight}`,
           boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
-          minWidth: 700,
+          minWidth: 900,
         }}
       >
         {/* Terminal dots */}
@@ -84,7 +84,7 @@ export const Hook: React.FC = () => {
         <div
           style={{
             fontFamily: fonts.code,
-            fontSize: 32,
+            fontSize: 42,
             color: colors.green,
             letterSpacing: 0.5,
           }}

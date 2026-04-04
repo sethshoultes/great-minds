@@ -72,7 +72,7 @@ export const PRDIntake: React.FC = () => {
       <div
         style={{
           flex: 1,
-          padding: "60px 40px",
+          padding: "80px 60px",
           overflow: "hidden",
           borderRight: `1px solid ${colors.surfaceLight}`,
         }}
@@ -80,8 +80,8 @@ export const PRDIntake: React.FC = () => {
         <div
           style={{
             backgroundColor: colors.surface,
-            borderRadius: 8,
-            padding: "30px 24px",
+            borderRadius: 12,
+            padding: "40px 36px",
             height: "100%",
             overflow: "hidden",
             border: `1px solid ${colors.surfaceLight}`,
@@ -109,9 +109,9 @@ export const PRDIntake: React.FC = () => {
                     fontFamily: isHeader ? fonts.body : fonts.code,
                     fontSize: isHeader
                       ? line.startsWith("##")
-                        ? 20
-                        : 26
-                      : 15,
+                        ? 32
+                        : 40
+                      : 24,
                     fontWeight: isHeader ? 700 : 400,
                     color: isHighlighted
                       ? colors.accent
@@ -135,7 +135,7 @@ export const PRDIntake: React.FC = () => {
       <div
         style={{
           flex: 1,
-          padding: "60px 40px",
+          padding: "80px 60px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -144,11 +144,11 @@ export const PRDIntake: React.FC = () => {
         <div
           style={{
             fontFamily: fonts.body,
-            fontSize: 18,
+            fontSize: 28,
             color: colors.textMuted,
-            marginBottom: 24,
+            marginBottom: 36,
             textTransform: "uppercase",
-            letterSpacing: 2,
+            letterSpacing: 3,
           }}
         >
           14 Autonomous Agents
@@ -157,8 +157,8 @@ export const PRDIntake: React.FC = () => {
           style={{
             display: "flex",
             flexWrap: "wrap",
-            gap: 20,
-            maxWidth: 600,
+            gap: 28,
+            maxWidth: 800,
           }}
         >
           {AGENTS.map((agent, i) => (
@@ -167,7 +167,7 @@ export const PRDIntake: React.FC = () => {
               name={agent.name}
               imageSrc={staticFile(`personas/${agent.img}`)}
               delay={i * 5 + 10}
-              size={90}
+              size={130}
             />
           ))}
         </div>
