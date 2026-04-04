@@ -181,6 +181,29 @@ function dash_enqueue_assets(): void {
 		true       // Load in footer.
 	);
 
+	// Enqueue dash-admin.js — loads after dash.js to pre-populate the
+	// client index, show onboarding tooltip, and expose window.Dash API.
+	$admin_js_path = DASH_PLUGIN_DIR . 'assets/js/dash-admin.js';
+	$admin_js_ver  = file_exists( $admin_js_path ) ? (string) filemtime( $admin_js_path ) : DASH_VERSION;
+
+	wp_enqueue_script(
+		'dash-admin',
+		DASH_PLUGIN_URL . 'assets/js/dash-admin.js',
+		array( 'dash-command-bar' ),   // Load after dash.js.
+		$admin_js_ver,
+		true       // Load in footer.
+	);
+
+	// Build the client-side index data when item count is under threshold.
+	// This lets dash-admin.js pre-populate window.dashIndex so the first
+	// Cmd+K open doesn't require an XHR round-trip.
+	$index_instance = Dash_Index::get_instance();
+	$index_data     = array();
+	$count          = $index_instance->get_count();
+	if ( $count < DASH_CLIENT_INDEX_THRESHOLD ) {
+		$index_data = $index_instance->get_items_for_user( wp_get_current_user() );
+	}
+
 	wp_localize_script(
 		'dash-command-bar',
 		'dashData',
@@ -194,6 +217,7 @@ function dash_enqueue_assets(): void {
 				),
 				admin_url( 'admin-ajax.php' )
 			),
+			'index'          => $index_data,
 			'threshold'      => DASH_CLIENT_INDEX_THRESHOLD,
 			'version'        => DASH_VERSION,
 			'onboardingSeen' => (bool) get_user_meta( get_current_user_id(), 'dash_onboarded', true ),

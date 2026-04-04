@@ -448,6 +448,28 @@
 
     dispatch('dash:select', { item: item });
 
+    /* Track as recent item (fire-and-forget POST to server).
+       Runs before navigation so the request is dispatched even
+       though the page will unload. Using navigator.sendBeacon
+       would be ideal but it doesn't support custom headers;
+       a keepalive fetch ensures delivery without blocking. */
+    if (item.url) {
+      try {
+        fetch(dashData.ajaxUrl, {
+          method:    'POST',
+          headers:   { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body:      'action=dash_track_recent' +
+                     '&_wpnonce=' + encodeURIComponent(dashData.nonce) +
+                     '&type='     + encodeURIComponent(item.type   || '') +
+                     '&id='       + encodeURIComponent(item.id     || '0') +
+                     '&title='    + encodeURIComponent(item.title  || '') +
+                     '&url='      + encodeURIComponent(item.url) +
+                     '&icon='     + encodeURIComponent(item.icon   || ''),
+          keepalive: true
+        });
+      } catch (e) { /* Silent — tracking failure is non-critical */ }
+    }
+
     if (item.action) {
       executeCommand(item.action);
       close();
