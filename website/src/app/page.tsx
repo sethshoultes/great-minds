@@ -303,6 +303,64 @@ export default function HomePage() {
                 Read case study →
               </span>
             </Link>
+
+            {/* Great Minds Plugin */}
+            <Link
+              href="/work/great-minds-plugin"
+              className="group p-6 rounded-xl border border-zinc-800/60 bg-zinc-900/30 hover:border-zinc-700 transition-colors no-underline"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="font-bold text-zinc-100 group-hover:text-amber-500 transition-colors">
+                  Great Minds Plugin
+                </h3>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-semibold">
+                  Live
+                </span>
+              </div>
+              <p className="text-zinc-500 text-sm leading-relaxed mb-4">
+                14 agents, 11 skills, one install. The Claude Code plugin that
+                powers the entire agency. Worktree isolation, decoupled crons,
+                and a board of directors.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Claude Code</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Git Worktrees</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Crons</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Agent Tool</span>
+              </div>
+              <span className="text-amber-500 text-sm group-hover:text-amber-400 transition-colors">
+                View project →
+              </span>
+            </Link>
+
+            {/* Shipyard AI */}
+            <Link
+              href="/work/shipyard-ai"
+              className="group p-6 rounded-xl border border-zinc-800/60 bg-zinc-900/30 hover:border-zinc-700 transition-colors no-underline"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="font-bold text-zinc-100 group-hover:text-amber-500 transition-colors">
+                  Shipyard AI
+                </h3>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-semibold">
+                  Live
+                </span>
+              </div>
+              <p className="text-zinc-500 text-sm leading-relaxed mb-4">
+                An entire company, spun up by agents. Own domain, own repo, 4
+                crons, Cloudflare Pages, Resend. Builds Emdash sites from PRDs
+                on DigitalOcean.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">DigitalOcean</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Cloudflare</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Emdash</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Resend</span>
+              </div>
+              <span className="text-amber-500 text-sm group-hover:text-amber-400 transition-colors">
+                View project →
+              </span>
+            </Link>
           </div>
         </div>
       </section>
