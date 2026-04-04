@@ -10,17 +10,17 @@ import { CTA } from "./scenes/CTA";
 import { colors } from "./styles";
 
 const FPS = 30;
-const TOTAL_DURATION = 72 * FPS; // 2160 frames
+const TOTAL_DURATION = 75 * FPS; // 2250 frames
 
-// Scene timings (in frames at 30fps)
+// Scene timings (in frames at 30fps) — adjusted so audio never clips
 const SCENES = {
-  hook: { from: 0, duration: 3 * FPS }, // 0:00 - 0:03
-  prdIntake: { from: 3 * FPS, duration: 7 * FPS }, // 0:03 - 0:10
-  agentDebate: { from: 10 * FPS, duration: 12 * FPS }, // 0:10 - 0:22
-  parallelBuild: { from: 22 * FPS, duration: 16 * FPS }, // 0:22 - 0:38
-  tokenCredits: { from: 38 * FPS, duration: 12 * FPS }, // 0:38 - 0:50
-  morningDelivery: { from: 50 * FPS, duration: 12 * FPS }, // 0:50 - 1:02
-  cta: { from: 62 * FPS, duration: 10 * FPS }, // 1:02 - 1:12
+  hook: { from: 0, duration: 6 * FPS }, // 0:00 - 0:06 (audio 4.6s + breathing room)
+  prdIntake: { from: 6 * FPS, duration: 8 * FPS }, // 0:06 - 0:14
+  agentDebate: { from: 14 * FPS, duration: 12 * FPS }, // 0:14 - 0:26
+  parallelBuild: { from: 26 * FPS, duration: 13 * FPS }, // 0:26 - 0:39
+  tokenCredits: { from: 39 * FPS, duration: 12 * FPS }, // 0:39 - 0:51
+  morningDelivery: { from: 51 * FPS, duration: 10 * FPS }, // 0:51 - 1:01
+  cta: { from: 61 * FPS, duration: 14 * FPS }, // 1:01 - 1:15 (hold on CTA longer)
 } as const;
 
 const ShipyardPromo: React.FC = () => {
@@ -101,8 +101,8 @@ export const RemotionRoot: React.FC = () => {
         component={ShipyardPromo}
         durationInFrames={TOTAL_DURATION}
         fps={FPS}
-        width={1920}
-        height={1080}
+        width={2560}
+        height={1440}
       />
     </>
   );
