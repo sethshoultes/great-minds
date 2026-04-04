@@ -76,7 +76,7 @@ function Footer() {
           <Link href="/how" className="hover:text-zinc-300 transition-colors no-underline">How It Works</Link>
           <Link href="/team" className="hover:text-zinc-300 transition-colors no-underline">Team</Link>
           <Link href="/work/localgenius" className="hover:text-zinc-300 transition-colors no-underline">LocalGenius</Link>
-          <a href="https://github.com/sethshoulters/great-minds" target="_blank" rel="noopener" className="hover:text-zinc-300 transition-colors no-underline">
+          <a href="https://github.com/sethshoultes/great-minds" target="_blank" rel="noopener" className="hover:text-zinc-300 transition-colors no-underline">
             GitHub
           </a>
         </div>

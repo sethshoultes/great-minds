@@ -230,7 +230,7 @@ export default function InstallPage() {
           <p className="mt-6 text-sm text-zinc-600 italic">
             See{" "}
             <a
-              href="https://github.com/sethshoulters/great-minds/blob/main/prds/"
+              href="https://github.com/sethshoultes/great-minds/blob/main/prds/"
               target="_blank"
               rel="noopener"
               className="text-zinc-500 hover:text-zinc-400 no-underline transition-colors"
