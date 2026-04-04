@@ -1,5 +1,5 @@
 import React from "react";
-import { Composition, Sequence } from "remotion";
+import { Audio, Composition, Sequence, staticFile } from "remotion";
 import { DashboardHook } from "./scenes/DashboardHook";
 import { NotesCascade } from "./scenes/NotesCascade";
 import { AcknowledgeAndExpire } from "./scenes/AcknowledgeAndExpire";
@@ -37,6 +37,9 @@ const PinnedPromo: React.FC = () => {
       >
         <DashboardHook />
       </Sequence>
+      <Sequence from={SCENES.dashboardHook.from} durationInFrames={SCENES.dashboardHook.duration}>
+        <Audio src={staticFile("audio/scene1.mp3")} />
+      </Sequence>
 
       {/* Scene 2: Notes Cascade */}
       <Sequence
@@ -44,6 +47,9 @@ const PinnedPromo: React.FC = () => {
         durationInFrames={SCENES.notesCascade.duration}
       >
         <NotesCascade />
+      </Sequence>
+      <Sequence from={SCENES.notesCascade.from} durationInFrames={SCENES.notesCascade.duration}>
+        <Audio src={staticFile("audio/scene2.mp3")} />
       </Sequence>
 
       {/* Scene 3: Acknowledge & Expire */}
@@ -53,6 +59,9 @@ const PinnedPromo: React.FC = () => {
       >
         <AcknowledgeAndExpire />
       </Sequence>
+      <Sequence from={SCENES.acknowledgeAndExpire.from} durationInFrames={SCENES.acknowledgeAndExpire.duration}>
+        <Audio src={staticFile("audio/scene3.mp3")} />
+      </Sequence>
 
       {/* Scene 4: Full Dashboard Pull-back */}
       <Sequence
@@ -61,6 +70,9 @@ const PinnedPromo: React.FC = () => {
       >
         <FullDashboard />
       </Sequence>
+      <Sequence from={SCENES.fullDashboard.from} durationInFrames={SCENES.fullDashboard.duration}>
+        <Audio src={staticFile("audio/scene4.mp3")} />
+      </Sequence>
 
       {/* Scene 5: Closing CTA */}
       <Sequence
@@ -68,6 +80,9 @@ const PinnedPromo: React.FC = () => {
         durationInFrames={SCENES.closingCTA.duration}
       >
         <ClosingCTA />
+      </Sequence>
+      <Sequence from={SCENES.closingCTA.from} durationInFrames={SCENES.closingCTA.duration}>
+        <Audio src={staticFile("audio/scene5.mp3")} />
       </Sequence>
     </div>
   );

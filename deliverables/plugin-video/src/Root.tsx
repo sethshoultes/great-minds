@@ -1,5 +1,5 @@
 import React from "react";
-import { Composition, Sequence } from "remotion";
+import { Audio, Composition, Sequence, staticFile } from "remotion";
 import { TerminalInstall } from "./scenes/TerminalInstall";
 import { WorktreeRevolution } from "./scenes/WorktreeRevolution";
 import { OrgChart } from "./scenes/OrgChart";
@@ -37,6 +37,9 @@ const GreatMindsPlugin: React.FC = () => {
       >
         <TerminalInstall />
       </Sequence>
+      <Sequence from={SCENES.terminalInstall.from} durationInFrames={SCENES.terminalInstall.duration}>
+        <Audio src={staticFile("audio/scene1.mp3")} />
+      </Sequence>
 
       {/* Scene 2: Tmux Failure vs Worktree Success */}
       <Sequence
@@ -44,6 +47,9 @@ const GreatMindsPlugin: React.FC = () => {
         durationInFrames={SCENES.worktreeRevolution.duration}
       >
         <WorktreeRevolution />
+      </Sequence>
+      <Sequence from={SCENES.worktreeRevolution.from} durationInFrames={SCENES.worktreeRevolution.duration}>
+        <Audio src={staticFile("audio/scene2.mp3")} />
       </Sequence>
 
       {/* Scene 3: Org Chart + Skills + Cron */}
@@ -53,6 +59,9 @@ const GreatMindsPlugin: React.FC = () => {
       >
         <OrgChart />
       </Sequence>
+      <Sequence from={SCENES.orgChart.from} durationInFrames={SCENES.orgChart.duration}>
+        <Audio src={staticFile("audio/scene3.mp3")} />
+      </Sequence>
 
       {/* Scene 4: Live Build Session */}
       <Sequence
@@ -61,6 +70,9 @@ const GreatMindsPlugin: React.FC = () => {
       >
         <LiveBuild />
       </Sequence>
+      <Sequence from={SCENES.liveBuild.from} durationInFrames={SCENES.liveBuild.duration}>
+        <Audio src={staticFile("audio/scene4.mp3")} />
+      </Sequence>
 
       {/* Scene 5: CTA */}
       <Sequence
@@ -68,6 +80,9 @@ const GreatMindsPlugin: React.FC = () => {
         durationInFrames={SCENES.cta.duration}
       >
         <CTA />
+      </Sequence>
+      <Sequence from={SCENES.cta.from} durationInFrames={SCENES.cta.duration}>
+        <Audio src={staticFile("audio/scene5.mp3")} />
       </Sequence>
     </div>
   );

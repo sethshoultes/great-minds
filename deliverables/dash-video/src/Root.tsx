@@ -1,5 +1,5 @@
 import React from "react";
-import { Composition, Sequence } from "remotion";
+import { Audio, Composition, Sequence, staticFile } from "remotion";
 import { WPAdminSidebar } from "./scenes/WPAdminSidebar";
 import { DashOverlay } from "./scenes/DashOverlay";
 import { RapidSearch } from "./scenes/RapidSearch";
@@ -30,29 +30,44 @@ const DashPromo: React.FC = () => {
         position: "relative",
       }}
     >
-      {/* Scene 1: WordPress Admin Sidebar */}
+      {/* Scene 1 */}
       <Sequence from={SCENES.wpAdmin.from} durationInFrames={SCENES.wpAdmin.duration}>
         <WPAdminSidebar />
       </Sequence>
+      <Sequence from={SCENES.wpAdmin.from} durationInFrames={SCENES.wpAdmin.duration}>
+        <Audio src={staticFile("audio/scene1.mp3")} />
+      </Sequence>
 
-      {/* Scene 2: Dash Overlay + Search */}
+      {/* Scene 2 */}
       <Sequence from={SCENES.dashOverlay.from} durationInFrames={SCENES.dashOverlay.duration}>
         <DashOverlay />
       </Sequence>
+      <Sequence from={SCENES.dashOverlay.from} durationInFrames={SCENES.dashOverlay.duration}>
+        <Audio src={staticFile("audio/scene2.mp3")} />
+      </Sequence>
 
-      {/* Scene 3: Rapid-fire Searches */}
+      {/* Scene 3 */}
       <Sequence from={SCENES.rapidSearch.from} durationInFrames={SCENES.rapidSearch.duration}>
         <RapidSearch />
       </Sequence>
+      <Sequence from={SCENES.rapidSearch.from} durationInFrames={SCENES.rapidSearch.duration}>
+        <Audio src={staticFile("audio/scene3.mp3")} />
+      </Sequence>
 
-      {/* Scene 4: Developer API (Split Screen) */}
+      {/* Scene 4 */}
       <Sequence from={SCENES.developerAPI.from} durationInFrames={SCENES.developerAPI.duration}>
         <DeveloperAPI />
       </Sequence>
+      <Sequence from={SCENES.developerAPI.from} durationInFrames={SCENES.developerAPI.duration}>
+        <Audio src={staticFile("audio/scene4.mp3")} />
+      </Sequence>
 
-      {/* Scene 5: CTA + Stats */}
+      {/* Scene 5 */}
       <Sequence from={SCENES.cta.from} durationInFrames={SCENES.cta.duration}>
         <CTAScene />
+      </Sequence>
+      <Sequence from={SCENES.cta.from} durationInFrames={SCENES.cta.duration}>
+        <Audio src={staticFile("audio/scene5.mp3")} />
       </Sequence>
     </div>
   );
