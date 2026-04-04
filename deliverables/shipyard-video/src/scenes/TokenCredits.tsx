@@ -64,23 +64,23 @@ export const TokenCredits: React.FC = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: 60,
+        padding: 84,
         position: "relative",
       }}
     >
       {/* Token Meter */}
-      <div style={{ width: 600, marginBottom: 60 }}>
+      <div style={{ width: 840, marginBottom: 84 }}>
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginBottom: 12,
+            marginBottom: 18,
           }}
         >
           <span
             style={{
               fontFamily: fonts.body,
-              fontSize: 18,
+              fontSize: 28,
               color: colors.text,
               fontWeight: 600,
             }}
@@ -90,7 +90,7 @@ export const TokenCredits: React.FC = () => {
           <span
             style={{
               fontFamily: fonts.code,
-              fontSize: 20,
+              fontSize: 32,
               color: colors.accent,
               fontWeight: 700,
             }}
@@ -103,9 +103,9 @@ export const TokenCredits: React.FC = () => {
         <div
           style={{
             width: "100%",
-            height: 16,
+            height: 24,
             backgroundColor: colors.surfaceLight,
-            borderRadius: 8,
+            borderRadius: 12,
             overflow: "hidden",
           }}
         >
@@ -119,7 +119,7 @@ export const TokenCredits: React.FC = () => {
                   : meterPercent > 25
                   ? colors.accent
                   : "#ef4444",
-              borderRadius: 8,
+              borderRadius: 12,
             }}
           />
         </div>
@@ -127,9 +127,9 @@ export const TokenCredits: React.FC = () => {
         {/* Activity ticks */}
         <div
           style={{
-            marginTop: 16,
+            marginTop: 22,
             display: "flex",
-            gap: 4,
+            gap: 6,
           }}
         >
           {Array.from({ length: 40 }).map((_, i) => {
@@ -143,11 +143,11 @@ export const TokenCredits: React.FC = () => {
               <div
                 key={i}
                 style={{
-                  width: 3,
+                  width: 5,
                   height: interpolate(
                     Math.sin(i * 0.8 + frame * 0.05),
                     [-1, 1],
-                    [8, 24]
+                    [12, 36]
                   ),
                   backgroundColor: colors.accent,
                   borderRadius: 2,
@@ -164,24 +164,24 @@ export const TokenCredits: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            bottom: 80,
+            bottom: 112,
             left: "50%",
             transform: `translateX(-50%) translateY(${notifSlide}px)`,
             opacity: notifOpacity,
             backgroundColor: colors.surface,
             border: `1px solid ${colors.accent}`,
-            borderRadius: 12,
-            padding: "20px 30px",
+            borderRadius: 16,
+            padding: "28px 42px",
             display: "flex",
             alignItems: "center",
-            gap: 20,
-            width: 550,
+            gap: 28,
+            width: 770,
           }}
         >
           <div
             style={{
-              width: 8,
-              height: 8,
+              width: 12,
+              height: 12,
               borderRadius: "50%",
               backgroundColor: colors.accent,
               flexShrink: 0,
@@ -191,10 +191,10 @@ export const TokenCredits: React.FC = () => {
             <div
               style={{
                 fontFamily: fonts.body,
-                fontSize: 16,
+                fontSize: 24,
                 color: colors.text,
                 fontWeight: 600,
-                marginBottom: 4,
+                marginBottom: 6,
               }}
             >
               Scope Change: "Can we also add a blog?"
@@ -202,7 +202,7 @@ export const TokenCredits: React.FC = () => {
             <div
               style={{
                 fontFamily: fonts.code,
-                fontSize: 13,
+                fontSize: 20,
                 color: colors.accent,
               }}
             >
@@ -214,13 +214,13 @@ export const TokenCredits: React.FC = () => {
           <div
             style={{
               fontFamily: fonts.body,
-              fontSize: 14,
+              fontSize: 22,
               fontWeight: 700,
               color: approved ? colors.bg : colors.text,
               backgroundColor: approved ? colors.green : "transparent",
               border: `2px solid ${approved ? colors.green : colors.accent}`,
-              borderRadius: 8,
-              padding: "8px 20px",
+              borderRadius: 10,
+              padding: "12px 28px",
               transform: `scale(${pulseScale})`,
               cursor: "pointer",
             }}

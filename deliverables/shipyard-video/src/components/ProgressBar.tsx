@@ -27,18 +27,18 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   const isComplete = progress >= 100;
 
   return (
-    <div style={{ marginBottom: 14 }}>
+    <div style={{ marginBottom: 20 }}>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
-          marginBottom: 4,
+          marginBottom: 6,
         }}
       >
         <span
           style={{
             fontFamily: fonts.body,
-            fontSize: 14,
+            fontSize: 22,
             color: colors.text,
           }}
         >
@@ -47,7 +47,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         <span
           style={{
             fontFamily: fonts.code,
-            fontSize: 12,
+            fontSize: 18,
             color: colors.textMuted,
           }}
         >
@@ -58,9 +58,9 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       <div
         style={{
           width: "100%",
-          height: 8,
+          height: 12,
           backgroundColor: colors.surfaceLight,
-          borderRadius: 4,
+          borderRadius: 6,
           overflow: "hidden",
         }}
       >
@@ -69,7 +69,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
             width: `${progress}%`,
             height: "100%",
             backgroundColor: isComplete ? colors.green : color,
-            borderRadius: 4,
+            borderRadius: 6,
             transition: "background-color 0.3s",
           }}
         />

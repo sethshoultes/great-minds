@@ -13,7 +13,7 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
   name,
   imageSrc,
   delay,
-  size = 80,
+  size = 112,
 }) => {
   const frame = useCurrentFrame();
 
@@ -33,7 +33,7 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: 6,
+        gap: 10,
         opacity,
       }}
     >
@@ -43,8 +43,8 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
           height: size,
           borderRadius: "50%",
           overflow: "hidden",
-          border: `2px solid ${colors.accent}`,
-          boxShadow: `0 0 ${glow * 20}px ${colors.accent}88`,
+          border: `3px solid ${colors.accent}`,
+          boxShadow: `0 0 ${glow * 28}px ${colors.accent}88`,
         }}
       >
         <Img
@@ -59,7 +59,7 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
       <span
         style={{
           fontFamily: fonts.body,
-          fontSize: 11,
+          fontSize: 17,
           color: colors.text,
           textAlign: "center",
           opacity: interpolate(frame - delay, [5, 15], [0, 1], {

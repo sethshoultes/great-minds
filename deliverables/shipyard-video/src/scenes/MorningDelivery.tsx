@@ -73,7 +73,7 @@ export const MorningDelivery: React.FC = () => {
       <div
         style={{
           display: "flex",
-          gap: 80,
+          gap: 112,
           alignItems: "center",
           opacity: interpolate(browserExpand, [0, 0.5], [1, 0], {
             extrapolateRight: "clamp",
@@ -81,13 +81,13 @@ export const MorningDelivery: React.FC = () => {
         }}
       >
         {/* Analog Clock */}
-        <div style={{ position: "relative", width: 200, height: 200 }}>
+        <div style={{ position: "relative", width: 280, height: 280 }}>
           <div
             style={{
-              width: 200,
-              height: 200,
+              width: 280,
+              height: 280,
               borderRadius: "50%",
-              border: `3px solid ${colors.surfaceLight}`,
+              border: `4px solid ${colors.surfaceLight}`,
               position: "relative",
             }}
           >
@@ -99,11 +99,11 @@ export const MorningDelivery: React.FC = () => {
                   position: "absolute",
                   top: "50%",
                   left: "50%",
-                  width: 2,
-                  height: 10,
+                  width: 3,
+                  height: 14,
                   backgroundColor: colors.textMuted,
                   transformOrigin: "center 0",
-                  transform: `translate(-50%, -50%) rotate(${i * 30}deg) translateY(-88px)`,
+                  transform: `translate(-50%, -50%) rotate(${i * 30}deg) translateY(-124px)`,
                 }}
               />
             ))}
@@ -113,8 +113,8 @@ export const MorningDelivery: React.FC = () => {
                 position: "absolute",
                 top: "50%",
                 left: "50%",
-                width: 4,
-                height: 50,
+                width: 5,
+                height: 70,
                 backgroundColor: colors.text,
                 borderRadius: 2,
                 transformOrigin: "bottom center",
@@ -127,8 +127,8 @@ export const MorningDelivery: React.FC = () => {
                 position: "absolute",
                 top: "50%",
                 left: "50%",
-                width: 2,
-                height: 70,
+                width: 3,
+                height: 98,
                 backgroundColor: colors.accent,
                 borderRadius: 2,
                 transformOrigin: "bottom center",
@@ -141,8 +141,8 @@ export const MorningDelivery: React.FC = () => {
                 position: "absolute",
                 top: "50%",
                 left: "50%",
-                width: 8,
-                height: 8,
+                width: 12,
+                height: 12,
                 borderRadius: "50%",
                 backgroundColor: colors.accent,
                 transform: "translate(-50%, -50%)",
@@ -153,9 +153,9 @@ export const MorningDelivery: React.FC = () => {
           <div
             style={{
               textAlign: "center",
-              marginTop: 12,
+              marginTop: 18,
               fontFamily: fonts.code,
-              fontSize: 20,
+              fontSize: 30,
               color: colors.textMuted,
             }}
           >
@@ -164,7 +164,7 @@ export const MorningDelivery: React.FC = () => {
         </div>
 
         {/* Mini progress bars */}
-        <div style={{ width: 300 }}>
+        <div style={{ width: 420 }}>
           {tracks.map((track) => {
             const progress = interpolate(frame, [0, track.end], [40, 100], {
               extrapolateLeft: "clamp",
@@ -172,15 +172,15 @@ export const MorningDelivery: React.FC = () => {
             });
             const isComplete = progress >= 100;
             return (
-              <div key={track.label} style={{ marginBottom: 10 }}>
+              <div key={track.label} style={{ marginBottom: 14 }}>
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
                     fontFamily: fonts.body,
-                    fontSize: 13,
+                    fontSize: 20,
                     color: isComplete ? colors.green : colors.textMuted,
-                    marginBottom: 3,
+                    marginBottom: 5,
                   }}
                 >
                   <span>{track.label}</span>
@@ -188,9 +188,9 @@ export const MorningDelivery: React.FC = () => {
                 </div>
                 <div
                   style={{
-                    height: 6,
+                    height: 10,
                     backgroundColor: colors.surfaceLight,
-                    borderRadius: 3,
+                    borderRadius: 5,
                     overflow: "hidden",
                   }}
                 >
@@ -199,7 +199,7 @@ export const MorningDelivery: React.FC = () => {
                       width: `${progress}%`,
                       height: "100%",
                       backgroundColor: isComplete ? colors.green : colors.blue,
-                      borderRadius: 3,
+                      borderRadius: 5,
                     }}
                   />
                 </div>
@@ -217,9 +217,9 @@ export const MorningDelivery: React.FC = () => {
             top: "50%",
             left: "50%",
             transform: `translate(-50%, -50%) scale(${browserExpand})`,
-            width: 900,
+            width: 1260,
             backgroundColor: colors.surface,
-            borderRadius: 12,
+            borderRadius: 16,
             border: `1px solid ${colors.surfaceLight}`,
             overflow: "hidden",
           }}
@@ -229,24 +229,24 @@ export const MorningDelivery: React.FC = () => {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              padding: "10px 16px",
+              gap: 12,
+              padding: "14px 22px",
               borderBottom: `1px solid ${colors.surfaceLight}`,
             }}
           >
-            <div style={{ display: "flex", gap: 6 }}>
-              <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "#ff5f57" }} />
-              <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "#febc2e" }} />
-              <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "#28c840" }} />
+            <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ width: 14, height: 14, borderRadius: "50%", backgroundColor: "#ff5f57" }} />
+              <div style={{ width: 14, height: 14, borderRadius: "50%", backgroundColor: "#febc2e" }} />
+              <div style={{ width: 14, height: 14, borderRadius: "50%", backgroundColor: "#28c840" }} />
             </div>
             <div
               style={{
                 flex: 1,
                 backgroundColor: colors.surfaceLight,
-                borderRadius: 4,
-                padding: "4px 12px",
+                borderRadius: 6,
+                padding: "6px 16px",
                 fontFamily: fonts.code,
-                fontSize: 12,
+                fontSize: 18,
                 color: colors.green,
               }}
             >
@@ -255,30 +255,30 @@ export const MorningDelivery: React.FC = () => {
           </div>
 
           {/* Site content */}
-          <div style={{ padding: 30, minHeight: 300 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-              <span style={{ fontFamily: fonts.body, fontSize: 22, fontWeight: 700, color: colors.accent }}>
+          <div style={{ padding: 42, minHeight: 420 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 28 }}>
+              <span style={{ fontFamily: fonts.body, fontSize: 32, fontWeight: 700, color: colors.accent }}>
                 Acme Co.
               </span>
-              <div style={{ display: "flex", gap: 16 }}>
+              <div style={{ display: "flex", gap: 22 }}>
                 {["Home", "About", "Services", "Blog", "Contact"].map((n) => (
-                  <span key={n} style={{ fontFamily: fonts.body, fontSize: 13, color: colors.textMuted }}>{n}</span>
+                  <span key={n} style={{ fontFamily: fonts.body, fontSize: 20, color: colors.textMuted }}>{n}</span>
                 ))}
               </div>
             </div>
             <div
               style={{
                 background: `linear-gradient(135deg, ${colors.accent}, ${colors.blue})`,
-                borderRadius: 8,
-                padding: 30,
+                borderRadius: 12,
+                padding: 42,
                 textAlign: "center",
-                marginBottom: 20,
+                marginBottom: 28,
               }}
             >
-              <div style={{ fontFamily: fonts.body, fontSize: 28, fontWeight: 700, color: "#fff" }}>
+              <div style={{ fontFamily: fonts.body, fontSize: 42, fontWeight: 700, color: "#fff" }}>
                 Build Something Great
               </div>
-              <div style={{ fontFamily: fonts.body, fontSize: 14, color: "rgba(255,255,255,0.8)", marginTop: 8 }}>
+              <div style={{ fontFamily: fonts.body, fontSize: 22, color: "rgba(255,255,255,0.8)", marginTop: 12 }}>
                 Powered by Shipyard AI
               </div>
             </div>
@@ -289,20 +289,20 @@ export const MorningDelivery: React.FC = () => {
             <div
               style={{
                 position: "absolute",
-                top: 60,
-                right: 20,
+                top: 70,
+                right: 28,
                 opacity: deployedOpacity,
                 display: "flex",
                 alignItems: "center",
-                gap: 8,
+                gap: 12,
                 backgroundColor: `${colors.green}22`,
                 border: `1px solid ${colors.green}`,
-                borderRadius: 6,
-                padding: "6px 14px",
+                borderRadius: 8,
+                padding: "10px 20px",
               }}
             >
-              <div style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: colors.green }} />
-              <span style={{ fontFamily: fonts.code, fontSize: 13, color: colors.green, fontWeight: 600 }}>
+              <div style={{ width: 12, height: 12, borderRadius: "50%", backgroundColor: colors.green }} />
+              <span style={{ fontFamily: fonts.code, fontSize: 20, color: colors.green, fontWeight: 600 }}>
                 Deployed
               </span>
             </div>

@@ -93,7 +93,7 @@ export const AgentDebate: React.FC = () => {
         backgroundColor: colors.bg,
         display: "flex",
         flexDirection: "column",
-        padding: "40px 120px",
+        padding: "56px 168px",
         position: "relative",
       }}
     >
@@ -101,13 +101,13 @@ export const AgentDebate: React.FC = () => {
       <div
         style={{
           fontFamily: fonts.body,
-          fontSize: 16,
+          fontSize: 24,
           color: colors.textMuted,
           textTransform: "uppercase",
-          letterSpacing: 3,
-          marginBottom: 30,
+          letterSpacing: 4,
+          marginBottom: 42,
           borderBottom: `1px solid ${colors.surfaceLight}`,
-          paddingBottom: 16,
+          paddingBottom: 22,
         }}
       >
         Strategy War Room
@@ -137,7 +137,7 @@ export const AgentDebate: React.FC = () => {
                 display: "flex",
                 justifyContent:
                   msg.side === "left" ? "flex-start" : "flex-end",
-                marginBottom: 16,
+                marginBottom: 22,
                 opacity: msgOpacity,
                 transform: `translateX(${slideIn}px)`,
               }}
@@ -146,20 +146,20 @@ export const AgentDebate: React.FC = () => {
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
-                  gap: 12,
-                  maxWidth: "70%",
+                  gap: 18,
+                  maxWidth: "75%",
                   flexDirection:
                     msg.side === "left" ? "row" : "row-reverse",
                 }}
               >
                 <div
                   style={{
-                    width: 44,
-                    height: 44,
+                    width: 64,
+                    height: 64,
                     borderRadius: "50%",
                     overflow: "hidden",
                     flexShrink: 0,
-                    border: `2px solid ${msg.color}`,
+                    border: `3px solid ${msg.color}`,
                   }}
                 >
                   <Img
@@ -175,10 +175,10 @@ export const AgentDebate: React.FC = () => {
                   <div
                     style={{
                       fontFamily: fonts.body,
-                      fontSize: 12,
+                      fontSize: 18,
                       color: msg.color,
                       fontWeight: 600,
-                      marginBottom: 4,
+                      marginBottom: 6,
                       textAlign: msg.side === "left" ? "left" : "right",
                     }}
                   >
@@ -187,11 +187,11 @@ export const AgentDebate: React.FC = () => {
                   <div
                     style={{
                       fontFamily: fonts.body,
-                      fontSize: 18,
+                      fontSize: 27,
                       color: colors.text,
                       backgroundColor: colors.surface,
-                      padding: "12px 18px",
-                      borderRadius: 12,
+                      padding: "18px 26px",
+                      borderRadius: 16,
                       border: `1px solid ${colors.surfaceLight}`,
                       lineHeight: 1.4,
                     }}
@@ -219,14 +219,14 @@ export const AgentDebate: React.FC = () => {
           <div
             style={{
               fontFamily: fonts.body,
-              fontSize: 48,
+              fontSize: 72,
               fontWeight: 900,
               color: colors.accent,
               textTransform: "uppercase",
-              letterSpacing: 6,
-              padding: "20px 50px",
-              border: `4px solid ${colors.accent}`,
-              borderRadius: 12,
+              letterSpacing: 8,
+              padding: "30px 70px",
+              border: `5px solid ${colors.accent}`,
+              borderRadius: 16,
               backgroundColor: `${colors.bg}ee`,
               textAlign: "center",
             }}

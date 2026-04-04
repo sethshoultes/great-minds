@@ -46,7 +46,7 @@ export const CTA: React.FC = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 30,
+        gap: 42,
       }}
     >
       {/* Logo / Brand */}
@@ -56,21 +56,21 @@ export const CTA: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: 12,
+          gap: 18,
         }}
       >
         {/* Stylized logo mark */}
         <div
           style={{
-            width: 80,
-            height: 80,
-            borderRadius: 16,
+            width: 112,
+            height: 112,
+            borderRadius: 22,
             background: `linear-gradient(135deg, ${colors.accent}, ${colors.blue})`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontFamily: fonts.body,
-            fontSize: 40,
+            fontSize: 56,
             fontWeight: 900,
             color: colors.bg,
           }}
@@ -80,7 +80,7 @@ export const CTA: React.FC = () => {
         <div
           style={{
             fontFamily: fonts.body,
-            fontSize: 52,
+            fontSize: 78,
             fontWeight: 800,
             color: colors.text,
             letterSpacing: -1,
@@ -91,7 +91,7 @@ export const CTA: React.FC = () => {
         <div
           style={{
             fontFamily: fonts.body,
-            fontSize: 18,
+            fontSize: 28,
             color: colors.textMuted,
           }}
         >
@@ -103,7 +103,7 @@ export const CTA: React.FC = () => {
       <div
         style={{
           fontFamily: fonts.code,
-          fontSize: 24,
+          fontSize: 36,
           color: colors.accent,
           letterSpacing: 1,
         }}
@@ -116,16 +116,16 @@ export const CTA: React.FC = () => {
         <div
           style={{
             backgroundColor: "#111111",
-            borderRadius: 8,
-            padding: "16px 30px",
+            borderRadius: 12,
+            padding: "24px 44px",
             border: `1px solid ${colors.surfaceLight}`,
-            marginTop: 20,
+            marginTop: 28,
           }}
         >
           <span
             style={{
               fontFamily: fonts.code,
-              fontSize: 22,
+              fontSize: 34,
               color: colors.green,
             }}
           >

@@ -36,8 +36,8 @@ export const ParallelBuild: React.FC = () => {
         height: "100%",
         backgroundColor: colors.bg,
         display: "flex",
-        padding: 40,
-        gap: 40,
+        padding: 56,
+        gap: 56,
       }}
     >
       {/* Left: Progress Dashboard */}
@@ -45,13 +45,13 @@ export const ParallelBuild: React.FC = () => {
         <div
           style={{
             fontFamily: fonts.body,
-            fontSize: 16,
+            fontSize: 24,
             color: colors.textMuted,
             textTransform: "uppercase",
-            letterSpacing: 3,
-            marginBottom: 30,
+            letterSpacing: 4,
+            marginBottom: 42,
             borderBottom: `1px solid ${colors.surfaceLight}`,
-            paddingBottom: 16,
+            paddingBottom: 22,
           }}
         >
           Build Dashboard
@@ -82,13 +82,13 @@ export const ParallelBuild: React.FC = () => {
         <div
           style={{
             fontFamily: fonts.body,
-            fontSize: 16,
+            fontSize: 24,
             color: colors.textMuted,
             textTransform: "uppercase",
-            letterSpacing: 3,
-            marginBottom: 30,
+            letterSpacing: 4,
+            marginBottom: 42,
             borderBottom: `1px solid ${colors.surfaceLight}`,
-            paddingBottom: 16,
+            paddingBottom: 22,
           }}
         >
           Live Preview
@@ -99,7 +99,7 @@ export const ParallelBuild: React.FC = () => {
           style={{
             flex: 1,
             backgroundColor: colors.surface,
-            borderRadius: 8,
+            borderRadius: 12,
             border: `1px solid ${colors.surfaceLight}`,
             overflow: "hidden",
           }}
@@ -109,24 +109,24 @@ export const ParallelBuild: React.FC = () => {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              padding: "10px 16px",
+              gap: 10,
+              padding: "14px 22px",
               borderBottom: `1px solid ${colors.surfaceLight}`,
             }}
           >
-            <div style={{ display: "flex", gap: 6 }}>
-              <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "#ff5f57" }} />
-              <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "#febc2e" }} />
-              <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "#28c840" }} />
+            <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ width: 14, height: 14, borderRadius: "50%", backgroundColor: "#ff5f57" }} />
+              <div style={{ width: 14, height: 14, borderRadius: "50%", backgroundColor: "#febc2e" }} />
+              <div style={{ width: 14, height: 14, borderRadius: "50%", backgroundColor: "#28c840" }} />
             </div>
             <div
               style={{
                 flex: 1,
                 backgroundColor: colors.surfaceLight,
-                borderRadius: 4,
-                padding: "4px 12px",
+                borderRadius: 6,
+                padding: "6px 16px",
                 fontFamily: fonts.code,
-                fontSize: 12,
+                fontSize: 18,
                 color: colors.textMuted,
               }}
             >
@@ -135,35 +135,35 @@ export const ParallelBuild: React.FC = () => {
           </div>
 
           {/* Site preview content */}
-          <div style={{ padding: 24, position: "relative" }}>
+          <div style={{ padding: 34, position: "relative" }}>
             {/* Wireframe state */}
             {currentState.label === "Wireframe" && (
               <div>
                 <div
                   style={{
                     width: "60%",
-                    height: 20,
+                    height: 28,
                     backgroundColor: colors.surfaceLight,
-                    borderRadius: 4,
-                    marginBottom: 16,
+                    borderRadius: 6,
+                    marginBottom: 22,
                   }}
                 />
                 <div
                   style={{
                     width: "100%",
-                    height: 120,
+                    height: 168,
                     backgroundColor: colors.surfaceLight,
-                    borderRadius: 4,
-                    marginBottom: 16,
+                    borderRadius: 6,
+                    marginBottom: 22,
                   }}
                 />
-                <div style={{ display: "flex", gap: 12 }}>
+                <div style={{ display: "flex", gap: 16 }}>
                   {[1, 2, 3].map((n) => (
                     <div
                       key={n}
                       style={{
                         flex: 1,
-                        height: 80,
+                        height: 112,
                         backgroundColor: colors.surfaceLight,
                         borderRadius: 4,
                       }}
@@ -179,10 +179,10 @@ export const ParallelBuild: React.FC = () => {
                 <div
                   style={{
                     fontFamily: fonts.body,
-                    fontSize: 28,
+                    fontSize: 40,
                     fontWeight: 700,
                     color: colors.text,
-                    marginBottom: 16,
+                    marginBottom: 22,
                   }}
                 >
                   Welcome to Acme Co.
@@ -190,34 +190,34 @@ export const ParallelBuild: React.FC = () => {
                 <div
                   style={{
                     width: "100%",
-                    height: 120,
+                    height: 168,
                     background: `linear-gradient(135deg, ${colors.blue}44, ${colors.accent}44)`,
-                    borderRadius: 8,
-                    marginBottom: 16,
+                    borderRadius: 12,
+                    marginBottom: 22,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontFamily: fonts.body,
-                    fontSize: 16,
+                    fontSize: 24,
                     color: colors.textMuted,
                   }}
                 >
                   Hero Section
                 </div>
-                <div style={{ display: "flex", gap: 12 }}>
+                <div style={{ display: "flex", gap: 16 }}>
                   {["Services", "Portfolio", "Contact"].map((label) => (
                     <div
                       key={label}
                       style={{
                         flex: 1,
-                        height: 80,
+                        height: 112,
                         backgroundColor: colors.surfaceLight,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         fontFamily: fonts.body,
-                        fontSize: 13,
+                        fontSize: 20,
                         color: colors.textMuted,
                       }}
                     >
@@ -231,13 +231,13 @@ export const ParallelBuild: React.FC = () => {
             {/* Fully rendered state */}
             {currentState.label === "Rendered" && (
               <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                  <div style={{ fontFamily: fonts.body, fontSize: 20, fontWeight: 700, color: colors.accent }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
+                  <div style={{ fontFamily: fonts.body, fontSize: 28, fontWeight: 700, color: colors.accent }}>
                     Acme Co.
                   </div>
-                  <div style={{ display: "flex", gap: 16 }}>
+                  <div style={{ display: "flex", gap: 20 }}>
                     {["Home", "About", "Services", "Contact"].map((nav) => (
-                      <span key={nav} style={{ fontFamily: fonts.body, fontSize: 12, color: colors.textMuted }}>
+                      <span key={nav} style={{ fontFamily: fonts.body, fontSize: 18, color: colors.textMuted }}>
                         {nav}
                       </span>
                     ))}
@@ -246,10 +246,10 @@ export const ParallelBuild: React.FC = () => {
                 <div
                   style={{
                     width: "100%",
-                    height: 120,
+                    height: 168,
                     background: `linear-gradient(135deg, ${colors.accent}, ${colors.blue})`,
-                    borderRadius: 8,
-                    marginBottom: 16,
+                    borderRadius: 12,
+                    marginBottom: 22,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -257,37 +257,37 @@ export const ParallelBuild: React.FC = () => {
                     gap: 8,
                   }}
                 >
-                  <span style={{ fontFamily: fonts.body, fontSize: 22, fontWeight: 700, color: "#fff" }}>
+                  <span style={{ fontFamily: fonts.body, fontSize: 32, fontWeight: 700, color: "#fff" }}>
                     Build Something Great
                   </span>
                   <span
                     style={{
                       fontFamily: fonts.body,
-                      fontSize: 12,
+                      fontSize: 18,
                       color: "#fff",
                       backgroundColor: "rgba(0,0,0,0.3)",
-                      padding: "6px 18px",
+                      padding: "8px 24px",
                       borderRadius: 4,
                     }}
                   >
                     Get Started
                   </span>
                 </div>
-                <div style={{ display: "flex", gap: 12 }}>
+                <div style={{ display: "flex", gap: 16 }}>
                   {["Services", "Portfolio", "Contact"].map((label) => (
                     <div
                       key={label}
                       style={{
                         flex: 1,
-                        height: 80,
+                        height: 112,
                         backgroundColor: colors.surface,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         border: `1px solid ${colors.surfaceLight}`,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         fontFamily: fonts.body,
-                        fontSize: 13,
+                        fontSize: 20,
                         color: colors.text,
                         fontWeight: 500,
                       }}
@@ -303,13 +303,13 @@ export const ParallelBuild: React.FC = () => {
             <div
               style={{
                 position: "absolute",
-                bottom: 12,
-                right: 12,
+                bottom: 16,
+                right: 16,
                 fontFamily: fonts.code,
-                fontSize: 10,
+                fontSize: 16,
                 color: colors.textMuted,
                 backgroundColor: colors.bg,
-                padding: "2px 8px",
+                padding: "4px 12px",
                 borderRadius: 4,
               }}
             >
