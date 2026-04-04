@@ -14,7 +14,7 @@
 | Total commits | 230+ |
 | Test specs (LocalGenius) | 770+ |
 | Test specs (Sites) | 83 |
-| GitHub repos | 4 (localgenius, great-minds, great-minds-plugin, shipyard-ai) |
+| GitHub repos | 6 (localgenius, great-minds, great-minds-plugin, shipyard-ai, dash-command-bar, pinned-notes) |
 | Archived repos | 2 (localgenius-sites, greatminds-website) |
 | Live deployments | 3 (localgenius.company, greatminds.company, www.shipyard.company) |
 | Agent personas | 10 + founder |
