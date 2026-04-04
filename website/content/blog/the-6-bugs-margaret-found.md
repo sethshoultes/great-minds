@@ -42,35 +42,15 @@ Here are the six, what caused them, and what they reveal about how agents miss t
 
 **The seam:** Between the HTML generator and the stylesheet. String-based interfaces have no type checking. If two agents don't agree on a string, nothing breaks visibly until a human looks at the rendered page.
 
-## Bug 4: Cron Registered on Every Page Load
+## Bugs 4-6: Lifecycle, Scope, and Timing
 
-**What happened:** The Cron Agent registered the cleanup cron hook inside a function that ran on `init`. This meant `wp_schedule_event` was called on every page load, not just on plugin activation. WordPress handles this gracefully — it doesn't create duplicate events — but the repeated scheduling call added unnecessary database queries on every request.
+The remaining three bugs followed the same pattern — agents making reasonable assumptions that broke at the seam.
 
-**Root cause:** The Cron Agent followed a pattern that works for hooks (register on `init`) but isn't correct for scheduled events (register on activation). The distinction between "register a hook" and "schedule an event" is subtle, and the agent applied the more common pattern.
+**Bug 4: Cron registered on every page load.** The Cron Agent hooked `wp_schedule_event` into `init` instead of plugin activation. WordPress prevented duplicate events, but the redundant scheduling call added a database query to every single page load. The seam: plugin lifecycle versus request lifecycle. The agent did not distinguish between code that runs once and code that runs on every request.
 
-**Why agents missed it:** The cron worked. Events fired on schedule. Cleanup happened. The performance cost of the redundant scheduling call was too small to notice in testing but would compound on a high-traffic site.
+**Bug 5: Drag-and-drop JavaScript on the frontend.** The JavaScript Agent enqueued SortableJS via `wp_enqueue_scripts`, which fires on both admin and frontend. Site visitors could reorder pins. The agent's role said "build drag-and-drop reordering" — the admin-only scope was implicit, not explicit. The seam: admin interface versus public interface, served by the same WordPress hook.
 
-**The seam:** Between the plugin lifecycle (activation, deactivation) and the request lifecycle (every page load). The cron agent didn't distinguish between code that runs once and code that runs on every request.
-
-## Bug 5: Drag-and-Drop JavaScript on the Frontend
-
-**What happened:** The JavaScript Agent built the SortableJS drag-and-drop functionality and enqueued it using `wp_enqueue_scripts`. This hook fires on both the admin and the frontend. The drag-and-drop handles appeared on the public-facing board display, allowing site visitors to reorder pins.
-
-**Root cause:** The JavaScript Agent's role was "build drag-and-drop reordering." The scope — admin only — was implicit, not explicit. The agent built the feature and made it available everywhere.
-
-**Why agents missed it:** The feature worked. You could drag and drop. The test environment was the admin, where drag-and-drop is correct behavior. Nobody tested the frontend view to see if the handles appeared there too, because the frontend wasn't in the JavaScript Agent's scope.
-
-**The seam:** Between the admin interface and the public interface. The same WordPress hook (`wp_enqueue_scripts`) serves both contexts, and the agent didn't add the `is_admin()` conditional because admin-only scope wasn't in its instructions.
-
-## Bug 6: Masonry JavaScript Loaded Before DOM Ready
-
-**What happened:** The masonry layout requires JavaScript to calculate column positions. The JavaScript Agent enqueued the masonry script in the header without the `in_footer` parameter or a defer attribute. The script executed before the DOM was ready, found zero elements, and the masonry layout rendered as a single column.
-
-**Root cause:** The default behavior of `wp_enqueue_script` is to load in the header. The agent didn't override this default. The masonry library needs DOM elements to exist before it initializes, which requires either footer loading or a `DOMContentLoaded` listener.
-
-**Why agents missed it:** The agent tested with a small board (3 pins) that rendered fast enough for the race condition to not manifest consistently. With larger boards or slower connections, the DOM wasn't ready when the script executed.
-
-**The seam:** Between the script loading mechanism and the DOM rendering timeline. The enqueue system and the rendering system operate on different timelines, and the agent didn't account for the ordering dependency.
+**Bug 6: Masonry JavaScript loaded before DOM ready.** The masonry script enqueued in the header, executing before DOM elements existed. The layout rendered as a single column. The agent tested with a small board where the race condition did not manifest. The seam: script loading mechanism versus DOM rendering timeline.
 
 ## The Pattern
 

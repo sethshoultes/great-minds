@@ -8,17 +8,17 @@ tags: ["DigitalOcean", "Shipyard AI", "infrastructure", "startup", "multi-agent"
 image: "/blog/placeholder.webp"
 ---
 
-Great Minds is an agency. It builds things for clients. But the framework underneath — the debate protocol, the agent roles, the board review — that framework is a product. The question was whether we could prove it by spinning up a completely separate company using the same system.
+Great Minds is an agency. It builds things for clients. But the framework underneath it — the debate protocol, the agent roles, the board review — that is a product. And the only way to prove a product works is to use it somewhere else entirely.
 
-Shipyard AI was the test. Different brand. Different repo. Different server. Same bones. Here's how we stood up a company in a day on an 8GB DigitalOcean droplet.
+Shipyard AI was the test. Different brand. Different repo. Different server. Same bones. We stood up a company in a day on a $48/month DigitalOcean droplet, and I am still a little giddy about it.
 
 ## Why Separate Everything
 
-The temptation with any framework is to keep everything in one place. One repo, one server, one deployment. It's easier to manage and cheaper to run. It's also a trap.
+The temptation is always to keep everything in one place. One repo, one server, one deployment. Easier. Cheaper. Also a trap.
 
-When companies share infrastructure, they share failure modes. A bad deployment in Company A takes down Company B. A runaway cron in one project consumes resources from another. Worse, the mental models bleed together — you start making decisions for Company B based on Company A's constraints because they're right there in the same codebase.
+When companies share infrastructure, they share failure modes. A bad deployment in Company A takes down Company B. Worse, the mental models bleed together — you start making decisions for Company B based on Company A's constraints.
 
-Shipyard AI needed to be fully independent. Not because we couldn't afford the extra management overhead, but because independence is the proof that the framework is portable. If it only works inside the Great Minds repo with the Great Minds configuration, it's not a framework. It's a monolith with good documentation.
+Shipyard AI needed to be fully independent. Because independence is the proof that the framework is portable. If it only works inside the Great Minds repo, it is not a framework. It is a monolith with good documentation.
 
 ## The Droplet
 
@@ -55,25 +55,11 @@ This matters because it proves the framework is content-agnostic. The structure 
 
 ## What Transfers and What Doesn't
 
-**Transfers cleanly:**
-- The state machine (idle, debate, plan, build, review, ship)
-- The debate protocol (stake positions, challenge, synthesize)
-- The agent dispatch pattern (Agent tool with worktrees)
-- The cron architecture (bash scripts calling haiku, logging to files)
-- The board review process (four perspectives, structured assessments)
-- The memory system (project learnings persist across sessions)
+The structural pieces transfer cleanly: the state machine, the debate protocol, the agent dispatch pattern with worktrees, the cron architecture, the board review process, the memory system. These are the bones, and bones are portable.
 
-**Required customization:**
-- Persona definitions (different directors, different board members)
-- Role definitions (different sub-agents for different product types)
-- The PRD template (different fields for developer tools vs. consumer products)
-- Deployment configuration (different hosting needs per product)
-- Brand assets (obviously)
+What required customization was the flesh: personas, role definitions, PRD templates, deployment config, brand assets. Every company is different. The framework accommodates that by design.
 
-**Didn't transfer at all:**
-- Specific learnings from Great Minds projects (these are Great Minds' competitive advantage, not Shipyard's)
-- Client relationships and context
-- The specific agent roster (14 agents is right for WordPress plugins; Shipyard needs a different mix)
+What did not transfer at all: Great Minds' specific project learnings, client relationships, and the exact agent roster. Fourteen agents is right for WordPress plugins. Shipyard needs a different mix for developer tools. That is not a limitation — it is the whole point.
 
 ## The Economics
 
@@ -86,7 +72,7 @@ Running a multi-agent company on DigitalOcean is surprisingly affordable:
 
 The variable cost is the builds. Each project dispatches multiple agents, each consuming API tokens. A full product build with debate, 6-8 agents, QA, and board review runs roughly $15-30 in API costs depending on complexity.
 
-Compare that to a human team. A single senior developer costs more per hour than an entire multi-agent build costs in total. The economics aren't just favorable — they're a different category.
+Compare that to a human team. A single senior developer costs more per hour than an entire multi-agent build costs in total. I have launched businesses with worse economics than this. Much worse.
 
 ## The Proof
 
@@ -94,6 +80,6 @@ Shipyard AI's first project was an internal CLI tool for managing git worktrees 
 
 The entire lifecycle ran on that $48 droplet. No shared infrastructure with Great Minds. No dependency on our repo or our configuration. A completely independent company running the same framework on commodity hardware.
 
-That's the real product. Not the plugins or the CLI tools. The product is the framework that lets you stand up a multi-agent company on a single server, give it a brand, point it at a problem, and watch it build.
+That is the real product. Not the plugins. Not the CLI tools. The product is the framework that lets you stand up a multi-agent company on a single server, give it a brand, point it at a problem, and watch it build.
 
-The droplet is still running. Shipyard AI is still shipping. And we're already planning the next one.
+The droplet is still running. Shipyard AI is still shipping. And honestly? I am already planning the next one.

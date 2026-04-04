@@ -8,11 +8,13 @@ tags: ["tmux", "agent tool", "git worktrees", "multi-agent", "Claude Code", "fir
 image: "/blog/placeholder.webp"
 ---
 
-I spent two days trying to make tmux send-keys work as our multi-agent dispatch layer. The result: zero successes out of dozens of attempts. Then we switched to Claude's Agent tool with git worktrees and immediately hit 25+ successful parallel dispatches. This is the story of why the obvious approach was wrong and the right approach was hiding in plain sight.
+Zero successes. Two days. Dozens of attempts. tmux send-keys as our multi-agent dispatch layer was a complete failure. Then we switched to Claude's Agent tool with git worktrees and hit 25+ successful dispatches immediately.
+
+The obvious approach was wrong. The right one was hiding in plain sight.
 
 ## The tmux Hypothesis
 
-The idea was simple. We had 14 agents that needed to run in parallel. tmux is battle-tested. You open panes, send keystrokes, agents work simultaneously. Every DevOps engineer I know would reach for tmux first.
+We had 14 agents that needed to run in parallel. tmux is battle-tested — open panes, send keystrokes, agents work simultaneously. Every DevOps engineer would reach for it first.
 
 The dispatch script looked clean:
 
@@ -27,9 +29,9 @@ On paper, this is elegant. In practice, it produced nothing but race conditions 
 
 ## Why It Failed
 
-The failures weren't random. They were structural, and understanding them requires thinking from first principles about what tmux actually does versus what we needed.
+The failures weren't random. They were structural. First principles: what does tmux actually do versus what we needed?
 
-**Problem 1: No return channel.** tmux send-keys is fire-and-forget. You're simulating a human typing into a terminal. There's no programmatic way to know when the agent finishes, whether it succeeded, or what it produced. We wrapped it in polling loops that checked for output files, but the timing was unpredictable and the error handling was a mess.
+**Problem 1: No return channel.** tmux send-keys is fire-and-forget. You're simulating a human typing into a terminal. No programmatic way to know when the agent finishes, whether it succeeded, or what it produced. We wrapped it in polling loops checking for output files. The timing was unpredictable. The error handling was a mess.
 
 **Problem 2: Context isolation is manual.** Each tmux pane shares the same filesystem. When two agents try to modify the same file — which happens constantly in a real build — you get conflicts. We tried file locks. We tried output directories. Every solution added complexity without adding reliability.
 
@@ -37,7 +39,7 @@ The failures weren't random. They were structural, and understanding them requir
 
 **Problem 4: No structured output.** tmux gives you raw terminal text. We needed structured results — files created, decisions made, blockers encountered. Scraping terminal output to extract structured data is working against the grain of the tool.
 
-The core issue: tmux is designed for humans who can see, read, and react to terminal output. It's not designed for programmatic orchestration. We were using a human interface as a machine interface.
+The core issue: we were using a human interface as a machine interface. tmux is designed for humans who see, read, and react to terminal output. Not for programmatic orchestration.
 
 ## The Worktree Solution
 
@@ -70,12 +72,12 @@ With tmux send-keys: 0 successful multi-agent dispatches out of approximately 30
 
 With Agent tool plus worktrees: 25+ successful dispatches in the first session. Every agent completed its task. Every result was mergeable. The orchestrator had full visibility into progress.
 
-The difference wasn't marginal. It was binary. One approach produced zero working output. The other produced a complete WordPress plugin with six coordinated agents building in parallel.
+The difference wasn't marginal. It was binary. Zero working output versus a complete WordPress plugin with six agents building in parallel.
 
 ## The Lesson
 
-When a tool gives you zero successes, the answer isn't to debug harder. It's to question whether you're using the right tool. tmux is excellent for what it's designed for — giving humans multiple terminal views. It's terrible as a programmatic dispatch layer for AI agents.
+When a tool gives you zero successes, don't debug harder. Question whether you're using the right tool.
 
-The right abstraction for multi-agent orchestration is one that gives you structured communication, isolated execution contexts, and programmatic control flow. Git worktrees provide the isolation. The Agent tool provides the communication and control. Together, they do what tmux never could.
+The right abstraction for multi-agent orchestration gives you structured communication, isolated execution contexts, and programmatic control flow. Git worktrees provide the isolation. The Agent tool provides the communication and control. Together, they do what tmux never could.
 
 Stop fighting your tools. Find the ones that work with your architecture, not against it.

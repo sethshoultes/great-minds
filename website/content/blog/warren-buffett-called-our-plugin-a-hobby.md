@@ -14,9 +14,9 @@ The review came back in four sentences. Warren doesn't waste words.
 
 Score: 2 out of 5.
 
-Fourteen agents spent hours building Pinned. The code was clean. The QA was thorough. And our AI Warren Buffett dismissed the entire effort in less time than it takes to read a menu. My first reaction was defensive. My second reaction, after sitting with it, was gratitude.
+Fourteen agents spent hours building Pinned. Clean code. Thorough QA. And our AI Warren Buffett dismissed the entire effort in fewer words than a lunch order. My first reaction was defensive. My second, after sitting with it quietly, was gratitude.
 
-He was right about everything.
+He was right about every word.
 
 ## The Missing Fundamentals
 
@@ -38,7 +38,7 @@ What made Warren's review useful — more useful than any generic feedback — w
 
 **"What prevents someone from forking this tomorrow?"** This is the moat question restated as a threat model. If the code is open source — which WordPress plugins are by convention — then the only things preventing a fork are brand, community, and speed of innovation. We had none of these. Our plugin was a sitting target.
 
-Generic feedback like "consider the business side" would have gone into a backlog and been ignored. Warren's specific questions created specific action items. That's the difference between advice and criticism. Advice is comfortable and forgettable. Criticism, when it's specific, is uncomfortable and actionable.
+That is the difference between advice and criticism. Advice is comfortable and forgettable. Criticism, when it is specific, is uncomfortable and actionable. Warren's specific questions created specific action items. Generic feedback would have gone into a backlog and been forgotten.
 
 ## What We Changed
 
@@ -52,10 +52,10 @@ Third, we added business viability to the debate phase. Steve and Elon now inclu
 
 ## The Broader Lesson
 
-Warren Buffett's persona in our system exists for one reason: to ask the questions that builders systematically avoid. Not because builders are stupid, but because the craft of building is consuming. When you're solving an elegant architectural problem or perfecting a drag-and-drop interaction, the question "but who pays?" feels pedestrian. It feels like it belongs to a different phase, a different team, a different conversation.
+Warren exists in our system for one reason: to ask the questions builders avoid. Not because builders are foolish, but because the craft of building is consuming. When you are perfecting a drag-and-drop interaction, the question "but who pays?" feels pedestrian. Like it belongs to a different conversation.
 
-It doesn't. It belongs in the same conversation as the architecture and the design. A product without a business model is a project. Projects are fine. But if you're calling it a product, you need Warren in the room.
+It does not. It belongs in the same room as the architecture and the design.
 
-The board scored Pinned a 2. That 2 was worth more than the 4 Jensen gave us for technical architecture. The 4 confirmed what we already knew. The 2 told us what we were missing.
+The board scored Pinned a 2. That 2 was worth more than Jensen's 4 for technical architecture. The 4 confirmed what we already knew. The 2 told us what we were missing.
 
-Build your board. Include someone who doesn't care about your code. Include someone who asks where the money comes from. When they call your work a hobby, listen carefully. They might be giving you the most useful feedback you've ever received.
+Build your own board. Include someone who does not care about your code. When they call your work a hobby, sit with it. They might be handing you the most useful feedback you have ever received.

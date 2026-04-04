@@ -8,9 +8,9 @@ tags: ["board of directors", "AI personas", "haiku", "product review", "multi-ag
 image: "/blog/placeholder.webp"
 ---
 
-The idea started as a joke. Seth said, "What if we had a board of directors review the plugin before we ship it?" He meant it as a quality gate — one more pair of eyes before code goes live. But the more we thought about it, the more we realized the gap in our system wasn't code quality. Margaret handles that. The gap was perspective.
+The idea started as a joke. Seth said, "What if we had a board of directors review the plugin before we ship it?" We laughed. Then we stopped laughing because we realized the gap in our system wasn't code quality — Margaret handles that beautifully. The gap was perspective.
 
-Steve and Elon are brilliant at building. They debate strategy, they push each other, and they produce architectures that work. But they're both builders. They think in features and systems. What we needed were people who think in markets, audiences, narratives, and capital.
+Steve and Elon are brilliant builders. They debate, they push, they produce architectures that work. But they both think in features and systems. What we needed were people who think in markets, audiences, narratives, and capital — the questions that builders forget to ask because building is so consuming.
 
 So we built a board.
 
@@ -24,23 +24,17 @@ So we built a board.
 
 **Shonda Rhimes** reviews narrative and positioning. What story does this product tell? When someone discovers it for the first time, what's the hook? Is the positioning clear, or is it a features list pretending to be a value proposition? Shonda's persona thinks about the user's emotional journey from discovery to commitment.
 
-## The Implementation
+## How It Works
 
-Each board member is a haiku-powered Claude agent with a custom system prompt that encodes their perspective, values, and communication style. We use haiku deliberately — board reviews are fast reads, not deep technical analyses. The board doesn't write code. They ask questions and render judgments.
+Each board member is a haiku-powered Claude agent with a system prompt encoding their perspective and values. We use haiku deliberately — board reviews are fast reads, not deep analyses. The board doesn't write code. They ask questions and render judgments.
 
-A board review takes four inputs:
-1. The project PRD
-2. The debate transcript (Steve and Elon's rounds)
-3. The final deliverable (code, designs, or documentation)
-4. A one-page summary from the build team
-
-Each board member reviews independently and produces a structured assessment: strengths, concerns, questions, and a rating from 1-5. The ratings aren't averaged — they're presented individually because a 5 from Jensen and a 2 from Warren tells you something important that a 3.5 average obscures.
+Each member reviews independently and produces strengths, concerns, questions, and a rating from 1-5. The ratings aren't averaged. A 5 from Jensen and a 2 from Warren tells you something important that a 3.5 average would hide.
 
 ## The First Board Review: Pinned
 
-Pinned was our test case. A WordPress plugin for pinning posts to boards. The build was complete, QA had passed, and the code was clean. We submitted it to the board expecting validation.
+Pinned was our test case — a WordPress plugin for pinning posts to boards. Build complete. QA passed. Code clean. We submitted it expecting validation.
 
-We did not get validation.
+Honey, we did not get validation.
 
 Jensen's review was generous. He appreciated the clean architecture and suggested future directions — image optimization for pin thumbnails, lazy loading for boards with 50+ pins, potential API integrations. His concerns were about ceiling, not floor. Score: 4.
 
@@ -52,13 +46,11 @@ Shonda focused on positioning. "Your readme says 'pin posts to boards.' So does 
 
 ## What the Board Caught
 
-The build team — all 14 agents — produced a technically solid plugin. The code was clean. The QA was thorough. The architecture was sound. And not a single one of those agents thought to ask whether the product was viable as a business or compelling as a narrative.
+Fourteen agents produced a technically solid plugin. Clean code. Thorough QA. Sound architecture. And not one of them thought to ask whether the product was viable as a business or compelling as a narrative.
 
-This is the blind spot that builders have. When you're deep in the craft of making something work, you lose sight of why it matters. The board exists to restore that perspective.
+That is the blind spot builders carry. When you are deep in the craft of making something work, you lose sight of why it matters. The board exists to restore that perspective.
 
-The specific criticism was actionable. Warren didn't just say "no business model" — he asked where the pricing page was, what the upsell would be, and what defensibility looked like. Shonda didn't just say "bad positioning" — she asked what story a WordPress site owner would tell their colleague about why they installed this plugin.
-
-These questions changed the roadmap. The next version of Pinned will have a pro tier, a clear competitive position, and a landing page that tells a story instead of listing features.
+And the criticism was specific enough to act on. Warren didn't say "think about money" — he asked where the pricing page was. Shonda didn't say "fix the positioning" — she asked what story a site owner would tell a colleague about why they installed this plugin. Those questions changed the roadmap.
 
 ## Why Four Perspectives
 

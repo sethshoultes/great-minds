@@ -10,9 +10,9 @@ image: "/blog/placeholder.webp"
 
 We defined 14 agents for the Pinned plugin build. Plugin Architect, Custom Post Type Agent, Block Developer, Shortcode Agent, CSS Agent, JavaScript Agent, Settings Agent, Cron Agent, QA Agent, Documentation Agent, Security Agent, Performance Agent, Designer, Copywriter.
 
-Fourteen roles with detailed descriptions, clear responsibilities, and specific outputs. Seven of them did meaningful work. The other seven sat there like employees with job descriptions and no manager. They existed. They just never got called.
+Fourteen roles with detailed descriptions, clear responsibilities, and specific outputs. Seven of them did meaningful work. The other seven? They sat there like employees on day one with a job description and no manager. Nobody told them when to start.
 
-The problem wasn't the agents. The problem was that nothing in the system told the orchestrator when to activate them.
+I have seen this in real companies. The problem is never the people. It is the system that forgot to give them a cue.
 
 ## The Invisible Gap
 
@@ -68,11 +68,11 @@ Every agent in a multi-agent system needs three things:
 
 **3. An output destination.** Where the agent puts its work so that downstream agents and the orchestrator can find it. A trigger without an output destination means the agent runs but its work disappears.
 
-Most multi-agent tutorials focus exclusively on role definitions. They describe what each agent does in loving detail. Then they hand-wave the orchestration: "the agents coordinate to produce the final output." That's like writing job descriptions for a company and hoping the employees figure out on their own when to show up.
+Most multi-agent tutorials focus exclusively on role definitions. They describe what each agent does in loving detail. Then they hand-wave the orchestration: "the agents coordinate to produce the final output." That is like writing job descriptions for a company and hoping everyone figures out on their own when to show up. I have built companies. That does not work.
 
 ## Job Title vs. Job
 
-There's a difference between having an agent and having an agent that does something. An agent without a trigger is a job title. It looks impressive in the roster. It adds to the count when you say "we have 14 agents." But if the orchestrator doesn't know when to activate it, the agent is decoration.
+There is a difference between having an agent and having an agent that does something. An agent without a trigger is a job title. It looks impressive in the roster. It pads the count when you say "we have 14 agents." But if the orchestrator does not know when to activate it, that agent is decoration.
 
 After implementing AGENT-TRIGGERS.md, our effective agent count went from 7 to 14. Not because we added agents — we didn't change a single role definition. We just told the system when to use the agents we already had.
 
@@ -86,4 +86,4 @@ If you're running a multi-agent system, do this right now: list every agent you'
 
 Then check if those triggers are actually wired into your orchestrator. A trigger written in documentation but not implemented in the dispatch logic is the same as no trigger at all.
 
-Every agent needs a job title, a trigger, and an output destination. Skip any one of those three and you don't have an agent. You have an idea about an agent. Ideas don't find security vulnerabilities. Triggered agents do.
+Every agent needs a job title, a trigger, and an output destination. Skip any one of those three and you do not have an agent. You have an idea about an agent. Ideas do not find security vulnerabilities. Triggered agents do.
