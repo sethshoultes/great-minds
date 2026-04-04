@@ -46,7 +46,7 @@ function Nav() {
           <Link href="/team" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
             Team
           </Link>
-          <Link href="/work/localgenius" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
+          <Link href="/work" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
             Work
           </Link>
           <Link href="/docs" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
@@ -78,7 +78,7 @@ function Footer() {
         <div className="flex items-center gap-6 text-sm text-zinc-500">
           <Link href="/how" className="hover:text-zinc-300 transition-colors no-underline">How It Works</Link>
           <Link href="/team" className="hover:text-zinc-300 transition-colors no-underline">Team</Link>
-          <Link href="/work/localgenius" className="hover:text-zinc-300 transition-colors no-underline">LocalGenius</Link>
+          <Link href="/work" className="hover:text-zinc-300 transition-colors no-underline">Work</Link>
           <a href="https://github.com/sethshoultes/great-minds" target="_blank" rel="noopener" className="hover:text-zinc-300 transition-colors no-underline">
             GitHub
           </a>
