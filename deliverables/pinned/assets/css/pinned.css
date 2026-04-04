@@ -24,11 +24,11 @@
 .pinned-note--aging::before{background:#d97706}
 .pinned-note--stale::before{background:#9ca3af}
 .pinned-note__header{position:absolute;top:0;left:0;right:0;height:22px;display:flex;align-items:center;padding:0 8px;border-radius:var(--pr) var(--pr) 0 0;background:rgba(0,0,0,.07)}
-.pinned-note--yellow .pinned-note__header{background:rgba(202,138,4,.15)}
-.pinned-note--blue .pinned-note__header{background:rgba(3,105,161,.13)}
-.pinned-note--green .pinned-note__header{background:rgba(21,128,61,.12)}
-.pinned-note--pink .pinned-note__header{background:rgba(190,24,93,.12)}
-.pinned-note--orange .pinned-note__header{background:rgba(194,65,12,.13)}
+.pinned-note--yellow .pinned-note__header{background:rgba(202,138,4,.07)}
+.pinned-note--blue .pinned-note__header{background:rgba(3,105,161,.07)}
+.pinned-note--green .pinned-note__header{background:rgba(21,128,61,.07)}
+.pinned-note--pink .pinned-note__header{background:rgba(190,24,93,.07)}
+.pinned-note--orange .pinned-note__header{background:rgba(194,65,12,.07)}
 .pinned-note__body{flex:1;min-height:48px;word-break:break-word;white-space:pre-wrap;outline:none;cursor:text;font-family:var(--pf);font-size:13px;line-height:1.45;color:var(--pt)}
 .pinned-note__body:empty::before{content:attr(data-placeholder);color:var(--pm);pointer-events:none}
 .pinned-note__footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:4px}

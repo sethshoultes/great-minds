@@ -241,10 +241,33 @@
     board.appendChild(bar);
   }
 
+  /* --- Render a set of notes into the board ---------------- */
+  function renderNotes(board, notes) {
+    board.querySelectorAll('.pinned-note, .pinned-empty-state, .pinned-skeleton').forEach(function (el) { el.remove(); });
+    if (!notes.length) {
+      board.classList.add('pinned-board--empty');
+    } else {
+      board.classList.remove('pinned-board--empty');
+      notes.forEach(function (n) { board.appendChild(buildNote(n)); });
+      setTimeout(function () {
+        board.querySelectorAll('.pinned-note--new').forEach(function (n) { n.classList.remove('pinned-note--new'); });
+      }, 400);
+    }
+  }
+
   /* --- Load from REST ------------------------------------- */
   function loadNotes(board) {
     /* Remove server-rendered notes and empty-state to avoid duplicates. */
     board.querySelectorAll('.pinned-note, .pinned-empty-state').forEach(function (el) { el.remove(); });
+
+    /* Use pre-loaded notes from wp_localize_script if available. */
+    var preloaded = cfg.notes;
+    if (preloaded && preloaded.length) {
+      renderNotes(board, preloaded);
+      /* Clear so a future manual refresh hits the API. */
+      cfg.notes = null;
+      return;
+    }
 
     [1,2,3].forEach(function () {
       var sk = document.createElement('div');
@@ -252,14 +275,8 @@
       board.appendChild(sk);
     });
     api('GET', '/notes').then(function (data) {
-      board.querySelectorAll('.pinned-skeleton').forEach(function (s) { s.remove(); });
       var notes = data.notes || data || [];
-      if (!notes.length) board.classList.add('pinned-board--empty');
-      else board.classList.remove('pinned-board--empty');
-      notes.forEach(function (n) { board.appendChild(buildNote(n)); });
-      setTimeout(function () {
-        board.querySelectorAll('.pinned-note--new').forEach(function (n) { n.classList.remove('pinned-note--new'); });
-      }, 400);
+      renderNotes(board, notes);
       if (data.presence) renderPresence(board, data.presence);
     }).catch(function () {
       board.querySelectorAll('.pinned-skeleton').forEach(function (s) { s.remove(); });
@@ -329,7 +346,6 @@
       hint.textContent = I18N.emptyHint;
       hint.setAttribute('aria-hidden', 'true');
       board.appendChild(hint);
-      board.classList.add('pinned-board--empty');
       attachEvents(board);
       loadNotes(board);
     });
