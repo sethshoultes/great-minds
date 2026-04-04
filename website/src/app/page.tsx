@@ -275,6 +275,34 @@ export default function HomePage() {
                 Read case study →
               </span>
             </Link>
+            {/* Pinned */}
+            <Link
+              href="/work/pinned"
+              className="group p-6 rounded-xl border border-zinc-800/60 bg-zinc-900/30 hover:border-zinc-700 transition-colors no-underline"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="font-bold text-zinc-100 group-hover:text-amber-500 transition-colors">
+                  Pinned
+                </h3>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-semibold">
+                  Shipped
+                </span>
+              </div>
+              <p className="text-zinc-500 text-sm leading-relaxed mb-4">
+                Post-it notes for WordPress admin. Team handoff notes that stick.
+                Double-click create, 5 colors, @mentions, note aging, and
+                role-based visibility.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">PHP 8</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">Vanilla JS</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">WordPress</span>
+                <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-xs">REST API</span>
+              </div>
+              <span className="text-amber-500 text-sm group-hover:text-amber-400 transition-colors">
+                Read case study →
+              </span>
+            </Link>
           </div>
         </div>
       </section>
