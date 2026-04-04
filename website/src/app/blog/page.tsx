@@ -55,10 +55,13 @@ export default function BlogPage() {
                 {post.description}
               </p>
               <div className="flex items-center gap-4">
-                <span className="text-xs text-zinc-500">
+                <Link
+                  href={`/team/${post.authorSlug}`}
+                  className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors no-underline"
+                >
                   By{' '}
                   <span className="text-zinc-400">{post.author}</span>
-                </span>
+                </Link>
                 <div className="flex gap-2">
                   {post.tags.slice(0, 3).map((tag) => (
                     <span

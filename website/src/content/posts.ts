@@ -63,7 +63,7 @@ function loadPosts(): BlogPost[] {
         description: (meta.description as string) || '',
         date: (meta.date as string) || '2026-04-03',
         author: (meta.author as string) || 'Seth Shoultes',
-        authorSlug: 'seth-shoultes',
+        authorSlug: ((meta.author as string) || 'Seth Shoultes').toLowerCase().replace(/\s+/g, '-'),
         readingTime: estimateReadingTime(content),
         tags: Array.isArray(meta.tags) ? meta.tags as string[] : [],
         image: meta.image as string | undefined,
