@@ -243,6 +243,9 @@
 
   /* --- Load from REST ------------------------------------- */
   function loadNotes(board) {
+    /* Remove server-rendered notes and empty-state to avoid duplicates. */
+    board.querySelectorAll('.pinned-note, .pinned-empty-state').forEach(function (el) { el.remove(); });
+
     [1,2,3].forEach(function () {
       var sk = document.createElement('div');
       sk.className = 'pinned-skeleton';
@@ -252,6 +255,7 @@
       board.querySelectorAll('.pinned-skeleton').forEach(function (s) { s.remove(); });
       var notes = data.notes || data || [];
       if (!notes.length) board.classList.add('pinned-board--empty');
+      else board.classList.remove('pinned-board--empty');
       notes.forEach(function (n) { board.appendChild(buildNote(n)); });
       setTimeout(function () {
         board.querySelectorAll('.pinned-note--new').forEach(function (n) { n.classList.remove('pinned-note--new'); });
