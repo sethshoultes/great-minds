@@ -27,7 +27,7 @@ export const CTAScene: React.FC = () => {
   });
 
   // URL types out after logo
-  const url = "developer.emdash.agency/dash";
+  const url = "greatminds.company/work/dash";
   const urlStart = logoStart + 30;
   const urlCharsPerFrame = 1 / (0.04 * fps);
   const urlCharsVisible = Math.min(
