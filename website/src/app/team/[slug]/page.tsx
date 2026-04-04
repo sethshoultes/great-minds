@@ -8,7 +8,8 @@ import { allProfiles, getAgent, getAdjacentAgents } from "../agents";
 const SLUGS_WITH_IMAGES = new Set([
   'seth-shoultes', 'marcus-aurelius', 'steve-jobs', 'elon-musk',
   'jensen-huang', 'margaret-hamilton', 'rick-rubin', 'jony-ive',
-  'maya-angelou', 'sara-blakely',
+  'maya-angelou', 'sara-blakely', 'phil-jackson', 'oprah-winfrey',
+  'warren-buffett', 'shonda-rhimes', 'aaron-sorkin',
 ]);
 
 export const dynamicParams = false;

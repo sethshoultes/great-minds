@@ -13,7 +13,8 @@ export const metadata: Metadata = {
 const SLUGS_WITH_THUMBS = new Set([
   'seth-shoultes', 'marcus-aurelius', 'steve-jobs', 'elon-musk',
   'jensen-huang', 'margaret-hamilton', 'rick-rubin', 'jony-ive',
-  'maya-angelou', 'sara-blakely',
+  'maya-angelou', 'sara-blakely', 'phil-jackson', 'oprah-winfrey',
+  'warren-buffett', 'shonda-rhimes', 'aaron-sorkin',
 ]);
 
 function AgentCard({ agent, compact }: { agent: Agent; compact?: boolean }) {
