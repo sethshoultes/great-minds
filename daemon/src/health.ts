@@ -131,10 +131,13 @@ export function pollGitHubIssues(sinceMinutes = 10): GitHubIssue[] {
 export function runMemoryMaintenance(): void {
   log("MEMORY: Running maintenance");
   try {
-    // Check if memory store exists before trying to run
+    // Verify memory store exists — if not, install it
     if (!existsSync(resolve(MEMORY_STORE_DIR, "src/cli.ts"))) {
-      log("MEMORY: Memory store not found at " + MEMORY_STORE_DIR + " — skipping");
-      return;
+      log("MEMORY: Memory store not found — installing from great-minds");
+      execSync(`cp -r /home/agent/great-minds/memory-store "${MEMORY_STORE_DIR}" && cd "${MEMORY_STORE_DIR}" && npm install 2>&1`, {
+        encoding: "utf-8",
+        timeout: 120_000,
+      });
     }
     execSync(`cd "${MEMORY_STORE_DIR}" && npx tsx src/cli.ts maintain 2>&1`, {
       encoding: "utf-8",
