@@ -1,56 +1,84 @@
 # Great Minds Agency — Status
 
 ## Current State
-- **state**: REVIEW COMPLETE — Dash plugin ready for merge
-- **last consolidation**: 2026-04-03
-- **active project**: Dash (WP Command Bar) — QA passed, ready to ship
-- **localgenius-sites**: archived (consolidated into localgenius)
-- **greatminds-website**: deleted (website lives in great-minds/website/)
-- **workshop video**: rendered (workshop-opening.mp4 + title-card.mp4)
-- **blog**: live at greatminds.company/blog
-
-## Active Projects
-
-### LocalGenius App
-- **Domain**: localgenius.company
-- **Status**: LIVE, deployed on Vercel
-- **Files**: 265 source files
-- **Stack**: Next.js 14 + Drizzle ORM + Neon PostgreSQL + Cloudflare Workers AI
-- **Stripe**: Configured (test mode) — $29 base / $79 pro
-- **Recent work**: Honesty pass, sites consolidation, shared Header/Footer in root layout, demo sites
-
-### Great Minds Website
-- **Domain**: greatminds.company
-- **Status**: Building, deploying to Vercel
-- **Stack**: Next.js 16 + Tailwind
-- **Pages**: Home, Team, Projects, Install
-
-## Agent Activity
-
-| Agent | Status | Activity |
-|-------|--------|----------|
-| Phil Jackson | Active | Orchestrator, dispatch, crons |
-| Steve Jobs | Active | Emdash brand + credit system UX |
-| Elon Musk | Active | Emdash pipeline + credit system backend |
-| Margaret Hamilton | Active | 12+ QA reports, continuous testing |
-| Jensen Huang | Active | 21 board reviews, 9 issues filed (8 fixed) |
-| Rick Rubin | Standby | Available for creative direction |
-| Jony Ive | Standby | Available for visual design |
-| Maya Angelou | Standby | Available for copywriting |
-| Sara Blakely | Standby | Available for growth strategy |
+- **state**: OPERATIONAL — building products, content, videos
+- **last updated**: 2026-04-03
+- **agents**: 14 active
+- **dispatch**: Agent tool with worktree isolation
+- **crons**: Decoupled (bash + haiku, not conversation-based)
 
 ## Infrastructure
-- **Hosting**: Vercel (both projects)
+
+- **Hosting**: Vercel (LocalGenius, Great Minds), Cloudflare Pages (Shipyard)
 - **Database**: Neon PostgreSQL
 - **AI**: Cloudflare Workers AI (hybrid router) + Claude Sonnet/Haiku
 - **DNS**: Cloudflare
 - **Payments**: Stripe (test mode)
-- **CI**: GitHub → Vercel auto-deploy
+- **CI**: GitHub -> Vercel auto-deploy
+- **VPS**: DigitalOcean 8GB/4vCPU droplet (164.90.151.82) — running, auth FIXED
+
+## GitHub Repos (6)
+
+| Repo | Status |
+|------|--------|
+| sethshoultes/localgenius | Active |
+| sethshoultes/great-minds | Active |
+| sethshoultes/great-minds-plugin | Active |
+| sethshoultes/shipyard-ai | Active |
+| sethshoultes/dash-command-bar | Active |
+| sethshoultes/pinned-notes | Active |
+
+## Live Deployments (3)
+
+| URL | What | Platform |
+|-----|------|----------|
+| [localgenius.company](https://localgenius.company) | AI digital presence app | Vercel + Neon |
+| [greatminds.company](https://greatminds.company) | Agency website + blog | Vercel |
+| [www.shipyard.company](https://www.shipyard.company) | Shipyard AI — autonomous site builder | Cloudflare Pages |
+
+## Products Built
+
+| Product | Type | Repo | Status |
+|---------|------|------|--------|
+| LocalGenius | Next.js SaaS app | localgenius | Live (265 source files) |
+| Great Minds Plugin | Claude Code plugin | great-minds-plugin | Published (12 skills) |
+| Dash | WordPress command bar plugin | dash-command-bar | Shipped (own repo) |
+| Pinned | WordPress pinned notes plugin | pinned-notes | Shipped (own repo) |
+| Shipyard AI | Autonomous site builder | shipyard-ai | Live |
+
+## Content
+
+- **Blog posts**: 20
+- **Product videos**: 5 (Remotion)
+- **Services page**: Live at greatminds.company
+
+## Agent Activity
+
+| Agent | Status | Recent Activity |
+|-------|--------|----------------|
+| Phil Jackson | Active | Orchestrator, dispatch, crons |
+| Steve Jobs | Active | Brand, UX, creative direction |
+| Elon Musk | Active | Engineering, product pipeline |
+| Jensen Huang | Active | 23+ board reviews |
+| Oprah Winfrey | Active | Board member — audience insight |
+| Warren Buffett | Active | Board member — unit economics |
+| Shonda Rhimes | Active | Board member — narrative strategy |
+| Margaret Hamilton | Active | 80+ QA reports, continuous testing |
+| Rick Rubin | Standby | Available for creative direction |
+| Jony Ive | Standby | Available for visual design |
+| Maya Angelou | Standby | Available for copywriting |
+| Aaron Sorkin | Standby | Available for video scripts |
+| Sara Blakely | Standby | Available for growth strategy |
+| Marcus Aurelius | Standby | Retrospective writer, tie-breaker |
 
 ## Key Metrics
-- Jensen board reviews: 21 (highest-ROI agent — found real bugs like in-memory state loss)
-- Margaret QA reports: 12+
-- Jensen issues filed: 9 (8 fixed, 1 open — architectural)
-- LocalGenius commits: 230+
-- Emdash deliverables: 6 (brand, pipeline, intake, reviews, credit UX, credit backend)
-- VPS: DO droplet live (164.90.151.82) — Emdash agency being set up as separate company
+
+- Jensen board reviews: 23+ (highest-ROI agent — found real bugs)
+- Margaret QA reports: 80+
+- LocalGenius source files: 265
+- Blog posts published: 20
+- Product videos rendered: 5
+- WordPress plugins shipped: 2 (Dash, Pinned)
+- Plugin skills: 12
+- GitHub repos: 6
+- Live deployments: 3
