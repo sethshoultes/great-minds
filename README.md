@@ -106,7 +106,7 @@ Inspired by [Get Shit Done](https://github.com/gsd-build/get-shit-done) -- struc
 | Metric | Count |
 |--------|-------|
 | Agent personas | 14 + founder |
-| GitHub repos | 6 |
+| GitHub repos | 7 |
 | Live deployments | 3 |
 | Source files (LocalGenius) | 265 |
 | Test specs | 770+ |
@@ -115,7 +115,7 @@ Inspired by [Get Shit Done](https://github.com/gsd-build/get-shit-done) -- struc
 | QA reports (Margaret) | 80+ |
 | Blog posts | 20 |
 | Product videos (Remotion) | 5 |
-| Products built | 3 (Dash, Pinned, Narrate/Witness) |
+| Products built | 3 (Dash, Pinned, Narrate) |
 | Plugin skills | 15 |
 | PRs merged | 25+ |
 | VPS | DigitalOcean 8GB/4vCPU |
@@ -140,7 +140,17 @@ npx plugins add sethshoultes/great-minds-plugin
 
 Includes: 14 agents, 15 skills, GSD integration, daemon orchestration, context guard hooks, `.planning/` templates.
 
-## Quick Start
+## Docker Quick Start
+
+```bash
+cd daemon
+cp .env.example .env   # fill in ANTHROPIC_API_KEY
+docker compose up -d
+```
+
+Drop a PRD in `daemon/prds/` and the daemon builds it automatically. See [Docker docs](https://greatminds.company/docs/docker).
+
+## Quick Start (Local)
 
 ```bash
 # Prerequisites: Claude Code CLI, git
@@ -156,14 +166,23 @@ cp prds/TEMPLATE.md prds/my-project.md
 # Or run the daemon for continuous orchestration: /agency-daemon
 ```
 
-## Related Projects
+## Server Deployment
 
-- [shipyard-ai](https://github.com/sethshoultes/shipyard-ai) -- Autonomous site builder (spun out from Great Minds)
+Deploy on DigitalOcean (8GB/4vCPU recommended) or any Ubuntu VPS. See the [deployment guide](https://greatminds.company/docs/deployment).
+
+## Daemon
+
+The daemon (`daemon/`) is an Agent SDK-based long-running process that replaces all cron scripts. It watches for PRDs, runs the full GSD pipeline, handles featureDream cycles, and maintains memory. See the [daemon docs](https://greatminds.company/docs/daemon).
+
+## Related Projects (7 Repos)
+
+- [great-minds](https://github.com/sethshoultes/great-minds) -- The agency repo (this one)
+- [great-minds-plugin](https://github.com/sethshoultes/great-minds-plugin) -- Claude Code plugin (installable agency, 15 skills)
 - [localgenius](https://github.com/sethshoultes/localgenius) -- First product built by the agency
-- [great-minds-plugin](https://github.com/sethshoultes/great-minds-plugin) -- Claude Code plugin (installable agency)
 - [dash-command-bar](https://github.com/sethshoultes/dash-command-bar) -- Dash WP command bar plugin
 - [pinned-notes](https://github.com/sethshoultes/pinned-notes) -- Pinned WP notes plugin
-- Narrate/Witness -- Video narration product built by the agency
+- [narrate-cli](https://github.com/sethshoultes/narrate-cli) -- Video narration CLI (Aaron Sorkin scripts + Remotion)
+- [shipyard-ai](https://github.com/sethshoultes/shipyard-ai) -- Autonomous site builder (spun out from Great Minds)
 
 ## License
 

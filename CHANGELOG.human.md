@@ -1,3 +1,11 @@
+Apr 5, 2026 — 3:44 PM
+
+  Add Narrate changelog in CHANGELOG.human.md  ·  f12963d
+
+Apr 5, 2026 — 3:44 PM
+
+  Add Narrate changelog in CHANGELOG.human.md  ·  a7d237a
+
 Apr 5, 2026 — 3:36 PM
 
   Fix health.ts — add missing resolve import for memory store path check  ·  27803e9

@@ -28,7 +28,7 @@ export default function BlogPage() {
           </h1>
           <p className="text-lg text-zinc-400 max-w-xl leading-relaxed">
             Technical writing on AI agent architecture, product design,
-            and what happens when nine minds work on one codebase.
+            and what happens when fourteen minds work on one codebase.
           </p>
         </div>
       </section>

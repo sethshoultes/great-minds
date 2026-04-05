@@ -40,14 +40,14 @@ export const founder: Agent = {
   responsibilities: [
     'Defines the vision and selects the PRDs',
     'Built the agent swarm architecture',
-    'Directs all nine agents through the pipeline',
+    'Directs all fourteen agents through the pipeline',
     'Reviews and ships the final product',
     'Gives the workshop — the human in the room',
   ],
   quotes: [
     'I went to sleep with an idea. I woke up with a product.',
     'The agents argue better than any team I\'ve managed. And they don\'t need coffee.',
-    'Nine minds. Zero meetings. That\'s not a tagline — that\'s Tuesday night.',
+    'Fourteen minds. Zero meetings. That\'s not a tagline — that\'s Tuesday night.',
   ],
   background: 'Software engineer and entrepreneur in Austin, Texas. Built Great Minds as a proof of concept: can AI agents with distinct personalities, values, and expertise produce better products than a single model following instructions? The answer — tested across three live products, 734 tests, and 258 source files — is yes.',
 };

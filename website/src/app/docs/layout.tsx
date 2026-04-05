@@ -3,6 +3,9 @@ import Link from 'next/link';
 const NAV = [
   { href: '/docs', label: 'Overview' },
   { href: '/docs/agents', label: 'Agents' },
+  { href: '/docs/daemon', label: 'Daemon' },
+  { href: '/docs/docker', label: 'Docker' },
+  { href: '/docs/deployment', label: 'Deployment' },
   { href: '/docs/crons', label: 'Cron Jobs' },
   { href: '/docs/heartbeat', label: 'Heartbeat' },
   { href: '/docs/memory', label: 'Memory' },

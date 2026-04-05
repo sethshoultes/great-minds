@@ -1,6 +1,6 @@
 # VPS Deployment Guide: Running Great Minds Agency 24/7
 
-Run Claude Code + claude-swarm on a headless VPS so your 9-agent agency operates around the clock without a laptop.
+Run Claude Code + the daemon on a headless VPS so your 14-agent agency operates around the clock without a laptop.
 
 **Time to deploy: ~30 minutes.**
 

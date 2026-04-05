@@ -7,8 +7,11 @@ export const metadata: Metadata = {
 };
 
 const sections = [
-  { href: '/docs/agents', title: 'Agents', desc: 'The 9 minds + founder — roles, hierarchy, communication rules.', source: 'AGENTS.md' },
-  { href: '/docs/crons', title: 'Cron Jobs', desc: 'Five automated processes that keep the agency running.', source: 'CRONS.md' },
+  { href: '/docs/agents', title: 'Agents', desc: 'The 14 agents + founder — roles, hierarchy, communication rules.', source: 'AGENTS.md' },
+  { href: '/docs/daemon', title: 'Daemon', desc: 'The Agent SDK daemon — replaces crons, watches for PRDs, runs the full GSD pipeline.', source: 'daemon/README.md' },
+  { href: '/docs/docker', title: 'Docker', desc: 'Run the daemon in Docker — docker-compose, volumes, environment setup.', source: 'daemon/docker-compose.yml' },
+  { href: '/docs/deployment', title: 'Deployment', desc: 'DigitalOcean droplet setup, SSH, daemon installation, monitoring.', source: 'deliverables/vps-deployment-guide.md' },
+  { href: '/docs/crons', title: 'Cron Jobs', desc: 'Legacy cron system — five automated processes (replaced by daemon).', source: 'CRONS.md' },
   { href: '/docs/heartbeat', title: 'Heartbeat', desc: 'Tick schedule, agent roster, director operating rules.', source: 'HEARTBEAT.md' },
   { href: '/docs/memory', title: 'Memory', desc: 'Three-layer memory architecture — index, files, git verification.', source: 'MEMORY.md' },
   { href: '/docs/scoreboard', title: 'Scoreboard', desc: 'Live stats — commits, tests, Jensen reviews, Margaret QA reports.', source: 'SCOREBOARD.md' },
@@ -50,7 +53,7 @@ export default function DocsOverview() {
 
       <div className="mt-10">
         <Link href="/blog/ai-agent-memory-architecture" className="text-sm text-amber-500 hover:text-amber-400 no-underline">
-          Read the blog post: How Nine AI Agents Remember What They Learned →
+          Read the blog post: How Our AI Agents Remember What They Learned →
         </Link>
       </div>
     </div>

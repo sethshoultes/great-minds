@@ -3,7 +3,7 @@
 ## Hierarchy
 
 ```
-Human (Seth)
+Human (you)
   ├─ Jensen Huang — Board Member (cron: 60 min, GitHub issues, advisor)
   ├─ Oprah Winfrey — Board Member (audience insight, brand trust)
   ├─ Warren Buffett — Board Member (unit economics, capital allocation)
