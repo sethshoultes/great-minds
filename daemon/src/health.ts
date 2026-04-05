@@ -3,6 +3,7 @@
 
 import { execSync } from "child_process";
 import { readFileSync, statSync, existsSync } from "fs";
+import { resolve } from "path";
 import {
   SITES, GIT_REPOS, GITHUB_REPOS, MEMORY_FILE,
   MEMORY_STORE_DIR, REPO_PATH,
