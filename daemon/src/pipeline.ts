@@ -1,7 +1,7 @@
 // Great Minds Daemon — GSD Pipeline as TypeScript functions
 // Each phase spawns agent(s) via the Claude Code SDK. No markdown state parsing.
 
-import { query, type ClaudeCodeOptions } from "@anthropic-ai/claude-agent-sdk";
+import { query } from "@anthropic-ai/claude-agent-sdk";
 import { resolve } from "path";
 import { mkdir } from "fs/promises";
 import {
@@ -29,19 +29,17 @@ async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TUR
   log(`AGENT START: ${name}`);
   const startTime = Date.now();
 
-  const options: ClaudeCodeOptions = {
+  let result = "";
+  for await (const message of query({
     prompt,
     options: {
       maxTurns,
       allowedTools: ALLOWED_TOOLS,
-      permissionMode: "bypassPermissions",
+      permissionMode: "bypassPermissions" as const,
     },
-  };
-
-  let result = "";
-  for await (const message of query(options)) {
+  })) {
     if (message.type === "result") {
-      result = typeof message.result === "string" ? message.result : JSON.stringify(message.result);
+      result = typeof (message as any).result === "string" ? (message as any).result : JSON.stringify(message);
     }
   }
 

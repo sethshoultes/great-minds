@@ -2,7 +2,7 @@
 // IMPROVE mode: Board reviews shipped products for improvements
 // DREAM mode: Steve + Elon brainstorm, board votes, winner becomes PRD
 
-import { query, type ClaudeCodeOptions } from "@anthropic-ai/claude-agent-sdk";
+import { query } from "@anthropic-ai/claude-agent-sdk";
 import { resolve } from "path";
 import { mkdir, readdir, stat } from "fs/promises";
 import { execSync } from "child_process";
@@ -15,19 +15,17 @@ const ALLOWED_TOOLS = ["Read", "Write", "Edit", "Bash", "Agent", "Glob", "Grep"]
 
 async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS): Promise<string> {
   log(`DREAM AGENT: ${name}`);
-  const options: ClaudeCodeOptions = {
+  let result = "";
+  for await (const message of query({
     prompt,
     options: {
       maxTurns,
       allowedTools: ALLOWED_TOOLS,
-      permissionMode: "bypassPermissions",
+      permissionMode: "bypassPermissions" as const,
     },
-  };
-
-  let result = "";
-  for await (const message of query(options)) {
+  })) {
     if (message.type === "result") {
-      result = typeof message.result === "string" ? message.result : JSON.stringify(message.result);
+      result = typeof (message as any).result === "string" ? (message as any).result : JSON.stringify(message);
     }
   }
   return result;
