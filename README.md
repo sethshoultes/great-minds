@@ -70,20 +70,15 @@ Claude handles high-judgment work. Cloudflare Workers AI handles commodity tasks
 | Voice transcription | Whisper | Cloudflare Workers AI | Free |
 | Image generation | Stable Diffusion XL | Cloudflare Workers AI | Free |
 
-### Decoupled Cron System
+### Daemon (Primary Orchestration)
 
-Crons run independently via system crontab -- never bottleneck the main agent. Bash + Haiku, not conversation-based.
+The agency daemon (`/agency-daemon`) is an Agent SDK-based long-running process that replaces the previous cron-based pipeline. It supersedes `pipeline-runner.sh`, `heartbeat.sh`, `feature-dream.sh`, and `memory-maintain.sh`.
 
-| Cron | Interval | Model | Purpose |
-|------|----------|-------|---------|
-| Heartbeat | 5 min | Bash (free) | File count, site status, memory check |
-| Margaret QA | 29 min | Bash (free) | Site content verification, image checks |
-| Git Monitor | 15 min | Bash (free) | Uncommitted changes, open PRs |
-| DO Server Check | 10 min | Bash (free) | SSH health check on remote server |
-| Dispatch | 30 min | Haiku (cheap) | Read TASKS.md, assign idle agents |
-| Dream Consolidation | 60 min | Haiku (cheap) | Detect drift in system files |
+The daemon continuously monitors for work, dispatches agents, runs QA checks, and consolidates memory -- all in a single persistent process instead of scattered crontab entries.
 
-Reports write to `/tmp/claude-shared/cron-reports.log`. Alerts to `/tmp/claude-shared/alerts.log`.
+### Legacy Cron System (Replaced by Daemon)
+
+The original decoupled cron system (bash + haiku via system crontab) is still available via `/agency-crons` for environments where the daemon cannot run, but the daemon is the recommended approach.
 
 ### GSD Integration
 
@@ -94,6 +89,7 @@ Inspired by [Get Shit Done](https://github.com/gsd-build/get-shit-done) -- struc
 | `/agency-plan` | XML task plans verified against requirements |
 | `/agency-execute` | Wave-based parallel execution with fresh context per task |
 | `/agency-verify` | UAT verification with debug agents for failures |
+| `/agency-daemon` | Long-running Agent SDK daemon -- replaces cron pipeline |
 | `/scope-check` | Detect scope creep against original plan |
 | Context Guard Hook | Warns when context is getting large |
 
@@ -119,8 +115,8 @@ Inspired by [Get Shit Done](https://github.com/gsd-build/get-shit-done) -- struc
 | QA reports (Margaret) | 80+ |
 | Blog posts | 20 |
 | Product videos (Remotion) | 5 |
-| WordPress plugins shipped | 2 (Dash, Pinned) |
-| Plugin skills | 12 |
+| Products built | 3 (Dash, Pinned, Narrate/Witness) |
+| Plugin skills | 15 |
 | PRs merged | 25+ |
 | VPS | DigitalOcean 8GB/4vCPU |
 
@@ -131,7 +127,7 @@ Inspired by [Get Shit Done](https://github.com/gsd-build/get-shit-done) -- struc
 | `SOUL.md` | Agency identity, values, partner dynamics |
 | `AGENTS.md` | Full agent roster, hierarchy, communication rules |
 | `TASKS.md` | Master task board -- agents self-direct from this |
-| `HEARTBEAT.md` | Cron schedule, agent roster, hybrid AI, active projects |
+| `HEARTBEAT.md` | Daemon/cron schedule, agent roster, hybrid AI, active projects |
 | `STATUS.md` | Live state -- what's running, what's blocked, progress |
 | `MEMORY.md` | Persistent memory index -- agency learns across projects |
 | `SCOREBOARD.md` | Agency-wide accountability tracking |
@@ -142,7 +138,7 @@ Inspired by [Get Shit Done](https://github.com/gsd-build/get-shit-done) -- struc
 npx plugins add sethshoultes/great-minds-plugin
 ```
 
-Includes: 14 agents, 12 skills, GSD integration, decoupled cron system, context guard hooks, `.planning/` templates.
+Includes: 14 agents, 15 skills, GSD integration, daemon orchestration, context guard hooks, `.planning/` templates.
 
 ## Quick Start
 
@@ -157,6 +153,7 @@ cp prds/TEMPLATE.md prds/my-project.md
 
 # Launch the agency (no claude-swarm dependency)
 # Use the plugin: /agency-launch
+# Or run the daemon for continuous orchestration: /agency-daemon
 ```
 
 ## Related Projects
@@ -166,6 +163,7 @@ cp prds/TEMPLATE.md prds/my-project.md
 - [great-minds-plugin](https://github.com/sethshoultes/great-minds-plugin) -- Claude Code plugin (installable agency)
 - [dash-command-bar](https://github.com/sethshoultes/dash-command-bar) -- Dash WP command bar plugin
 - [pinned-notes](https://github.com/sethshoultes/pinned-notes) -- Pinned WP notes plugin
+- Narrate/Witness -- Video narration product built by the agency
 
 ## License
 

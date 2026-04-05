@@ -1,12 +1,12 @@
 # Great Minds Agency — Status
 
 ## Current State
-- **state**: debate-r1
-- **active project**: witness
+- **state**: operational
+- **active project**: none (idle)
 - **last updated**: 2026-04-03
 - **agents**: 14 active
 - **dispatch**: Agent tool with worktree isolation
-- **crons**: Decoupled (bash + haiku, not conversation-based)
+- **orchestration**: Daemon (Agent SDK-based, replaces cron pipeline)
 
 ## Infrastructure
 
@@ -42,9 +42,10 @@
 | Product | Type | Repo | Status |
 |---------|------|------|--------|
 | LocalGenius | Next.js SaaS app | localgenius | Live (265 source files) |
-| Great Minds Plugin | Claude Code plugin | great-minds-plugin | Published (12 skills) |
+| Great Minds Plugin | Claude Code plugin | great-minds-plugin | Published (15 skills) |
 | Dash | WordPress command bar plugin | dash-command-bar | Shipped (own repo) |
 | Pinned | WordPress pinned notes plugin | pinned-notes | Shipped (own repo) |
+| Narrate/Witness | Video narration product | — | Shipped |
 | Shipyard AI | Autonomous site builder | shipyard-ai | Live |
 
 ## Content
@@ -79,7 +80,7 @@
 - LocalGenius source files: 265
 - Blog posts published: 20
 - Product videos rendered: 5
-- WordPress plugins shipped: 2 (Dash, Pinned)
-- Plugin skills: 12
+- Products built: 3 (Dash, Pinned, Narrate/Witness)
+- Plugin skills: 15
 - GitHub repos: 6
 - Live deployments: 3

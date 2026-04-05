@@ -1,10 +1,23 @@
 # Great Minds Agency — Heartbeat
 
-This file defines what happens on each scheduled tick. The orchestrator reads this file to determine what actions to take.
+This file defines the agency's orchestration architecture. The daemon reads this file to determine what actions to take.
 
-## Cron Schedule (Decoupled Architecture)
+## Daemon Architecture (Primary)
 
-Crons run independently via system crontab -- never bottleneck the main agent. No conversation-based crons.
+The agency daemon (`/agency-daemon`) is an Agent SDK-based long-running process that handles all pipeline orchestration. It replaces the previous cron-based scripts:
+
+| Replaced Script | Daemon Equivalent |
+|-----------------|-------------------|
+| `pipeline-runner.sh` | Daemon main loop -- continuous pipeline dispatch |
+| `heartbeat.sh` | Daemon health tick -- file counts, site status, memory check |
+| `feature-dream.sh` | Daemon dream cycle -- drift detection, memory consolidation |
+| `memory-maintain.sh` | Daemon memory tick -- SQLite + TF-IDF store maintenance (155 memories) |
+
+The daemon continuously monitors for work, dispatches agents, runs QA checks, and consolidates memory in a single persistent process.
+
+## Legacy Cron System (Fallback)
+
+The original decoupled cron system is still available via `/agency-crons` for environments where the daemon cannot run. Crons run independently via system crontab.
 
 | Job | Interval | Runtime | Purpose |
 |-----|----------|---------|---------|
@@ -154,4 +167,4 @@ Install the full agency on any machine:
 ```
 npx plugins add sethshoultes/great-minds-plugin
 ```
-Includes: 14 agents, 12 skills, GSD integration, decoupled cron system, context guard hooks, `.planning/` templates.
+Includes: 14 agents, 15 skills, GSD integration, daemon orchestration, context guard hooks, `.planning/` templates.
