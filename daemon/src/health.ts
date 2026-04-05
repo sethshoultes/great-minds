@@ -2,7 +2,7 @@
 // Replaces heartbeat.sh, git-monitor.sh, and memory-maintain.sh
 
 import { execSync } from "child_process";
-import { readFileSync, statSync } from "fs";
+import { readFileSync, statSync, existsSync } from "fs";
 import {
   SITES, GIT_REPOS, GITHUB_REPOS, MEMORY_FILE,
   MEMORY_STORE_DIR, REPO_PATH,
@@ -131,6 +131,11 @@ export function pollGitHubIssues(sinceMinutes = 10): GitHubIssue[] {
 export function runMemoryMaintenance(): void {
   log("MEMORY: Running maintenance");
   try {
+    // Check if memory store exists before trying to run
+    if (!existsSync(resolve(MEMORY_STORE_DIR, "src/cli.ts"))) {
+      log("MEMORY: Memory store not found at " + MEMORY_STORE_DIR + " — skipping");
+      return;
+    }
     execSync(`cd "${MEMORY_STORE_DIR}" && npx tsx src/cli.ts maintain 2>&1`, {
       encoding: "utf-8",
       timeout: 120_000,
