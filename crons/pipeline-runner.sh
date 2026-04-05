@@ -20,6 +20,7 @@ LOG="/tmp/claude-shared/pipeline.log"
 REPO="${PIPELINE_REPO:-$(pwd)}"
 QA_FILE="/tmp/claude-shared/qa-pass-count"
 STATE_FILE="$REPO/STATUS.md"
+PLUGIN_PATH="${CLAUDE_PLUGIN_ROOT:-/Users/sethshoultes/Local Sites/great-minds-plugin}"
 
 log() { echo "$(date '+%Y-%m-%d %H:%M') PIPE: $*" >> "$LOG"; }
 
@@ -130,11 +131,9 @@ This is the blueprint for the build phase." && set_state "plan-tasks"
       set_state "plan-review"
     else
       mkdir -p "$REPO/.planning"
-      run_step "plan-tasks" "Read rounds/${SLUG}/decisions.md and prds/${SLUG}.md.
-Create .planning/phase-1-plan.md with structured task plans. For each task include:
-- Task name, wave number (1/2/3), owner (Steve/Elon), inputs, outputs, verification criteria
-Group into dependency-ordered waves. Independent tasks in same wave run in parallel.
-Also write .planning/REQUIREMENTS.md — checklist of every PRD requirement with REQ-IDs." && set_state "plan-review"
+      run_step "plan-tasks" "Read and follow the instructions in the /agency-plan skill at $PLUGIN_PATH/skills/agency-plan/SKILL.md.
+Use project slug '${SLUG}'. Read rounds/${SLUG}/decisions.md and prds/${SLUG}.md as inputs.
+Write output to .planning/phase-1-plan.md and .planning/REQUIREMENTS.md." && set_state "plan-review"
     fi
     ;;
 
@@ -151,13 +150,9 @@ Keep it under 30 lines." && set_state "build-wave"
     ;;
 
   build-wave)
-    run_step "build-wave" "Read .planning/phase-1-plan.md and rounds/${SLUG}/decisions.md.
-BUILD the product. For each task in the plan:
-- Create the files specified in the task outputs
-- Follow the decisions doc for all technical choices
-- Write clean, working code — not stubs or placeholders
-Put all output in deliverables/${SLUG}/
-When all files are created, write .planning/execution-report.md documenting what was built.
+    run_step "build-wave" "Read and follow the instructions in the /agency-execute skill at $PLUGIN_PATH/skills/agency-execute/SKILL.md.
+Use project slug '${SLUG}'. Read .planning/phase-1-plan.md and rounds/${SLUG}/decisions.md as inputs.
+Put all output in deliverables/${SLUG}/. Write .planning/execution-report.md when done.
 Commit everything on a feature branch and push." && set_state "build-verify"
     ;;
 
@@ -180,8 +175,8 @@ Commit everything on a feature branch and push." && set_state "build-verify"
 
   qa-1)
     QA_NUM=$(($(cat "$QA_FILE" 2>/dev/null || echo 0) + 1))
-    run_step "qa-pass-$QA_NUM" "Run QA on deliverables/${SLUG}/.
-Check: syntax (php -l or equivalent), security, code quality, requirements coverage against .planning/REQUIREMENTS.md.
+    run_step "qa-pass-$QA_NUM" "Read and follow the instructions in the /agency-verify skill at $PLUGIN_PATH/skills/agency-verify/SKILL.md.
+Use project slug '${SLUG}'. Verify deliverables/${SLUG}/ against .planning/REQUIREMENTS.md.
 Write rounds/${SLUG}/qa-pass-${QA_NUM}.md with verdict: PASS or BLOCK.
 For each requirement in REQUIREMENTS.md, mark PASS or FAIL with evidence.
 If BLOCK: list every issue that must be fixed." \
@@ -206,8 +201,9 @@ Edit the files directly in deliverables/${SLUG}/. Commit fixes." && set_state "q
     ;;
 
   qa-2)
-    run_step "qa-pass-2" "Run a SECOND independent QA review on deliverables/${SLUG}/.
-Focus on integration: do all pieces work together? Check against .planning/REQUIREMENTS.md.
+    run_step "qa-pass-2" "Read and follow the instructions in the /agency-verify skill at $PLUGIN_PATH/skills/agency-verify/SKILL.md.
+Use project slug '${SLUG}'. This is QA pass 2 — focus on integration: do all pieces work together?
+Verify deliverables/${SLUG}/ against .planning/REQUIREMENTS.md.
 Write rounds/${SLUG}/qa-pass-2.md with verdict: PASS or BLOCK." \
     && {
       VERDICT=$(grep -iE "PASS|GREEN|SHIP" "$ROUNDS/qa-pass-2.md" 2>/dev/null | head -1)
@@ -225,12 +221,9 @@ Write rounds/${SLUG}/qa-pass-2.md with verdict: PASS or BLOCK." \
       log "Board reviews exist — advancing"
       set_state "board-verdict"
     else
-      run_step "board-review" "Write 4 board reviews for the ${SLUG} product (read deliverables/${SLUG}/ and the PRD):
-1. rounds/${SLUG}/board-review-jensen.md — tech strategy, moats (20 lines)
-2. rounds/${SLUG}/board-review-oprah.md — audience, accessibility (20 lines)
-3. rounds/${SLUG}/board-review-buffett.md — business model, economics (20 lines)
-4. rounds/${SLUG}/board-review-shonda.md — retention, engagement (20 lines)
-Write ALL 4 files." && set_state "board-verdict"
+      run_step "board-review" "Read and follow the instructions in the /agency-board-review skill at $PLUGIN_PATH/skills/agency-board-review/SKILL.md.
+Use project slug '${SLUG}'. Review deliverables/${SLUG}/ and the PRD at prds/${SLUG}.md.
+Write board review files to rounds/${SLUG}/." && set_state "board-verdict"
     fi
     ;;
 
@@ -247,11 +240,8 @@ Write rounds/${SLUG}/shonda-retention-roadmap.md — what keeps users coming bac
     ;;
 
   ship)
-    run_step "ship" "Ship the ${SLUG} project:
-1. Commit all uncommitted files in deliverables/${SLUG}/ and rounds/${SLUG}/
-2. Write memory/${SLUG}-retrospective.md — what worked, what didn't, learnings
-3. Push to origin main
-4. Update SCOREBOARD.md with new project entry" \
+    run_step "ship" "Read and follow the instructions in the /agency-ship skill at $PLUGIN_PATH/skills/agency-ship/SKILL.md.
+Use project slug '${SLUG}'. Ship the project: commit, write retrospective, push, update scoreboard." \
     && {
       set_state "idle"
       set_project ""
