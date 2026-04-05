@@ -53,6 +53,19 @@ PROBLEMS=""
   TOTAL_PRS=$((PR_COUNT + PR_COUNT2))
   [ "$TOTAL_PRS" -gt 0 ] && echo "open_prs: $TOTAL_PRS"
 
+  # New GitHub issues check — pickup for dispatch
+  for repo in great-minds great-minds-plugin localgenius shipyard-ai dash-command-bar pinned-notes; do
+    NEW_ISSUES=$(gh issue list --repo "sethshoultes/$repo" --state open --json number,title,createdAt \
+      --jq "[.[] | select(.createdAt > \"$(date -u -v-10M '+%Y-%m-%dT%H:%M:%S')\")] | length" 2>/dev/null || echo 0)
+    if [ "$NEW_ISSUES" -gt 0 ]; then
+      ISSUE_TITLES=$(gh issue list --repo "sethshoultes/$repo" --state open --json number,title \
+        --jq '.[] | "#\(.number) \(.title)"' 2>/dev/null | head -3)
+      echo "new_issues($repo): $NEW_ISSUES"
+      echo "$ISSUE_TITLES"
+      PROBLEMS="$PROBLEMS new_issues_${repo}($NEW_ISSUES)"
+    fi
+  done
+
   echo ""
 } >> "$LOG"
 
