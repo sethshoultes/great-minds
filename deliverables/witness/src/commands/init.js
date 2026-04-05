@@ -13,13 +13,13 @@ const __dirname = path.dirname(__filename);
 const HOOK_WORKER_PATH = path.resolve(__dirname, '..', 'lib', 'hook-worker.js');
 
 /**
- * Markers for identifying narrate's section in an existing hook.
+ * Markers for identifying witness's section in an existing hook.
  */
-const HOOK_START = '# --- narrate start ---';
-const HOOK_END = '# --- narrate end ---';
+const HOOK_START = '# --- witness start ---';
+const HOOK_END = '# --- witness end ---';
 
 /**
- * Generate the shell script content that invokes narrate's hook worker.
+ * Generate the shell script content that invokes witness's hook worker.
  * @param {string} repoRoot - Absolute path to repo root
  * @returns {string} Shell script fragment
  */
@@ -27,14 +27,14 @@ function hookScript() {
   // Direct node script execution with absolute path to hook-worker.js
   // This avoids PATH issues and keeps the hook simple
   return `${HOOK_START}
-# Narrate — auto-generate changelog entry (runs async, won't slow git)
+# Witness — auto-generate changelog entry (runs async, won't slow git)
 node "${HOOK_WORKER_PATH}" "$(git rev-parse --show-toplevel)" &
 ${HOOK_END}`;
 }
 
 /**
- * Run the `narrate init` command.
- * Installs a post-commit hook that fires narrate after every commit.
+ * Run the `witness init` command.
+ * Installs a post-commit hook that fires witness after every commit.
  */
 export async function runInit() {
   // Detect git repo
@@ -78,16 +78,14 @@ export async function runInit() {
 
     // Idempotent — check if narrate is already installed
     if (existing.includes(HOOK_START)) {
-      console.log('');
-      console.log('  Narrate is already installed.');
-      console.log('');
-      console.log('  Hook exists in .git/hooks/post-commit');
-      console.log('  Changelog will appear in CHANGELOG.human.md');
-      console.log('');
+      console.log('Narrate is already installed.');
+      console.log(`Hook: ${hookPath}`);
+      console.log(`Changelog: ${path.resolve(repoRoot, 'CHANGELOG.human.md')}`);
+      console.log('Make your next commit to see it in action.');
       return;
     }
 
-    // Append narrate section to existing hook
+    // Append witness section to existing hook
     const updated = existing.trimEnd() + '\n\n' + script + '\n';
     fs.writeFileSync(hookPath, updated, 'utf-8');
   } else {
@@ -99,13 +97,9 @@ export async function runInit() {
   // Make executable
   fs.chmodSync(hookPath, 0o755);
 
-  // Print the locked init output from decisions.md
-  console.log('');
-  console.log('  Narrate is watching.');
-  console.log('');
-  console.log('  Hook installed in .git/hooks/post-commit');
-  console.log('  Changelog will appear in CHANGELOG.human.md');
-  console.log('');
-  console.log('  Make your next commit to see it work.');
-  console.log('');
+  // Print the locked init output from decisions.md (exactly 4 lines)
+  console.log('Narrate is watching.');
+  console.log(`Hook: ${hookPath}`);
+  console.log(`Changelog: ${path.resolve(repoRoot, 'CHANGELOG.human.md')}`);
+  console.log('Make your next commit to see it in action.');
 }

@@ -4,13 +4,13 @@
   "type": "module",
   "description": "Your code, in plain English",
   "bin": {
-    "narrate": "./bin/narrate.js"
+    "narrate": "./bin/witness.js"
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
-    "start": "node bin/narrate.js"
+    "start": "node bin/witness.js"
   },
   "keywords": [
     "changelog",
