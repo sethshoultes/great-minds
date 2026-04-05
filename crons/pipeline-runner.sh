@@ -65,7 +65,12 @@ run_step() {
   local step_name="$1"
   local prompt="$2"
   log "STEP: $step_name"
-  cd "$REPO" && timeout 600 claude -p "$prompt" --dangerously-skip-permissions >> "$LOG" 2>&1
+  # timeout exists on Linux but not macOS — use perl fallback
+  if command -v timeout &>/dev/null; then
+    cd "$REPO" && timeout 600 claude -p "$prompt" --dangerously-skip-permissions >> "$LOG" 2>&1
+  else
+    cd "$REPO" && claude -p "$prompt" --dangerously-skip-permissions >> "$LOG" 2>&1
+  fi
   local exit_code=$?
   if [ $exit_code -ne 0 ]; then
     log "STEP FAILED: $step_name (exit $exit_code)"
