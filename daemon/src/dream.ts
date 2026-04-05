@@ -2,7 +2,7 @@
 // IMPROVE mode: Board reviews shipped products for improvements
 // DREAM mode: Steve + Elon brainstorm, board votes, winner becomes PRD
 
-import { query, type ClaudeCodeOptions } from "@anthropic-ai/claude-code-sdk";
+import { query, type ClaudeCodeOptions } from "@anthropic-ai/claude-agent-sdk";
 import { resolve } from "path";
 import { mkdir, readdir, stat } from "fs/promises";
 import { execSync } from "child_process";

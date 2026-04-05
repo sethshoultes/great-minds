@@ -1,7 +1,7 @@
 // Great Minds Daemon — GSD Pipeline as TypeScript functions
 // Each phase spawns agent(s) via the Claude Code SDK. No markdown state parsing.
 
-import { query, type ClaudeCodeOptions } from "@anthropic-ai/claude-code-sdk";
+import { query, type ClaudeCodeOptions } from "@anthropic-ai/claude-agent-sdk";
 import { resolve } from "path";
 import { mkdir } from "fs/promises";
 import {
