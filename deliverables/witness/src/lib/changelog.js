@@ -1,39 +1,42 @@
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import { resolve } from 'path';
 
-const CHANGELOG_FILE = 'CHANGELOG.human.md';
+/**
+ * Changelog file name — hardcoded per decisions.md.
+ */
+export const CHANGELOG_FILE = 'CHANGELOG.human.md';
+
+/**
+ * Attribution footer text.
+ */
+const ATTRIBUTION = '*Narrated by Narrate — your code, in plain English*';
 
 /**
  * Format a date object into the changelog date format.
- * Expected output: "Apr 5, 2026 — 7:36 AM"
+ * Output: "Apr 5, 2026 — 7:36 AM"
  *
  * @param {Date} date - The date to format
  * @returns {string} Formatted date string
  */
 export function formatDate(date) {
-  // Format the date part: "Apr 5, 2026"
-  const dateFormatter = new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  });
-  const datePart = dateFormatter.format(date);
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = months[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
 
-  // Format the time part: "7:36 AM"
-  const timeFormatter = new Intl.DateTimeFormat('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  });
-  const timePart = timeFormatter.format(date);
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
 
-  // Join with " — "
-  return `${datePart} — ${timePart}`;
+  return `${month} ${day}, ${year} — ${hours}:${minutes} ${ampm}`;
 }
 
 /**
- * Format a changelog entry into the standard format.
- * Expected output:
+ * Format a single changelog entry in the locked format.
+ *
+ * Output:
  * ```
  * Apr 5, 2026 — 7:36 AM
  *
@@ -41,60 +44,139 @@ export function formatDate(date) {
  *   logout bug.  ·  abc1234
  * ```
  *
- * @param {Object} entry - The entry object
- * @param {Date} entry.date - The date of the entry
- * @param {string} entry.summary - The summary text
- * @param {string} entry.hash - The commit hash
- * @returns {string} Formatted entry string
+ * @param {object} entry
+ * @param {Date} entry.date
+ * @param {string} entry.summary
+ * @param {string} entry.hash - Short commit hash
+ * @returns {string} Formatted entry string (with trailing newline)
  */
 export function formatEntry({ date, summary, hash }) {
   const dateStr = formatDate(date);
   const shortHash = hash.substring(0, 7);
-  const indentedSummary = `  ${summary}  ·  ${shortHash}`;
-
-  return `${dateStr}\n\n${indentedSummary}\n\n`;
+  // Remove trailing period/periods from summary for consistency
+  const cleanSummary = summary.replace(/\.+$/, '');
+  return `${dateStr}\n\n  ${cleanSummary}  ·  ${shortHash}`;
 }
 
 /**
  * Append a new entry to the changelog file.
  * Prepends new entries at the top (newest first).
- * If config.attribution is true, ensures the attribution footer exists.
+ * If config.attribution is true, ensures the attribution footer exists at end.
  *
  * @param {string} repoRoot - The root directory of the repository
- * @param {Object} entry - The entry to append
- * @param {Object} config - Configuration object
- * @param {boolean} config.attribution - Whether to include the attribution footer
+ * @param {object} entry - The entry to append { date, summary, hash }
+ * @param {object} config - Configuration object with attribution boolean
  * @returns {Promise<void>}
  */
 export async function appendEntry(repoRoot, entry, config = {}) {
   const changelogPath = resolve(repoRoot, CHANGELOG_FILE);
-  const formattedEntry = formatEntry(entry);
-  const attributionFooter = '*Narrated by Narrate — your code, in plain English*';
-
-  // Ensure the directory exists
-  await mkdir(repoRoot, { recursive: true });
+  const formatted = formatEntry(entry);
 
   let currentContent = '';
   try {
     currentContent = await readFile(changelogPath, 'utf-8');
   } catch {
     // File doesn't exist, that's fine
-    currentContent = '';
   }
 
-  // Check if attribution footer exists
-  let newContent = formattedEntry + currentContent;
+  // Remove attribution footer if present (we'll re-add at the end)
+  let body = currentContent
+    .replace(new RegExp(`\\n*\\*Narrated by Narrate[^*]*\\*\\s*$`), '')
+    .trim();
 
-  if (config.attribution === true) {
-    // Ensure the attribution footer exists at the end
-    const footerExists = newContent.trim().endsWith(attributionFooter);
-    if (!footerExists) {
-      // Remove any trailing whitespace and add the footer
-      newContent = newContent.trimEnd() + '\n\n' + attributionFooter;
-    }
+  // Prepend new entry
+  let newContent;
+  if (body) {
+    newContent = formatted + '\n\n' + body;
+  } else {
+    newContent = formatted;
+  }
+
+  // Add attribution footer if enabled
+  if (config.attribution !== false) {
+    newContent = newContent.trimEnd() + '\n\n' + ATTRIBUTION + '\n';
+  } else {
+    newContent = newContent.trimEnd() + '\n';
   }
 
   await writeFile(changelogPath, newContent, 'utf-8');
 }
 
-export { CHANGELOG_FILE };
+/**
+ * Read and parse all entries from the changelog.
+ *
+ * @param {string} repoRoot - The root directory of the repository
+ * @returns {Promise<Array<{dateStr: string, date: Date, summary: string, hash: string}>>}
+ */
+export async function readEntries(repoRoot) {
+  const changelogPath = resolve(repoRoot, CHANGELOG_FILE);
+  let content;
+  try {
+    content = await readFile(changelogPath, 'utf-8');
+  } catch (error) {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  }
+  return parseEntries(content);
+}
+
+/**
+ * Parse changelog content into structured entries.
+ *
+ * @param {string} content - Raw changelog content
+ * @returns {Array<{dateStr: string, date: Date, summary: string, hash: string}>}
+ */
+export function parseEntries(content) {
+  const entries = [];
+
+  // Match date lines: "Mon D, YYYY — H:MM AM/PM"
+  const datePattern = /^([A-Z][a-z]{2} \d{1,2}, \d{4} — \d{1,2}:\d{2} [AP]M)$/gm;
+  const dateMatches = [...content.matchAll(datePattern)];
+
+  for (let i = 0; i < dateMatches.length; i++) {
+    const dateStr = dateMatches[i][1];
+    const startIdx = dateMatches[i].index + dateMatches[i][0].length;
+    const endIdx = i + 1 < dateMatches.length
+      ? dateMatches[i + 1].index
+      : content.length;
+
+    const block = content.slice(startIdx, endIdx).trim();
+
+    // Extract summary and hash: "  Summary text  ·  abc1234"
+    const entryMatch = block.match(/^\s*(.+?)\s+·\s+([a-f0-9]{7,})/s);
+    if (entryMatch) {
+      const summary = entryMatch[1].replace(/\s+/g, ' ').trim();
+      const hash = entryMatch[2];
+      entries.push({
+        dateStr,
+        date: parseDateStr(dateStr),
+        summary,
+        hash,
+      });
+    }
+  }
+
+  return entries;
+}
+
+/**
+ * Parse a natural date string back to a Date object.
+ * @param {string} dateStr - "Apr 5, 2026 — 7:36 AM"
+ * @returns {Date}
+ */
+function parseDateStr(dateStr) {
+  const months = {
+    Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+    Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+  };
+
+  const match = dateStr.match(/(\w{3}) (\d{1,2}), (\d{4}) — (\d{1,2}):(\d{2}) (AM|PM)/);
+  if (!match) return new Date();
+
+  const [, mon, day, year, hourStr, min, ampm] = match;
+  let hour = parseInt(hourStr, 10);
+  if (ampm === 'PM' && hour !== 12) hour += 12;
+  if (ampm === 'AM' && hour === 12) hour = 0;
+
+  return new Date(parseInt(year), months[mon], parseInt(day), hour, parseInt(min));
+}

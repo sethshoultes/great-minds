@@ -25,7 +25,7 @@ const MAX_DIFF_LINES = 500;
  * @param {number} maxLines - Maximum number of lines to keep
  * @returns {string} The truncated diff with optional truncation marker
  */
-export function truncateDiff(diff, maxLines) {
+export function truncateDiff(diff, maxLines = MAX_DIFF_LINES) {
   const lines = diff.split('\n');
 
   if (lines.length <= maxLines) {

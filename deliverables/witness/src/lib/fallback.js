@@ -135,29 +135,30 @@ export function generateFallback({ diff, commitMessage }) {
   const lowerMessage = trimmedMessage.toLowerCase();
 
   // Check if commit message is meaningful
+  // Only reject exact matches for unhelpful words, or messages shorter than 5 chars
   const isMeaningful =
-    trimmedMessage.length > 0 &&
-    !UNHELPFUL_MESSAGES.includes(lowerMessage) &&
-    !UNHELPFUL_MESSAGES.some(msg => lowerMessage.startsWith(msg + ' '));
+    trimmedMessage.length >= 4 &&
+    !UNHELPFUL_MESSAGES.includes(lowerMessage);
 
   if (isMeaningful) {
     // Use commit message as base
     let summary = trimmedMessage;
+
+    // Strip conventional commit prefix (feat:, fix:, etc.)
+    summary = summary.replace(/^(feat|fix|chore|docs|style|refactor|test|ci|build|perf)(\(.+?\))?:\s*/i, '');
 
     // Capitalize first letter if needed
     if (summary.length > 0 && summary[0] !== summary[0].toUpperCase()) {
       summary = summary[0].toUpperCase() + summary.slice(1);
     }
 
-    // If message doesn't start with a verb, try to add context
-    if (
-      !summary.match(/^(Added|Updated|Fixed|Removed|Refactored|Changed|Improved|Modified|Created|Deleted|Renamed|Merged)/i)
-    ) {
-      // Check if files can provide context
-      if (files.length <= 3) {
-        const fileList = files.map(f => f.path).join(' and ');
-        summary = `${summary} (${fileList})`;
-      }
+    // Add file context if the message doesn't already mention specific files
+    const fileNames = files.map(f => f.path.split('/').pop());
+    const mentionsFiles = fileNames.some(name => summary.includes(name));
+
+    if (!mentionsFiles && files.length > 0 && files.length <= 3) {
+      const fileList = fileNames.join(' and ');
+      summary = `${summary} in ${fileList}`;
     }
 
     return summary;
