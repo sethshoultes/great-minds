@@ -25,7 +25,7 @@ Beneath it, a thin horizontal rule draws itself left to right.
 
 **Audio/VO:** *(silence for 2 seconds, then:)*
 
-"Most people use AI the way they used Google. Ask a question. Get an answer. Paste it in. Move on. One model. One opinion. No friction."
+"What happens when Steve Jobs and Elon Musk disagree about your product? Most people use AI the way they used Google -- one model, one opinion, no friction. One of our board members called the whole thing a hobby. But first, let me show you what friction built."
 
 **Motion:** Text holds. No movement. The stillness is deliberate.
 
@@ -137,7 +137,7 @@ At the end, a quote card appears, lightly styled:
 
 *(beat)*
 
-"Warren Buffett called our plugin a hobby. He was right. We shipped it anyway."
+"Remember that board member who called it a hobby? That was Warren Buffett. He was right. We shipped it anyway."
 
 **Motion:** Portraits fade in with a 0.4s stagger. Counters animate with an easing curve over 1.5 seconds. Quote card fades in last, held for 3 seconds.
 
@@ -169,7 +169,7 @@ After all three, a green checkmark draws itself, and a new card slides in from b
 
 **Audio/VO:**
 
-"Let me tell you about the three things that did not work. Cron jobs with Claude's pipe mode dropped steps silently -- a ten-step plan would execute six. tmux send-keys had a zero percent success rate. And grep's Perl flag does not exist on macOS, which broke every script we wrote."
+"But before any of that worked -- let me tell you about the three things that did not. Cron jobs with Claude's pipe mode dropped steps silently -- a ten-step plan would execute six. tmux send-keys had a zero percent success rate. And grep's Perl flag does not exist on macOS, which broke every script we wrote."
 
 *(pause)*
 
