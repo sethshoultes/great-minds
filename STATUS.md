@@ -1,7 +1,7 @@
 # Great Minds Agency — Status
 
 ## Current State
-- **state**: plan
+- **state**: debate-r1
 - **active project**: witness
 - **last updated**: 2026-04-03
 - **agents**: 14 active
