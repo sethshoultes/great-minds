@@ -74,7 +74,7 @@ run().catch(async (error) => {
   // Log errors silently — never crash git
   try {
     const repoRoot = process.argv[2] || process.cwd();
-    const logPath = resolve(repoRoot, '.narrate-error.log');
+    const logPath = resolve(repoRoot, '.witness-error.log');
     const timestamp = new Date().toISOString();
     await writeFile(
       logPath,

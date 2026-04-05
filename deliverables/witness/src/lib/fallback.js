@@ -147,9 +147,36 @@ export function generateFallback({ diff, commitMessage }) {
     // Strip conventional commit prefix (feat:, fix:, etc.)
     summary = summary.replace(/^(feat|fix|chore|docs|style|refactor|test|ci|build|perf)(\(.+?\))?:\s*/i, '');
 
-    // Capitalize first letter if needed
+    // Ensure first word is capitalized
     if (summary.length > 0 && summary[0] !== summary[0].toUpperCase()) {
       summary = summary[0].toUpperCase() + summary.slice(1);
+    }
+
+    // Convert imperative verbs to past tense for consistency with changelog
+    // e.g., "Add" -> "Added", "Update" -> "Updated", "Refactor" -> "Refactored"
+    const imperativeVerbs = {
+      'Add ': 'Added ',
+      'Remove ': 'Removed ',
+      'Update ': 'Updated ',
+      'Refactor ': 'Refactored ',
+      'Fix ': 'Fixed ',
+      'Change ': 'Changed ',
+      'Rename ': 'Renamed ',
+      'Delete ': 'Deleted ',
+      'Modify ': 'Modified ',
+      'Create ': 'Created ',
+      'Implement ': 'Implemented ',
+      'Improve ': 'Improved ',
+      'Enhance ': 'Enhanced ',
+      'Clean ': 'Cleaned ',
+      'Optimize ': 'Optimized ',
+    };
+
+    for (const [imperative, past] of Object.entries(imperativeVerbs)) {
+      if (summary.startsWith(imperative)) {
+        summary = past + summary.slice(imperative.length);
+        break;
+      }
     }
 
     // Add file context if the message doesn't already mention specific files

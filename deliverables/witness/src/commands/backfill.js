@@ -83,7 +83,7 @@ function sleep(ms) {
 }
 
 /**
- * Run the `narrate backfill` command.
+ * Run the `witness backfill` command.
  * Processes historical commits and generates changelog entries.
  *
  * @param {object} flags - Command flags (last)

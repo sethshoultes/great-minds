@@ -69,7 +69,7 @@ function parseSince(since) {
 }
 
 /**
- * Run the `narrate log` command.
+ * Run the `witness log` command.
  * Pretty-prints CHANGELOG.human.md in the terminal.
  *
  * @param {object} flags - Command flags (since)

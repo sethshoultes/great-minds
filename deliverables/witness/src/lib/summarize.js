@@ -48,8 +48,14 @@ export function truncateDiff(diff, maxLines = MAX_DIFF_LINES) {
  * @throws {Error} If the API call fails
  */
 export async function summarize({ diff, commitMessage, config }) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY environment variable is not set');
+  }
+
   const client = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
+    apiKey,
   });
 
   const truncatedDiff = truncateDiff(diff, MAX_DIFF_LINES);
