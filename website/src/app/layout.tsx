@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
+import Nav from "@/components/Nav";
 import "./globals.css";
 
 const inter = Inter({
@@ -28,44 +29,6 @@ export const metadata: Metadata = {
   },
 };
 
-function Nav() {
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl">
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 text-zinc-100 no-underline">
-          <span className="text-amber-500 font-bold text-lg">GM</span>
-          <span className="font-semibold text-sm tracking-tight hidden sm:inline">Great Minds</span>
-        </Link>
-        <div className="flex items-center gap-6">
-          <Link href="/services" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
-            Services
-          </Link>
-          <Link href="/how" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
-            How It Works
-          </Link>
-          <Link href="/team" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
-            Team
-          </Link>
-          <Link href="/work" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
-            Work
-          </Link>
-          <Link href="/docs" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
-            Docs
-          </Link>
-          <Link href="/blog" className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors no-underline">
-            Blog
-          </Link>
-          <Link
-            href="/install"
-            className="text-sm font-medium px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors no-underline"
-          >
-            Submit PRD
-          </Link>
-        </div>
-      </div>
-    </nav>
-  );
-}
 
 function Footer() {
   return (
