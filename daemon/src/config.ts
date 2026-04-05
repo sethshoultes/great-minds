@@ -5,8 +5,8 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-/** Root of the great-minds repo */
-export const REPO_PATH = resolve(__dirname, "../..");
+/** Root repo — uses PIPELINE_REPO env var if set, otherwise relative */
+export const REPO_PATH = process.env.PIPELINE_REPO || resolve(__dirname, "../..");
 
 /** Root of the great-minds-plugin repo */
 export const PLUGIN_PATH = resolve(REPO_PATH, "../great-minds-plugin");
