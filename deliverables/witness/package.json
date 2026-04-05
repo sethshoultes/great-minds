@@ -1,0 +1,27 @@
+{
+  "name": "narrate-cli",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Your code, in plain English",
+  "bin": {
+    "narrate": "./bin/narrate.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node bin/narrate.js"
+  },
+  "keywords": [
+    "changelog",
+    "git",
+    "cli",
+    "ai",
+    "developer-tools"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.82.0"
+  }
+}
