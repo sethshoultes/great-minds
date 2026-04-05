@@ -154,7 +154,7 @@ export function filterDiff(diff, ignorePatterns) {
 
 /**
  * Simple glob matching.
- * Supports: exact match, *.ext, **/pattern
+ * Supports: exact match, *.ext, wildcard/pattern
  */
 function matchGlob(pattern, filePath) {
   const fileName = filePath.split('/').pop();
