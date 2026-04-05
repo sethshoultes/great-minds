@@ -1,308 +1,272 @@
 #!/usr/bin/env bash
-# Pipeline Runner — GSD-enforced, event-driven
+# Pipeline Runner v3 — Granular single-step states
 #
-# Every phase MUST follow the full GSD system. No shortcuts.
-# Heartbeat installs this when work is detected. This self-removes when done.
+# ONE claude -p call per cron run. ONE step. Check result. Advance.
+# Each step is small enough that claude -p completes it reliably.
 #
-# GSD enforcement at every phase:
-# - DEBATE: Rick Rubin strips to essence after
-# - PLAN: XML task plans, Sara Blakely gut-check, wave grouping
-# - BUILD: Wave execution, fresh context per agent, atomic commits,
-#          Jony Ive visual review + Maya Angelou copy review BEFORE PR,
-#          verification check AFTER each wave, execution report
-# - VERIFY: Two independent QA passes, debug agents for failures, UAT against requirements
-# - BOARD REVIEW: All 4 members, Shonda retention roadmap
-# - SHIP: Marcus retrospective, structured learnings to memory/vector store
+# States flow:
+#   idle → debate-r1 → debate-r2 → debate-decisions →
+#   plan-tasks → plan-review →
+#   build-wave → build-verify →
+#   qa-1 → qa-1-fix → qa-2 →
+#   board-review → board-verdict →
+#   ship → idle
+#
+# Heartbeat installs this. Self-removes on ship or idle-with-no-work.
 
 set -uo pipefail
 
 LOG="/tmp/claude-shared/pipeline.log"
-ALERT="/tmp/claude-shared/alerts.log"
 REPO="${PIPELINE_REPO:-$(pwd)}"
-QA_PASS_FILE="/tmp/claude-shared/qa-pass-count"
+QA_FILE="/tmp/claude-shared/qa-pass-count"
+STATE_FILE="$REPO/STATUS.md"
 
-log() { echo "$(date '+%Y-%m-%d %H:%M') PIPELINE: $*" >> "$LOG"; }
+log() { echo "$(date '+%Y-%m-%d %H:%M') PIPE: $*" >> "$LOG"; }
 
-STATE=$(grep -oP '(?<=\*\*state\*\*:\s).*' "$REPO/STATUS.md" 2>/dev/null | head -1 || echo "idle")
-PROJECT=$(grep -oP '(?<=\*\*active project\*\*:\s).*' "$REPO/STATUS.md" 2>/dev/null | head -1 || echo "")
-PROJECT_SLUG=$(echo "$PROJECT" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]//g')
+# Read state — macOS compatible (no grep -oP)
+STATE=$(grep '\*\*pipeline\*\*' "$STATE_FILE" 2>/dev/null | sed 's/.*\*\*pipeline\*\*: *//' | head -1)
+[ -z "$STATE" ] && STATE=$(grep '\*\*state\*\*' "$STATE_FILE" 2>/dev/null | sed 's/.*\*\*state\*\*: *//' | tr '[:upper:]' '[:lower:]' | head -1)
+[ -z "$STATE" ] && STATE="idle"
+PROJECT=$(grep '\*\*active project\*\*' "$STATE_FILE" 2>/dev/null | sed 's/.*\*\*active project\*\*: *//' | head -1)
+[ -z "$PROJECT" ] && PROJECT=""
+SLUG=$(echo "$PROJECT" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]//g')
+ROUNDS="$REPO/rounds/$SLUG"
 
-log "state=$STATE project=$PROJECT"
+log "state=[$STATE] project=[$PROJECT] slug=[$SLUG]"
 
-[ ! -f "$QA_PASS_FILE" ] && echo "0" > "$QA_PASS_FILE"
-
-# IDLE — check for new PRDs, uninstall self if nothing
-if [ "$STATE" = "idle" ] || [ "$STATE" = "operational" ] || [ -z "$PROJECT" ]; then
-  NEW_PRD=$(find "$REPO/prds" -name "*.md" -not -name "TEMPLATE.md" -newer "$REPO/STATUS.md" 2>/dev/null | head -1)
-  if [ -n "$NEW_PRD" ]; then
-    PROJECT_SLUG=$(basename "$NEW_PRD" .md)
-    log "New PRD: $NEW_PRD — STARTING DEBATE"
-    echo "0" > "$QA_PASS_FILE"
-    cd "$REPO" && claude -p "
-You are Phil Jackson. A new PRD arrived: $NEW_PRD
-
-PHASE 1: DEBATE (GSD-enforced)
-
-Step 1: Spawn Steve Jobs and Elon Musk via Agent tool (isolation: worktree, run_in_background: true).
-- Steve stakes positions on: design, naming, UX, what makes it great. Writes rounds/${PROJECT_SLUG}/round-1-steve.md
-- Elon stakes positions on: architecture, performance, distribution, what to cut. Writes rounds/${PROJECT_SLUG}/round-1-elon.md
-
-Step 2: After both complete, spawn Round 2:
-- Steve reads Elon's R1, challenges, defends. Writes rounds/${PROJECT_SLUG}/round-2-steve.md
-- Elon reads Steve's R1, challenges, defends. Writes rounds/${PROJECT_SLUG}/round-2-elon.md
-
-Step 3: Consolidate decisions into rounds/${PROJECT_SLUG}/decisions.md
-
-Step 4: Spawn Rick Rubin (model: haiku) to strip decisions to essence — what are the 3 things that actually matter? Writes rounds/${PROJECT_SLUG}/rick-rubin-essence.md
-
-Step 5: Update STATUS.md: state='plan', active project='${PROJECT_SLUG}'
-" --dangerously-skip-permissions >> "$LOG" 2>&1
-  else
-    log "idle — no work — uninstalling pipeline cron"
-    crontab -l 2>/dev/null | grep -v "pipeline-runner" | crontab - 2>/dev/null
+# Helper: update pipeline state in STATUS.md
+set_state() {
+  local new_state="$1"
+  if grep -q '\*\*pipeline\*\*' "$STATE_FILE" 2>/dev/null; then
+    sed -i '' "s/\*\*pipeline\*\*:.*/\*\*pipeline\*\*: $new_state/" "$STATE_FILE"
+  elif grep -q '\*\*state\*\*' "$STATE_FILE" 2>/dev/null; then
+    sed -i '' "s/\*\*state\*\*:.*/\*\*state\*\*: $new_state/" "$STATE_FILE"
   fi
-  exit 0
-fi
+  log "STATE → $new_state"
+}
+
+set_project() {
+  if grep -q '\*\*active project\*\*' "$STATE_FILE" 2>/dev/null; then
+    sed -i '' "s/\*\*active project\*\*:.*/\*\*active project\*\*: $1/" "$STATE_FILE"
+  fi
+}
+
+# Helper: single-step claude -p with timeout
+run_step() {
+  local step_name="$1"
+  local prompt="$2"
+  log "STEP: $step_name"
+  cd "$REPO" && timeout 600 claude -p "$prompt" --dangerously-skip-permissions >> "$LOG" 2>&1
+  local exit_code=$?
+  if [ $exit_code -ne 0 ]; then
+    log "STEP FAILED: $step_name (exit $exit_code)"
+    return 1
+  fi
+  log "STEP DONE: $step_name"
+  return 0
+}
+
+# ============================================================
+# STATE MACHINE — one step per run
+# ============================================================
 
 case "$STATE" in
 
-  *debate*|*DEBATE*)
-    if [ -f "$REPO/rounds/${PROJECT_SLUG}/decisions.md" ]; then
-      log "Decisions exist — advancing to PLAN"
-      cd "$REPO" && claude -p "
-You are Phil Jackson. Debate complete for ${PROJECT_SLUG}.
-
-PHASE 2: PLAN (GSD-enforced)
-
-Read rounds/${PROJECT_SLUG}/decisions.md and the PRD at prds/${PROJECT_SLUG}.md
-
-Step 1: Create structured XML task plans. For EACH task:
-  <task-plan>
-    <name>Task name</name>
-    <wave>1|2|3</wave>
-    <owner>Steve Jobs|Elon Musk</owner>
-    <inputs>What files/context the agent needs</inputs>
-    <outputs>What files the agent produces</outputs>
-    <verification>How to verify this task is done correctly</verification>
-    <dependencies>Other tasks that must complete first</dependencies>
-  </task-plan>
-
-Step 2: Group tasks into dependency-ordered waves. Independent tasks in same wave run in parallel.
-
-Step 3: Write plan to .planning/phase-1-plan.md
-
-Step 4: Spawn Sara Blakely (model: haiku) to gut-check the plan from customer perspective. Would a real customer pay for this? Writes .planning/sara-blakely-review.md
-
-Step 5: Write .planning/REQUIREMENTS.md — checklist of every requirement from the PRD with REQ-IDs for verification tracking.
-
-Step 6: Update STATUS.md state='build'
-" --dangerously-skip-permissions >> "$LOG" 2>&1
+  idle|operational|"")
+    # Check for new PRDs
+    NEW_PRD=$(find "$REPO/prds" -name "*.md" -not -name "TEMPLATE.md" -not -name "emdash-*" -newer "$STATE_FILE" 2>/dev/null | head -1)
+    if [ -n "$NEW_PRD" ]; then
+      SLUG=$(basename "$NEW_PRD" .md)
+      mkdir -p "$REPO/rounds/$SLUG"
+      set_project "$SLUG"
+      set_state "debate-r1"
+      log "NEW PRD: $NEW_PRD → starting debate-r1"
     else
-      log "Waiting for debate decisions"
+      log "idle — no new PRDs — uninstalling"
+      crontab -l 2>/dev/null | grep -v "pipeline-runner" | crontab - 2>/dev/null
     fi
     ;;
 
-  *plan*|*PLAN*)
-    if [ -f "$REPO/.planning/phase-1-plan.md" ] || [ "$(find "$REPO/.planning" -name "*.md" -newer "$REPO/STATUS.md" 2>/dev/null | wc -l | tr -d ' ')" -gt 0 ]; then
-      log "Plan exists — advancing to BUILD"
-      cd "$REPO" && claude -p "
-You are Phil Jackson. Plan complete for ${PROJECT_SLUG}.
-
-PHASE 3: BUILD / EXECUTE (GSD-enforced — ALL steps mandatory)
-
-Read .planning/phase-1-plan.md for the task plans.
-
-FOR EACH WAVE (sequentially):
-
-  Step 1: PRE-FLIGHT CHECK
-  - Verify git tree is clean: git status --short
-  - Verify build passes (if applicable)
-  - Log pre-flight status
-
-  Step 2: DISPATCH WAVE
-  - For each task in this wave, spawn an Agent (isolation: worktree, run_in_background: true)
-  - Each agent gets ONLY its task plan + relevant source files (fresh context, no accumulated history)
-  - Each agent MUST: create feature branch, make ATOMIC COMMITS (one per logical change), push, create PR
-  - Before creating PR: agent MUST spawn Jony Ive (haiku) for visual review if UI task, Maya Angelou (haiku) for copy review if text task
-
-  Step 3: VERIFY WAVE
-  - After all agents in this wave complete, check each task's verification criteria from the plan
-  - Run: build check, lint check, test check
-  - If any task fails verification: spawn a targeted DEBUG AGENT (not a general fix agent) with the specific error and file
-
-  Step 4: EXECUTION REPORT
-  - Write .planning/wave-{N}-execution.md documenting: what each agent built, files changed, PRs created, verification results
-
-  Step 5: Merge wave PRs before starting next wave
-
-AFTER ALL WAVES:
-  - Write .planning/execution-report.md summarizing all waves
-  - Update STATUS.md state='verify'
-" --dangerously-skip-permissions >> "$LOG" 2>&1
+  debate-r1)
+    if [ -f "$ROUNDS/round-1-steve.md" ] && [ -f "$ROUNDS/round-1-elon.md" ]; then
+      log "R1 already exists — advancing"
+      set_state "debate-r2"
     else
-      log "Waiting for plan"
+      run_step "debate-r1" "Read the PRD at prds/${SLUG}.md. Write TWO debate files:
+1. rounds/${SLUG}/round-1-steve.md — Steve Jobs stakes positions on design, naming, UX, what makes it great
+2. rounds/${SLUG}/round-1-elon.md — Elon Musk stakes positions on architecture, performance, distribution, what to cut
+Write BOTH files. Each should be 40-60 lines with clear positions." && set_state "debate-r2"
     fi
     ;;
 
-  *build*|*BUILD*)
-    EXEC_REPORT="$REPO/.planning/execution-report.md"
-    if [ -f "$EXEC_REPORT" ] || [ "$(find "$REPO/deliverables" -newer "$REPO/STATUS.md" 2>/dev/null | wc -l | tr -d ' ')" -gt 5 ]; then
-      # Merge any open PRs first
-      gh pr list --repo "sethshoultes/$(basename "$REPO")" --json number --jq '.[].number' 2>/dev/null | while read -r pr; do
-        gh pr merge "$pr" --squash --repo "sethshoultes/$(basename "$REPO")" 2>/dev/null && log "Merged PR #$pr"
-      done
-
-      QA_COUNT=$(cat "$QA_PASS_FILE" 2>/dev/null || echo 0)
-      QA_NUM=$((QA_COUNT + 1))
-      log "Build output detected — advancing to VERIFY (QA pass $QA_NUM of 2)"
-
-      cd "$REPO" && claude -p "
-You are Phil Jackson. Build complete for ${PROJECT_SLUG}.
-
-PHASE 4: VERIFY — QA PASS $QA_NUM OF 2 (GSD-enforced)
-
-Step 1: Spawn Margaret Hamilton via Agent tool (isolation: worktree) for FULL QA.
-She MUST check:
-- Syntax: php -l / tsc / eslint on every source file
-- Security: SQL injection, XSS, CSRF, unescaped output
-- Standards: WordPress coding standards / framework conventions
-- Performance: N+1 queries, unbounded loops, missing LIMIT
-- Accessibility: ARIA roles, keyboard nav, focus management
-- Integration: do the pieces work TOGETHER (not just individually)
-
-Step 2: Run UAT against EVERY requirement in .planning/REQUIREMENTS.md
-- For each REQ-ID, verify the requirement is met
-- Mark each as PASS/FAIL with evidence
-
-Step 3: If ANY requirement fails:
-- Spawn a TARGETED debug agent (isolation: worktree) with the specific failure
-- Debug agent fixes ONLY that issue, commits, pushes PR
-- Update STATUS.md state='build' (loops back for re-verify after fix)
-
-Step 4: If all pass:
-- Write QA report to rounds/${PROJECT_SLUG}/qa-pass-${QA_NUM}.md
-- Include: verdict (PASS/BLOCK), requirement coverage (X/Y passed), issues found, fixes applied
-
-Step 5: Spawn Aaron Sorkin (model: haiku) to write a 60-second demo script for the product.
-
-Step 6: Update STATUS.md state='review'
-" --dangerously-skip-permissions >> "$LOG" 2>&1
+  debate-r2)
+    if [ -f "$ROUNDS/round-2-steve.md" ] && [ -f "$ROUNDS/round-2-elon.md" ]; then
+      log "R2 already exists — advancing"
+      set_state "debate-decisions"
     else
-      log "Waiting for build output"
+      run_step "debate-r2" "Read rounds/${SLUG}/round-1-steve.md and rounds/${SLUG}/round-1-elon.md.
+Write TWO challenge files:
+1. rounds/${SLUG}/round-2-steve.md — Steve challenges Elon's R1 positions, defends his own
+2. rounds/${SLUG}/round-2-elon.md — Elon challenges Steve's R1 positions, defends his own
+Lock the 3 decisions that matter most in each file." && set_state "debate-decisions"
     fi
     ;;
 
-  *verify*|*VERIFY*)
-    LATEST_QA=$(find "$REPO/rounds/${PROJECT_SLUG}" -name "qa-pass-*.md" -newer "$REPO/STATUS.md" 2>/dev/null | tail -1)
-    if [ -n "$LATEST_QA" ]; then
-      QA_VERDICT=$(grep -iE "PASS|GREEN|SHIP|ALL.*PASS" "$LATEST_QA" 2>/dev/null | head -1)
-      if [ -n "$QA_VERDICT" ]; then
-        QA_COUNT=$(cat "$QA_PASS_FILE" 2>/dev/null || echo 0)
-        QA_COUNT=$((QA_COUNT + 1))
-        echo "$QA_COUNT" > "$QA_PASS_FILE"
-        log "QA pass $QA_COUNT of 2 — verdict: $QA_VERDICT"
+  debate-decisions)
+    if [ -f "$ROUNDS/decisions.md" ]; then
+      log "Decisions exist — advancing"
+      set_state "plan-tasks"
+    else
+      run_step "debate-decisions" "Read all 4 debate files in rounds/${SLUG}/.
+Write rounds/${SLUG}/decisions.md — consolidated locked decisions.
+For each decision: who proposed it, who won, why. Include MVP feature set and file structure.
+This is the blueprint for the build phase." && set_state "plan-tasks"
+    fi
+    ;;
 
-        if [ "$QA_COUNT" -ge 2 ]; then
-          log "2 QA passes complete — advancing to BOARD REVIEW"
-          cd "$REPO" && claude -p "
-You are Phil Jackson. QA passed twice for ${PROJECT_SLUG}.
+  plan-tasks)
+    if [ -f "$REPO/.planning/phase-1-plan.md" ]; then
+      log "Plan exists — advancing"
+      set_state "plan-review"
+    else
+      mkdir -p "$REPO/.planning"
+      run_step "plan-tasks" "Read rounds/${SLUG}/decisions.md and prds/${SLUG}.md.
+Create .planning/phase-1-plan.md with structured task plans. For each task include:
+- Task name, wave number (1/2/3), owner (Steve/Elon), inputs, outputs, verification criteria
+Group into dependency-ordered waves. Independent tasks in same wave run in parallel.
+Also write .planning/REQUIREMENTS.md — checklist of every PRD requirement with REQ-IDs." && set_state "plan-review"
+    fi
+    ;;
 
-PHASE 5: BOARD REVIEW (GSD-enforced)
+  plan-review)
+    if [ -f "$REPO/.planning/sara-blakely-review.md" ]; then
+      log "Plan review exists — advancing"
+      set_state "build-wave"
+    else
+      run_step "plan-review" "Read .planning/phase-1-plan.md.
+Write .planning/sara-blakely-review.md — gut-check from customer perspective:
+Would a real customer pay for this? What's confusing? What's the 30-second pitch?
+Keep it under 30 lines." && set_state "build-wave"
+    fi
+    ;;
 
-Step 1: Spawn ALL 4 board members via Agent tool (model: haiku, run_in_background: true):
-- Jensen Huang: tech strategy, data moats, competitive position. What compounds?
-- Oprah Winfrey: audience connection, accessibility, first-run experience. Would a normal person get this?
-- Warren Buffett: business model, unit economics, moat durability. Would you invest?
-- Shonda Rhimes: retention, engagement, narrative arc. Does this keep people coming back?
+  build-wave)
+    run_step "build-wave" "Read .planning/phase-1-plan.md and rounds/${SLUG}/decisions.md.
+BUILD the product. For each task in the plan:
+- Create the files specified in the task outputs
+- Follow the decisions doc for all technical choices
+- Write clean, working code — not stubs or placeholders
+Put all output in deliverables/${SLUG}/
+When all files are created, write .planning/execution-report.md documenting what was built.
+Commit everything on a feature branch and push." && set_state "build-verify"
+    ;;
 
-Each writes a 20-line review to rounds/${PROJECT_SLUG}/board-review-{name}.md
+  build-verify)
+    if [ -f "$REPO/.planning/execution-report.md" ]; then
+      log "Execution report exists — advancing to QA"
+      echo "0" > "$QA_FILE"
+      set_state "qa-1"
+    else
+      # Check if files were built even without report
+      BUILD_FILES=$(find "$REPO/deliverables/$SLUG" -type f 2>/dev/null | wc -l | tr -d ' ')
+      if [ "$BUILD_FILES" -gt 3 ]; then
+        log "Build files exist ($BUILD_FILES) without report — creating report and advancing"
+        run_step "build-report" "Look at all files in deliverables/${SLUG}/. Write .planning/execution-report.md documenting what was built — file names, line counts, what each file does." && { echo "0" > "$QA_FILE"; set_state "qa-1"; }
+      else
+        log "Waiting for build output ($BUILD_FILES files)"
+      fi
+    fi
+    ;;
 
-Step 2: Consolidate into rounds/${PROJECT_SLUG}/board-verdict.md with:
-- Points of agreement
-- Points of tension
-- Verdict: PROCEED / PROCEED WITH CHANGES / HOLD / REJECT
-
-Step 3: Spawn Shonda separately for retention roadmap: rounds/${PROJECT_SLUG}/shonda-retention-roadmap.md
-
-Step 4: If HOLD or REJECT — log reason, set STATUS.md to idle, uninstall pipeline
-Step 5: If PROCEED — update STATUS.md state='ship'
-" --dangerously-skip-permissions >> "$LOG" 2>&1
+  qa-1)
+    QA_NUM=$(($(cat "$QA_FILE" 2>/dev/null || echo 0) + 1))
+    run_step "qa-pass-$QA_NUM" "Run QA on deliverables/${SLUG}/.
+Check: syntax (php -l or equivalent), security, code quality, requirements coverage against .planning/REQUIREMENTS.md.
+Write rounds/${SLUG}/qa-pass-${QA_NUM}.md with verdict: PASS or BLOCK.
+For each requirement in REQUIREMENTS.md, mark PASS or FAIL with evidence.
+If BLOCK: list every issue that must be fixed." \
+    && {
+      VERDICT=$(grep -iE "PASS|GREEN|SHIP" "$ROUNDS/qa-pass-${QA_NUM}.md" 2>/dev/null | head -1)
+      if [ -n "$VERDICT" ]; then
+        echo "$QA_NUM" > "$QA_FILE"
+        if [ "$QA_NUM" -ge 2 ]; then
+          set_state "board-review"
         else
-          log "Need second QA pass — dispatching independent review"
-          cd "$REPO" && claude -p "
-Second independent QA review for ${PROJECT_SLUG}.
-Spawn a FRESH Margaret Hamilton agent (isolation: worktree) — different from the first pass.
-Focus on INTEGRATION testing: do all the pieces work together end-to-end?
-Run against .planning/REQUIREMENTS.md — verify every REQ-ID.
-Write to rounds/${PROJECT_SLUG}/qa-pass-2.md
-Update STATUS.md state='review' if passes, 'build' if fails.
-" --dangerously-skip-permissions >> "$LOG" 2>&1
+          set_state "qa-2"
         fi
       else
-        log "QA FAILED — spawning debug agents"
-        cd "$REPO" && claude -p "
-QA failed for ${PROJECT_SLUG}. Read the report at $LATEST_QA.
-For EACH failure, spawn a TARGETED debug agent (isolation: worktree) that:
-1. Reads only the specific failure description
-2. Fixes only that issue
-3. Commits with message referencing the QA finding
-4. Creates a PR
-Do NOT do a general fix. Each bug gets its own agent.
-After all fixes, update STATUS.md state='build' to re-verify.
-" --dangerously-skip-permissions >> "$LOG" 2>&1
+        set_state "qa-fix"
       fi
+    }
+    ;;
+
+  qa-fix)
+    run_step "qa-fix" "Read the latest QA report in rounds/${SLUG}/. Fix every issue listed.
+Edit the files directly in deliverables/${SLUG}/. Commit fixes." && set_state "qa-1"
+    ;;
+
+  qa-2)
+    run_step "qa-pass-2" "Run a SECOND independent QA review on deliverables/${SLUG}/.
+Focus on integration: do all pieces work together? Check against .planning/REQUIREMENTS.md.
+Write rounds/${SLUG}/qa-pass-2.md with verdict: PASS or BLOCK." \
+    && {
+      VERDICT=$(grep -iE "PASS|GREEN|SHIP" "$ROUNDS/qa-pass-2.md" 2>/dev/null | head -1)
+      if [ -n "$VERDICT" ]; then
+        echo "2" > "$QA_FILE"
+        set_state "board-review"
+      else
+        set_state "qa-fix"
+      fi
+    }
+    ;;
+
+  board-review)
+    if [ "$(find "$ROUNDS" -name 'board-review-*.md' 2>/dev/null | wc -l | tr -d ' ')" -ge 3 ]; then
+      log "Board reviews exist — advancing"
+      set_state "board-verdict"
     else
-      log "Waiting for QA report"
+      run_step "board-review" "Write 4 board reviews for the ${SLUG} product (read deliverables/${SLUG}/ and the PRD):
+1. rounds/${SLUG}/board-review-jensen.md — tech strategy, moats (20 lines)
+2. rounds/${SLUG}/board-review-oprah.md — audience, accessibility (20 lines)
+3. rounds/${SLUG}/board-review-buffett.md — business model, economics (20 lines)
+4. rounds/${SLUG}/board-review-shonda.md — retention, engagement (20 lines)
+Write ALL 4 files." && set_state "board-verdict"
     fi
     ;;
 
-  *review*|*REVIEW*|*board*)
-    REVIEWS=$(find "$REPO/rounds/${PROJECT_SLUG}" -name "board-review-*.md" -newer "$REPO/STATUS.md" 2>/dev/null | wc -l | tr -d ' ')
-    if [ "$REVIEWS" -ge 3 ]; then
-      log "Board reviews in ($REVIEWS) — advancing to SHIP"
-      cd "$REPO" && claude -p "
-You are Phil Jackson. Board review complete for ${PROJECT_SLUG}.
+  board-verdict)
+    if [ -f "$ROUNDS/board-verdict.md" ]; then
+      log "Verdict exists — advancing to ship"
+      set_state "ship"
+    else
+      run_step "board-verdict" "Read all board reviews in rounds/${SLUG}/board-review-*.md.
+Write rounds/${SLUG}/board-verdict.md — consolidated verdict:
+Points of agreement, points of tension, overall verdict (PROCEED/HOLD/REJECT).
+Write rounds/${SLUG}/shonda-retention-roadmap.md — what keeps users coming back, v1.1 features." && set_state "ship"
+    fi
+    ;;
 
-PHASE 6: SHIP (GSD-enforced)
-
-Step 1: Merge all remaining feature branches to main (squash merge)
-
-Step 2: Update STATUS.md: state='idle', clear active project, update metrics
-
-Step 3: Update SCOREBOARD.md with new counts
-
-Step 4: Spawn Marcus Aurelius (model: haiku) to write retrospective:
-- What worked well in this project?
-- What failed or was inefficient?
-- What should we do differently next time?
-- Which agents performed best? Which underperformed?
-- Write to memory/${PROJECT_SLUG}-retrospective.md
-
-Step 5: Save structured learnings to memory store:
-- Run: cd memory-store && ./bin/memory add --type learning --agent 'Phil Jackson' --project '${PROJECT_SLUG}' --content '[key learning]'
-- For each major decision, QA finding, and board insight
-
-Step 6: Clean up merged branches
-
-Step 7: Push everything
-
-Step 8: The project is DONE.
-" --dangerously-skip-permissions >> "$LOG" 2>&1
-      echo "0" > "$QA_PASS_FILE"
-      log "Project shipped — uninstalling pipeline cron"
+  ship)
+    run_step "ship" "Ship the ${SLUG} project:
+1. Commit all uncommitted files in deliverables/${SLUG}/ and rounds/${SLUG}/
+2. Write memory/${SLUG}-retrospective.md — what worked, what didn't, learnings
+3. Push to origin main
+4. Update SCOREBOARD.md with new project entry" \
+    && {
+      set_state "idle"
+      set_project ""
+      log "PROJECT SHIPPED: $SLUG"
+      # Uninstall self
       crontab -l 2>/dev/null | grep -v "pipeline-runner" | crontab - 2>/dev/null
-    else
-      log "Waiting for board reviews ($REVIEWS so far, need 3+)"
-    fi
+      log "Pipeline cron removed — back to idle"
+    }
     ;;
 
-  *ship*|*SHIP*)
-    log "Ship phase — finalizing"
-    cd "$REPO" && claude -p "Finalize ship for ${PROJECT_SLUG}. Merge remaining branches. Set STATUS.md state to idle. Push." --dangerously-skip-permissions >> "$LOG" 2>&1
-    echo "0" > "$QA_PASS_FILE"
-    crontab -l 2>/dev/null | grep -v "pipeline-runner" | crontab - 2>/dev/null
-    log "Pipeline complete — idle"
+  *)
+    log "Unknown state: $STATE — resetting to idle"
+    set_state "idle"
     ;;
+
 esac
 
 tail -500 "$LOG" > "$LOG.tmp" && mv "$LOG.tmp" "$LOG"

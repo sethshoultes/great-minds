@@ -75,7 +75,7 @@ PIPELINE_SCRIPT="${REPO_DIR}/crons/pipeline-runner.sh"
 PIPELINE_ACTIVE=$(crontab -l 2>/dev/null | grep -c "pipeline-runner" || echo 0)
 
 NEW_PRD=$(find "$REPO_DIR/prds" -name "*.md" -not -name "TEMPLATE.md" -newer "$REPO_DIR/STATUS.md" 2>/dev/null | head -1)
-CURRENT_STATE=$(grep -oP '(?<=\*\*state\*\*:\s).*' "$REPO_DIR/STATUS.md" 2>/dev/null | head -1 || echo "idle")
+CURRENT_STATE=$(grep '\*\*state\*\*' "$REPO_DIR/STATUS.md" 2>/dev/null | sed 's/.*\*\*state\*\*: *//' | head -1 || echo "idle")
 
 # Start pipeline if: new PRD detected OR new issues AND pipeline not already running
 if [ "$PIPELINE_ACTIVE" -eq 0 ]; then

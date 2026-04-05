@@ -31,7 +31,7 @@ log() { echo "$(date '+%Y-%m-%d %H:%M') DREAM: $*" >> "$LOG"; }
 # Only run if pipeline is idle
 PIPELINE_ACTIVE=$(crontab -l 2>/dev/null | grep -c "pipeline-runner" || true)
 PIPELINE_ACTIVE=${PIPELINE_ACTIVE:-0}
-STATE=$(grep -oP '(?<=\*\*state\*\*:\s).*' "$REPO/STATUS.md" 2>/dev/null | head -1 || echo "idle")
+STATE=$(grep '\*\*state\*\*' "$REPO/STATUS.md" 2>/dev/null | sed 's/.*\*\*state\*\*: *//' | head -1 || echo "idle")
 
 if [ "$PIPELINE_ACTIVE" -gt 0 ] || { [ "$STATE" != "idle" ] && [ "$STATE" != "operational" ]; }; then
   log "Pipeline active (state=$STATE) — skipping dream"

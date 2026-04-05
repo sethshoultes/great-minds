@@ -20,7 +20,7 @@ log "Starting haiku dream cycle"
 
 STATUS_FILE="$REPO/STATUS.md"
 if [ -f "$STATUS_FILE" ]; then
-  STATE=$(grep -oP '(?<=\*\*state\*\*:\s).*' "$STATUS_FILE" 2>/dev/null | head -1 || echo "idle")
+  STATE=$(grep '\*\*state\*\*' "$STATUS_FILE" 2>/dev/null | sed 's/.*\*\*state\*\*: *//' | head -1 || echo "idle")
   if [ "$STATE" != "idle" ] && [ "$STATE" != "operational" ]; then
     log "Pipeline active (state=$STATE) — running drift check"
 
