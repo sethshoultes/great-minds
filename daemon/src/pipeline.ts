@@ -243,6 +243,15 @@ export async function runPipeline(prdFile: string, project: string): Promise<voi
     // Ship
     await runShip(project);
 
+    // Archive completed PRD so daemon doesn't rebuild it
+    const prdPath = resolve(PRDS_DIR, prd);
+    const archiveDir = resolve(PRDS_DIR, "completed");
+    await mkdir(archiveDir, { recursive: true });
+    const archivePath = resolve(archiveDir, prd);
+    const { rename } = await import("fs/promises");
+    await rename(prdPath, archivePath).catch(() => {});
+    log(`ARCHIVE: Moved ${prd} to prds/completed/`);
+
     const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
     log(`═══════════════════════════════════════════════════`);
     log(`PIPELINE COMPLETE: ${project} in ${elapsed} minutes`);
