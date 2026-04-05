@@ -54,7 +54,7 @@ export default function Nav() {
           href="/"
           className="flex items-center gap-2.5 text-zinc-100 no-underline"
         >
-          <span className="text-amber-500 font-bold text-lg">GM</span>
+          <img src="/logo-icon.webp" alt="Great Minds" width={28} height={28} className="rounded" />
           <span className="font-semibold text-sm tracking-tight hidden sm:inline">
             Great Minds
           </span>

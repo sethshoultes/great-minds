@@ -10,7 +10,7 @@
 | Metric | Count |
 |--------|-------|
 | Agent personas | 14 + founder |
-| GitHub repos | 6 (localgenius, great-minds, great-minds-plugin, shipyard-ai, dash-command-bar, pinned-notes) |
+| GitHub repos | 7 (localgenius, great-minds, great-minds-plugin, shipyard-ai, dash-command-bar, pinned-notes) |
 | Archived repos | 2 (localgenius-sites, greatminds-website) |
 | Live deployments | 3 (localgenius.company, greatminds.company, www.shipyard.company) |
 | Source files (LocalGenius) | 265 |

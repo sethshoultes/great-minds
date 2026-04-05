@@ -35,7 +35,7 @@ function Footer() {
     <footer className="border-t border-zinc-800/50 mt-auto">
       <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-sm text-zinc-500">
-          <span className="text-amber-500 font-bold">GM</span>
+          <img src="/logo-icon.webp" alt="GM" width={20} height={20} className="rounded" />
           <span>Great Minds Agency</span>
         </div>
         <div className="flex items-center gap-6 text-sm text-zinc-500">
