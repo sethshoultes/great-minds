@@ -69,11 +69,50 @@ PROBLEMS=""
   echo ""
 } >> "$LOG"
 
+# Check for new PRDs — this triggers the pipeline
+REPO_DIR="${HEARTBEAT_REPO:-/Users/sethshoultes/Local Sites/great-minds}"
+PIPELINE_SCRIPT="${REPO_DIR}/crons/pipeline-runner.sh"
+PIPELINE_ACTIVE=$(crontab -l 2>/dev/null | grep -c "pipeline-runner" || echo 0)
+
+NEW_PRD=$(find "$REPO_DIR/prds" -name "*.md" -not -name "TEMPLATE.md" -newer "$REPO_DIR/STATUS.md" 2>/dev/null | head -1)
+CURRENT_STATE=$(grep -oP '(?<=\*\*state\*\*:\s).*' "$REPO_DIR/STATUS.md" 2>/dev/null | head -1 || echo "idle")
+
+# Start pipeline if: new PRD detected OR new issues AND pipeline not already running
+if [ "$PIPELINE_ACTIVE" -eq 0 ]; then
+  SHOULD_START=false
+
+  # New PRD
+  if [ -n "$NEW_PRD" ]; then
+    echo "$(date '+%H:%M') NEW PRD: $(basename $NEW_PRD) — starting pipeline" >> "$LOG"
+    SHOULD_START=true
+  fi
+
+  # New issues tagged as PRD or actionable
+  if echo "$PROBLEMS" | grep -q "new_issues"; then
+    echo "$(date '+%H:%M') NEW ISSUES detected — starting pipeline" >> "$LOG"
+    SHOULD_START=true
+  fi
+
+  # State is not idle (pipeline was interrupted)
+  if [ "$CURRENT_STATE" != "idle" ] && [ "$CURRENT_STATE" != "operational" ]; then
+    echo "$(date '+%H:%M') State is '$CURRENT_STATE' but pipeline not running — restarting" >> "$LOG"
+    SHOULD_START=true
+  fi
+
+  if [ "$SHOULD_START" = true ] && [ -x "$PIPELINE_SCRIPT" ]; then
+    echo "$(date '+%H:%M') ACTIVATING PIPELINE CRON" >> "$ALERT"
+    (crontab -l 2>/dev/null; echo "*/7 * * * * cd $REPO_DIR && PIPELINE_REPO=$REPO_DIR $PIPELINE_SCRIPT") | crontab -
+    # Run immediately
+    cd "$REPO_DIR" && PIPELINE_REPO="$REPO_DIR" "$PIPELINE_SCRIPT" &
+  fi
+else
+  echo "pipeline: active (state=$CURRENT_STATE)" >> "$LOG"
+fi
+
 # If problems detected, log alert and dispatch haiku to diagnose
 if [ -n "$PROBLEMS" ]; then
   echo "$(date '+%Y-%m-%d %H:%M') HEARTBEAT ALERT: $PROBLEMS" >> "$ALERT"
 
-  # Dispatch haiku agent to diagnose and recommend fix
   DIAGNOSIS=$(claude --model haiku --print "You are a system monitor. These problems were detected: $PROBLEMS. For each problem, give a 1-line diagnosis and 1-line fix command. Be specific." 2>/dev/null)
 
   if [ -n "$DIAGNOSIS" ]; then

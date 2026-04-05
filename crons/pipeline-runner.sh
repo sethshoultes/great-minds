@@ -1,101 +1,208 @@
 #!/usr/bin/env bash
-# Pipeline Runner — the autonomous pipeline loop
-# Runs every 15 min via crontab. Reads STATUS.md to determine current phase,
-# then dispatches the RIGHT claude -p command for that phase.
+# Pipeline Runner — event-driven, not always-on
 #
-# This is what makes the agency actually autonomous.
-# Claude agents don't loop. This script IS the loop.
+# IDLE MODE: Only heartbeat.sh runs (free bash). This script is NOT in crontab.
+# When heartbeat detects work (new PRD, new issue, alert), it installs this
+# script into crontab. This script runs the pipeline to completion, then
+# removes itself from crontab. Back to idle.
+#
+# Flow: heartbeat detects → installs pipeline cron → pipeline runs →
+#       phases advance → 2 QA passes → ship → uninstall pipeline cron → idle
 
 set -euo pipefail
 
 LOG="/tmp/claude-shared/pipeline.log"
 ALERT="/tmp/claude-shared/alerts.log"
 REPO="${PIPELINE_REPO:-$(pwd)}"
-PLUGIN="${PLUGIN_DIR:-/Users/sethshoultes/Local Sites/great-minds-plugin}"
+QA_PASS_FILE="/tmp/claude-shared/qa-pass-count"
 
-# Read current state from STATUS.md
-STATE=$(grep -oP '(?<=\*\*state\*\*:\s).*' "$REPO/STATUS.md" 2>/dev/null || echo "idle")
-PROJECT=$(grep -oP '(?<=\*\*active project\*\*:\s).*' "$REPO/STATUS.md" 2>/dev/null || echo "")
+log() { echo "$(date '+%Y-%m-%d %H:%M') PIPELINE: $*" >> "$LOG"; }
 
-echo "=== PIPELINE $(date '+%Y-%m-%d %H:%M') state=$STATE project=$PROJECT ===" >> "$LOG"
+# Read current state
+STATE=$(grep -oP '(?<=\*\*state\*\*:\s).*' "$REPO/STATUS.md" 2>/dev/null | head -1 || echo "idle")
+PROJECT=$(grep -oP '(?<=\*\*active project\*\*:\s).*' "$REPO/STATUS.md" 2>/dev/null | head -1 || echo "")
+PROJECT_SLUG=$(echo "$PROJECT" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]//g')
 
-# Skip if idle or no project
+log "state=$STATE project=$PROJECT slug=$PROJECT_SLUG"
+
+# If idle with no project, we shouldn't be running — uninstall self
 if [ "$STATE" = "idle" ] || [ -z "$PROJECT" ]; then
-  # Check for new PRDs
-  NEW_PRD=$(find "$REPO/prds" -name "*.md" -newer "$REPO/STATUS.md" 2>/dev/null | head -1)
+  # Check for new PRDs one more time
+  NEW_PRD=$(find "$REPO/prds" -name "*.md" -not -name "TEMPLATE.md" -newer "$REPO/STATUS.md" 2>/dev/null | head -1)
   if [ -n "$NEW_PRD" ]; then
-    echo "New PRD detected: $NEW_PRD — starting DEBATE" >> "$LOG"
-    PROJECT_NAME=$(basename "$NEW_PRD" .md)
-    cd "$REPO" && claude -p "Read $NEW_PRD. Start the Great Minds pipeline. Phase 1: DEBATE. Spawn Steve Jobs and Elon Musk via Agent tool with worktree isolation to debate this PRD. Steve writes rounds/${PROJECT_NAME}/round-1-steve.md, Elon writes rounds/${PROJECT_NAME}/round-1-elon.md. After both finish, run Round 2 (each challenges the other). Then consolidate decisions to rounds/${PROJECT_NAME}/decisions.md. Update STATUS.md state to 'plan' when debate is complete." --dangerously-skip-permissions 2>> "$LOG"
+    PROJECT_SLUG=$(basename "$NEW_PRD" .md)
+    log "New PRD detected: $NEW_PRD — starting DEBATE"
+    cd "$REPO" && claude -p "
+You are Phil Jackson, orchestrator of Great Minds Agency.
+A new PRD has arrived: $NEW_PRD
+Read it. Start Phase 1: DEBATE.
+Spawn Steve Jobs and Elon Musk via Agent tool (isolation: worktree, run_in_background: true).
+Steve writes rounds/${PROJECT_SLUG}/round-1-steve.md
+Elon writes rounds/${PROJECT_SLUG}/round-1-elon.md
+When both finish, dispatch Round 2 (each challenges the other).
+Then consolidate decisions to rounds/${PROJECT_SLUG}/decisions.md
+Spawn Rick Rubin (haiku) to strip decisions to essence.
+Update STATUS.md: state to 'plan', active project to '${PROJECT_SLUG}'.
+" --dangerously-skip-permissions >> "$LOG" 2>&1
+    echo "0" > "$QA_PASS_FILE"
   else
-    echo "idle — no new PRDs" >> "$LOG"
+    log "idle — no work — uninstalling pipeline cron"
+    # Remove self from crontab
+    crontab -l 2>/dev/null | grep -v "pipeline-runner" | crontab - 2>/dev/null
   fi
   exit 0
 fi
 
+# Reset QA counter if it doesn't exist
+[ ! -f "$QA_PASS_FILE" ] && echo "0" > "$QA_PASS_FILE"
+
 case "$STATE" in
   *debate*|*DEBATE*)
-    echo "DEBATE phase — checking if rounds are complete" >> "$LOG"
-    DECISIONS="$REPO/rounds/$(echo $PROJECT | tr ' ' '-' | tr '[:upper:]' '[:lower:]')/decisions.md"
+    DECISIONS="$REPO/rounds/${PROJECT_SLUG}/decisions.md"
     if [ -f "$DECISIONS" ]; then
-      echo "Decisions exist — advancing to PLAN" >> "$LOG"
-      cd "$REPO" && claude -p "Read $DECISIONS. Phase 2: PLAN. Run /agency-plan. Create structured task plans from the debate decisions. Spawn Sara Blakely (haiku) to gut-check from customer perspective. Update STATUS.md state to 'build' when plan is complete." --dangerously-skip-permissions 2>> "$LOG"
+      log "Decisions exist — advancing to PLAN"
+      cd "$REPO" && claude -p "
+You are Phil Jackson. Debate is complete for ${PROJECT_SLUG}.
+Read $DECISIONS. Start Phase 2: PLAN.
+Create structured task plans from the debate decisions.
+Spawn Sara Blakely (haiku) to gut-check from customer perspective.
+Write plans to .planning/ directory.
+Update STATUS.md state to 'build'.
+" --dangerously-skip-permissions >> "$LOG" 2>&1
     else
-      echo "Waiting for debate to complete" >> "$LOG"
+      log "Waiting for debate to complete"
     fi
     ;;
 
   *plan*|*PLAN*)
-    echo "PLAN phase — checking if plans exist" >> "$LOG"
     PLANS=$(find "$REPO/.planning" -name "*.md" -newer "$REPO/STATUS.md" 2>/dev/null | wc -l | tr -d ' ')
     if [ "$PLANS" -gt 0 ]; then
-      echo "Plans exist ($PLANS files) — advancing to BUILD" >> "$LOG"
-      cd "$REPO" && claude -p "Phase 3: BUILD. Run /agency-execute. Spawn agents via Agent tool with worktree isolation for each task in the plan. Steve handles frontend/design, Elon handles backend/architecture. Each agent creates a feature branch, builds, commits, pushes, creates a PR. Spawn Jony Ive (haiku) for visual review and Maya Angelou (haiku) for copy review before PRs. Update STATUS.md state to 'verify' when all tasks are complete." --dangerously-skip-permissions 2>> "$LOG"
+      log "Plans exist ($PLANS files) — advancing to BUILD"
+      cd "$REPO" && claude -p "
+You are Phil Jackson. Plan is complete for ${PROJECT_SLUG}.
+Start Phase 3: BUILD (execute).
+Spawn agents via Agent tool (isolation: worktree, run_in_background: true).
+Steve handles frontend/design, Elon handles backend/architecture.
+Before any PR: spawn Jony Ive (haiku) for visual review, Maya Angelou (haiku) for copy review.
+Each agent creates a feature branch, builds, commits, pushes, creates a PR.
+Update STATUS.md state to 'verify' when all agents complete.
+" --dangerously-skip-permissions >> "$LOG" 2>&1
     else
-      echo "Waiting for plans" >> "$LOG"
+      log "Waiting for plans"
     fi
     ;;
 
   *build*|*BUILD*)
-    echo "BUILD phase — checking if PRs are open" >> "$LOG"
-    OPEN_PRS=$(gh pr list --repo sethshoultes/$(basename "$REPO") --json number 2>/dev/null | grep -c "number" || echo 0)
-    if [ "$OPEN_PRS" -eq 0 ]; then
-      echo "No open PRs — advancing to VERIFY" >> "$LOG"
-      cd "$REPO" && claude -p "Phase 4: VERIFY. Run /agency-verify. Spawn Margaret Hamilton via Agent tool with worktree isolation for full QA. Check: PHP syntax, security, wp.org compliance, requirements coverage. Spawn Aaron Sorkin (haiku) to write a demo script. Update STATUS.md state to 'review' when QA passes." --dangerously-skip-permissions 2>> "$LOG"
+    # Check if build agents have completed (PRs created or no agents running)
+    OPEN_PRS=$(gh pr list --repo "sethshoultes/$(basename "$REPO")" --json number 2>/dev/null | grep -c "number" || echo 0)
+    BUILD_FILES=$(find "$REPO/deliverables" -newer "$REPO/STATUS.md" 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$BUILD_FILES" -gt 0 ] || [ "$OPEN_PRS" -gt 0 ]; then
+      log "Build output detected ($BUILD_FILES files, $OPEN_PRS PRs) — advancing to VERIFY"
+      # Merge any open PRs first
+      if [ "$OPEN_PRS" -gt 0 ]; then
+        gh pr list --repo "sethshoultes/$(basename "$REPO")" --json number --jq '.[].number' 2>/dev/null | while read -r pr; do
+          gh pr merge "$pr" --squash --repo "sethshoultes/$(basename "$REPO")" 2>/dev/null && log "Merged PR #$pr"
+        done
+      fi
+      cd "$REPO" && claude -p "
+You are Phil Jackson. Build is complete for ${PROJECT_SLUG}.
+Start Phase 4: VERIFY (QA pass $(( $(cat $QA_PASS_FILE) + 1 )) of 2).
+Spawn Margaret Hamilton via Agent tool (isolation: worktree) for full QA.
+Check everything: syntax, security, compliance, requirements coverage, live testing.
+Spawn Aaron Sorkin (haiku) to write a demo script for the feature.
+Write QA report to rounds/${PROJECT_SLUG}/qa-pass-$(( $(cat $QA_PASS_FILE) + 1 )).md
+If QA PASSES: update STATUS.md state to 'review'.
+If QA FAILS: fix the issues, then update STATUS.md state to 'build' (loops back for re-verify).
+" --dangerously-skip-permissions >> "$LOG" 2>&1
     else
-      echo "Build in progress — $OPEN_PRS PRs open" >> "$LOG"
+      log "Waiting for build output"
     fi
     ;;
 
   *verify*|*VERIFY*)
-    echo "VERIFY phase — checking QA status" >> "$LOG"
-    QA_PASS=$(find "$REPO/rounds" -name "qa-*.md" -newer "$REPO/STATUS.md" 2>/dev/null | head -1)
-    if [ -n "$QA_PASS" ]; then
-      echo "QA report exists — advancing to BOARD REVIEW" >> "$LOG"
-      cd "$REPO" && claude -p "Phase 5: BOARD REVIEW. Run /agency-board-review. Spawn all 4 board members (Jensen, Oprah, Buffett, Shonda) via Agent tool (haiku, run_in_background). Each writes a 20-line review. Consolidate into board verdict. Spawn Shonda separately for retention roadmap. Update STATUS.md state to 'ship' when board review is complete." --dangerously-skip-permissions 2>> "$LOG"
+    QA_REPORTS=$(find "$REPO/rounds/${PROJECT_SLUG}" -name "qa-pass-*.md" 2>/dev/null | wc -l | tr -d ' ')
+    LATEST_QA=$(find "$REPO/rounds/${PROJECT_SLUG}" -name "qa-pass-*.md" -newer "$REPO/STATUS.md" 2>/dev/null | tail -1)
+    if [ -n "$LATEST_QA" ]; then
+      # Check if QA passed
+      QA_VERDICT=$(grep -i "PASS\|GREEN\|SHIP" "$LATEST_QA" 2>/dev/null | head -1)
+      if [ -n "$QA_VERDICT" ]; then
+        QA_COUNT=$(cat "$QA_PASS_FILE" 2>/dev/null || echo 0)
+        QA_COUNT=$((QA_COUNT + 1))
+        echo "$QA_COUNT" > "$QA_PASS_FILE"
+        log "QA pass $QA_COUNT of 2 — verdict: $QA_VERDICT"
+
+        if [ "$QA_COUNT" -ge 2 ]; then
+          log "2 QA passes complete — advancing to BOARD REVIEW"
+          cd "$REPO" && claude -p "
+You are Phil Jackson. QA passed twice for ${PROJECT_SLUG}.
+Start Phase 5: BOARD REVIEW.
+Spawn all 4 board members via Agent tool (model: haiku, run_in_background: true):
+- Jensen Huang: tech strategy, data moats
+- Oprah Winfrey: audience, accessibility
+- Warren Buffett: business model, economics
+- Shonda Rhimes: retention, engagement
+Each writes a 20-line review to rounds/${PROJECT_SLUG}/board-review-{name}.md
+Consolidate into board verdict.
+Spawn Shonda separately for retention roadmap.
+Update STATUS.md state to 'ship' when complete.
+" --dangerously-skip-permissions >> "$LOG" 2>&1
+        else
+          log "QA pass $QA_COUNT — need 1 more. Re-running verify."
+          cd "$REPO" && claude -p "
+QA pass $QA_COUNT complete for ${PROJECT_SLUG}. Need a second independent QA review.
+Spawn a DIFFERENT Margaret Hamilton agent (fresh context, worktree isolation) for QA pass 2.
+Focus on integration testing — do the pieces work together?
+Write to rounds/${PROJECT_SLUG}/qa-pass-2.md
+Update STATUS.md state to 'review' when complete.
+" --dangerously-skip-permissions >> "$LOG" 2>&1
+        fi
+      else
+        log "QA FAILED — looping back to build for fixes"
+        cd "$REPO" && claude -p "
+QA failed for ${PROJECT_SLUG}. Read the QA report at $LATEST_QA.
+Fix all issues found. Then update STATUS.md state to 'build' so the pipeline re-verifies.
+" --dangerously-skip-permissions >> "$LOG" 2>&1
+      fi
     else
-      echo "Waiting for QA" >> "$LOG"
+      log "Waiting for QA report"
     fi
     ;;
 
   *review*|*REVIEW*|*board*)
-    echo "BOARD REVIEW phase — checking if verdict exists" >> "$LOG"
-    VERDICT=$(find "$REPO/rounds" -name "board-review-*.md" -newer "$REPO/STATUS.md" 2>/dev/null | wc -l | tr -d ' ')
-    if [ "$VERDICT" -ge 3 ]; then
-      echo "Board reviews in ($VERDICT) — advancing to SHIP" >> "$LOG"
-      cd "$REPO" && claude -p "Phase 6: SHIP. Run /agency-ship. Merge all feature branches to main. Update STATUS.md, SCOREBOARD.md. Spawn Marcus Aurelius (haiku) to write retrospective to memory/. Clean up branches. Set STATUS.md state to 'idle'. Push everything." --dangerously-skip-permissions 2>> "$LOG"
+    REVIEWS=$(find "$REPO/rounds/${PROJECT_SLUG}" -name "board-review-*.md" -newer "$REPO/STATUS.md" 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$REVIEWS" -ge 3 ]; then
+      log "Board reviews in ($REVIEWS) — advancing to SHIP"
+      cd "$REPO" && claude -p "
+You are Phil Jackson. Board review complete for ${PROJECT_SLUG}.
+Start Phase 6: SHIP.
+- Merge all remaining feature branches to main (squash merge)
+- Update STATUS.md: state to 'idle', clear active project
+- Update SCOREBOARD.md with new counts
+- Spawn Marcus Aurelius (haiku) to write retrospective to memory/${PROJECT_SLUG}-retrospective.md
+- Clean up merged branches
+- Push everything
+- The project is DONE.
+" --dangerously-skip-permissions >> "$LOG" 2>&1
+
+      # Reset QA counter
+      echo "0" > "$QA_PASS_FILE"
+
+      # After ship completes, uninstall self from crontab
+      log "Project shipped — uninstalling pipeline cron — back to idle"
+      crontab -l 2>/dev/null | grep -v "pipeline-runner" | crontab - 2>/dev/null
     else
-      echo "Waiting for board reviews ($VERDICT so far)" >> "$LOG"
+      log "Waiting for board reviews ($REVIEWS so far, need 3+)"
     fi
     ;;
 
   *ship*|*SHIP*)
-    echo "SHIP phase — finalizing" >> "$LOG"
-    cd "$REPO" && claude -p "Finalize ship. Merge any remaining branches. Update STATUS.md to idle. Push. The project is complete." --dangerously-skip-permissions 2>> "$LOG"
-    ;;
-
-  *)
-    echo "Unknown state: $STATE" >> "$LOG"
+    log "Ship phase — finalizing and shutting down"
+    cd "$REPO" && claude -p "
+Finalize ship for ${PROJECT_SLUG}. Merge remaining branches. Set STATUS.md state to idle. Push.
+" --dangerously-skip-permissions >> "$LOG" 2>&1
+    echo "0" > "$QA_PASS_FILE"
+    crontab -l 2>/dev/null | grep -v "pipeline-runner" | crontab - 2>/dev/null
+    log "Pipeline complete — cron removed — idle"
     ;;
 esac
 
