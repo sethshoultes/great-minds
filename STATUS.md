@@ -1,7 +1,8 @@
 # Great Minds Agency — Status
 
 ## Current State
-- **state**: OPERATIONAL — building products, content, videos
+- **state**: plan
+- **active project**: witness
 - **last updated**: 2026-04-03
 - **agents**: 14 active
 - **dispatch**: Agent tool with worktree isolation
