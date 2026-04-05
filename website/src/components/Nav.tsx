@@ -54,8 +54,8 @@ export default function Nav() {
           href="/"
           className="flex items-center gap-2.5 text-zinc-100 no-underline"
         >
-          <img src="/logo-icon.webp" alt="Great Minds" width={28} height={28} className="rounded" />
-          <span className="font-semibold text-sm tracking-tight hidden sm:inline">
+          <img src="/logo-icon.webp" alt="Great Minds" width={42} height={42} className="rounded" />
+          <span className="font-semibold text-xl tracking-tight hidden sm:inline">
             Great Minds
           </span>
         </Link>
