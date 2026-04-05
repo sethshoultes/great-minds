@@ -20,16 +20,24 @@ LOG="/tmp/claude-shared/pipeline.log"
 REPO="${PIPELINE_REPO:-$(pwd)}"
 QA_FILE="/tmp/claude-shared/qa-pass-count"
 STATE_FILE="$REPO/STATUS.md"
-PLUGIN_PATH="${CLAUDE_PLUGIN_ROOT:-/Users/sethshoultes/Local Sites/great-minds-plugin}"
+# Plugin path detected below after REPO is set
 
 log() { echo "$(date '+%Y-%m-%d %H:%M') PIPE: $*" >> "$LOG"; }
 
-# Read state — macOS compatible (no grep -oP)
-STATE=$(grep '\*\*pipeline\*\*' "$STATE_FILE" 2>/dev/null | sed 's/.*\*\*pipeline\*\*: *//' | head -1)
-[ -z "$STATE" ] && STATE=$(grep '\*\*state\*\*' "$STATE_FILE" 2>/dev/null | sed 's/.*\*\*state\*\*: *//' | tr '[:upper:]' '[:lower:]' | head -1)
+# Read state — works on macOS AND Linux, handles any STATUS.md format
+# Matches: **state**, **Agency state**, **pipeline**, case-insensitive
+STATE=$(grep -i '\*\*.*state\*\*' "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*\*\*: *//' | tr '[:upper:]' '[:lower:]' | tr -d ' ')
 [ -z "$STATE" ] && STATE="idle"
-PROJECT=$(grep '\*\*active project\*\*' "$STATE_FILE" 2>/dev/null | sed 's/.*\*\*active project\*\*: *//' | head -1)
+# Match project name — tries multiple formats
+# Try ## heading first (most specific), then ** bold (fallback)
+PROJECT=$(grep -i '^## Active Project' "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*: *//' | sed 's/ (.*//')
+[ -z "$PROJECT" ] && PROJECT=$(grep -i 'active project\*\*' "$STATE_FILE" 2>/dev/null | head -1 | sed 's/.*\*\*: *//' | grep -v '^[0-9]*$')
 [ -z "$PROJECT" ] && PROJECT=""
+# Plugin path — detect environment
+PLUGIN_PATH=""
+for p in "/Users/sethshoultes/Local Sites/great-minds-plugin" "/home/agent/great-minds-plugin" "$REPO/../great-minds-plugin"; do
+  [ -d "$p/skills" ] && PLUGIN_PATH="$p" && break
+done
 SLUG=$(echo "$PROJECT" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]//g')
 ROUNDS="$REPO/rounds/$SLUG"
 
