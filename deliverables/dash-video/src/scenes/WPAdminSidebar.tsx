@@ -121,27 +121,44 @@ export const WPAdminSidebar: React.FC = () => {
         >
           Dashboard
         </div>
-        <div
-          style={{
-            marginTop: 32,
-            display: "flex",
-            gap: 24,
-          }}
-        >
-          {/* Placeholder widget boxes */}
-          {[1, 2].map((n) => (
-            <div
-              key={n}
-              style={{
-                flex: 1,
-                height: 200,
-                backgroundColor: "#fff",
-                borderRadius: 4,
-                border: "1px solid #ccd0d4",
-                boxShadow: "0 1px 1px rgba(0,0,0,0.04)",
-              }}
-            />
-          ))}
+        {/* Widget row 1 */}
+        <div style={{ marginTop: 32, display: "flex", gap: 24 }}>
+          {/* At a Glance */}
+          <div style={{ flex: 1, backgroundColor: "#fff", borderRadius: 4, border: "1px solid #ccd0d4", boxShadow: "0 1px 1px rgba(0,0,0,0.04)", padding: 24 }}>
+            <div style={{ fontFamily: fonts.body, fontSize: 22, fontWeight: 600, color: "#23282d", marginBottom: 16 }}>At a Glance</div>
+            <div style={{ fontFamily: fonts.body, fontSize: 18, color: "#72777c", lineHeight: 2 }}>
+              <div>📝 42 Posts</div>
+              <div>📄 12 Pages</div>
+              <div>💬 89 Comments</div>
+              <div>🔌 14 Plugins</div>
+            </div>
+          </div>
+          {/* Quick Draft */}
+          <div style={{ flex: 1, backgroundColor: "#fff", borderRadius: 4, border: "1px solid #ccd0d4", boxShadow: "0 1px 1px rgba(0,0,0,0.04)", padding: 24 }}>
+            <div style={{ fontFamily: fonts.body, fontSize: 22, fontWeight: 600, color: "#23282d", marginBottom: 16 }}>Quick Draft</div>
+            <div style={{ fontFamily: fonts.body, fontSize: 18, color: "#72777c" }}>
+              <div style={{ backgroundColor: "#f1f1f1", borderRadius: 4, padding: "10px 14px", marginBottom: 12, color: "#b4b9be" }}>Title</div>
+              <div style={{ backgroundColor: "#f1f1f1", borderRadius: 4, padding: "10px 14px", height: 80, color: "#b4b9be" }}>What's on your mind?</div>
+            </div>
+          </div>
+        </div>
+        {/* Widget row 2 */}
+        <div style={{ marginTop: 24, display: "flex", gap: 24 }}>
+          <div style={{ flex: 1, backgroundColor: "#fff", borderRadius: 4, border: "1px solid #ccd0d4", boxShadow: "0 1px 1px rgba(0,0,0,0.04)", padding: 24 }}>
+            <div style={{ fontFamily: fonts.body, fontSize: 22, fontWeight: 600, color: "#23282d", marginBottom: 16 }}>Activity</div>
+            <div style={{ fontFamily: fonts.body, fontSize: 16, color: "#72777c", lineHeight: 2.2 }}>
+              <div>📌 "Summer menu update" — 2 hours ago</div>
+              <div>📌 "New team member onboarding" — yesterday</div>
+              <div>📌 "Fix contact form" — 3 days ago</div>
+            </div>
+          </div>
+          <div style={{ flex: 1, backgroundColor: "#fff", borderRadius: 4, border: "1px solid #ccd0d4", boxShadow: "0 1px 1px rgba(0,0,0,0.04)", padding: 24 }}>
+            <div style={{ fontFamily: fonts.body, fontSize: 22, fontWeight: 600, color: "#23282d", marginBottom: 16 }}>WordPress Events</div>
+            <div style={{ fontFamily: fonts.body, fontSize: 16, color: "#72777c", lineHeight: 2.2 }}>
+              <div>🗓 WordCamp Austin — June 14</div>
+              <div>🗓 WP Meetup — May 3</div>
+            </div>
+          </div>
         </div>
       </div>
 

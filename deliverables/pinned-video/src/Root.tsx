@@ -8,15 +8,15 @@ import { ClosingCTA } from "./scenes/ClosingCTA";
 import { colors } from "./styles";
 
 const FPS = 30;
-const TOTAL_DURATION = 45 * FPS; // 1350 frames — 45 seconds hard cap
+const TOTAL_DURATION = 42 * FPS; // 1260 frames — matched to actual audio
 
-// Scene timings (in frames at 30fps)
+// Scene timings (in frames at 30fps) — matched to audio durations
 const SCENES = {
-  dashboardHook: { from: 0, duration: 5 * FPS }, // 0:00 - 0:05
-  notesCascade: { from: 5 * FPS, duration: 10 * FPS }, // 0:05 - 0:15
-  acknowledgeAndExpire: { from: 15 * FPS, duration: 13 * FPS }, // 0:15 - 0:28
-  fullDashboard: { from: 28 * FPS, duration: 10 * FPS }, // 0:28 - 0:38
-  closingCTA: { from: 38 * FPS, duration: 7 * FPS }, // 0:38 - 0:45
+  dashboardHook: { from: 0, duration: 8 * FPS }, // 0:00 - 0:08 (audio 6.4s)
+  notesCascade: { from: 8 * FPS, duration: 11 * FPS }, // 0:08 - 0:19 (audio 10.4s)
+  acknowledgeAndExpire: { from: 19 * FPS, duration: 10 * FPS }, // 0:19 - 0:29 (audio 9.5s)
+  fullDashboard: { from: 29 * FPS, duration: 8 * FPS }, // 0:29 - 0:37 (audio 7.2s)
+  closingCTA: { from: 37 * FPS, duration: 5 * FPS }, // 0:37 - 0:42 (audio 3.3s)
 } as const;
 
 const PinnedPromo: React.FC = () => {

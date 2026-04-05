@@ -8,15 +8,15 @@ import { CTAScene } from "./scenes/CTAScene";
 import { colors } from "./styles";
 
 const FPS = 30;
-const TOTAL_DURATION = 45 * FPS; // 1350 frames
+const TOTAL_DURATION = 62 * FPS; // 1860 frames — extended to fit VO
 
-// Scene timings (in frames at 30fps) — matches script breakdown
+// Scene timings (in frames at 30fps) — matched to actual audio durations
 const SCENES = {
-  wpAdmin: { from: 0, duration: 5 * FPS }, // 0:00 - 0:05
-  dashOverlay: { from: 5 * FPS, duration: 7 * FPS }, // 0:05 - 0:12
-  rapidSearch: { from: 12 * FPS, duration: 10 * FPS }, // 0:12 - 0:22
-  developerAPI: { from: 22 * FPS, duration: 11 * FPS }, // 0:22 - 0:33
-  cta: { from: 33 * FPS, duration: 12 * FPS }, // 0:33 - 0:45
+  wpAdmin: { from: 0, duration: 7 * FPS }, // 0:00 - 0:07 (audio 6.0s)
+  dashOverlay: { from: 7 * FPS, duration: 12 * FPS }, // 0:07 - 0:19 (audio 10.8s)
+  rapidSearch: { from: 19 * FPS, duration: 13 * FPS }, // 0:19 - 0:32 (audio 12.2s)
+  developerAPI: { from: 32 * FPS, duration: 16 * FPS }, // 0:32 - 0:48 (audio 14.7s)
+  cta: { from: 48 * FPS, duration: 14 * FPS }, // 0:48 - 1:02 (audio 13.3s)
 } as const;
 
 const DashPromo: React.FC = () => {

@@ -9,16 +9,16 @@ import { MainStreetClose } from "./scenes/MainStreetClose";
 import { colors } from "./styles";
 
 const FPS = 30;
-const TOTAL_DURATION = 60 * FPS; // 1800 frames — hard 60s cap
+const TOTAL_DURATION = 68 * FPS; // 2040 frames — matched to audio
 
-// Scene timings (in frames at 30fps)
+// Scene timings (in frames at 30fps) — matched to actual audio durations
 const SCENES = {
-  mainStreetOpen:       { from: 0,          duration: 6 * FPS },   // 0:00 - 0:06
-  chatStrategy:         { from: 6 * FPS,    duration: 8 * FPS },   // 0:06 - 0:14
-  contentGrid:          { from: 14 * FPS,   duration: 12 * FPS },  // 0:14 - 0:26
-  dashboardReveal:      { from: 26 * FPS,   duration: 10 * FPS },  // 0:26 - 0:36
-  multiBusinessCascade: { from: 36 * FPS,   duration: 14 * FPS },  // 0:36 - 0:50
-  mainStreetClose:      { from: 50 * FPS,   duration: 10 * FPS },  // 0:50 - 1:00
+  mainStreetOpen:       { from: 0,          duration: 8 * FPS },   // 0:00 - 0:08 (audio 6.9s)
+  chatStrategy:         { from: 8 * FPS,    duration: 8 * FPS },   // 0:08 - 0:16 (audio 6.9s)
+  contentGrid:          { from: 16 * FPS,   duration: 14 * FPS },  // 0:16 - 0:30 (audio 13.1s)
+  dashboardReveal:      { from: 30 * FPS,   duration: 16 * FPS },  // 0:30 - 0:46 (audio 14.4s)
+  multiBusinessCascade: { from: 46 * FPS,   duration: 15 * FPS },  // 0:46 - 1:01 (audio 13.7s)
+  mainStreetClose:      { from: 61 * FPS,   duration: 7 * FPS },   // 1:01 - 1:08 (audio 4.1s)
 } as const;
 
 const LocalGeniusPromo: React.FC = () => {
