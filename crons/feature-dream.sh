@@ -18,7 +18,7 @@
 # Schedule: runs every 4 hours via crontab (only when idle)
 # Cost: ~1 haiku call to check state, full opus only when dreaming
 
-set -euo pipefail
+set -uo pipefail
 
 LOG="/tmp/claude-shared/dream.log"
 ALERT="/tmp/claude-shared/alerts.log"
@@ -29,7 +29,8 @@ PRDS_DIR="$REPO/prds"
 log() { echo "$(date '+%Y-%m-%d %H:%M') DREAM: $*" >> "$LOG"; }
 
 # Only run if pipeline is idle
-PIPELINE_ACTIVE=$(crontab -l 2>/dev/null | grep -c "pipeline-runner" || echo 0)
+PIPELINE_ACTIVE=$(crontab -l 2>/dev/null | grep -c "pipeline-runner" || true)
+PIPELINE_ACTIVE=${PIPELINE_ACTIVE:-0}
 STATE=$(grep -oP '(?<=\*\*state\*\*:\s).*' "$REPO/STATUS.md" 2>/dev/null | head -1 || echo "idle")
 
 if [ "$PIPELINE_ACTIVE" -gt 0 ] || { [ "$STATE" != "idle" ] && [ "$STATE" != "operational" ]; }; then
@@ -61,8 +62,15 @@ if [ "$MODE" = "improve" ]; then
   TIMESTAMP=$(date '+%Y%m%d-%H%M')
   log "Running board improvement review"
 
+  # Board reads recent learnings before reviewing
+  LEARNINGS=$(cd "$REPO/memory-store" && npx tsx src/cli.ts search "improvement opportunity" --limit 10 2>/dev/null || echo "(no learnings available)")
+  log "Loaded learnings for board context"
+
   cd "$REPO" && claude -p "
 You are Phil Jackson running a featureDream IMPROVE cycle.
+
+Recent learnings from memory store (use these to inform your review):
+${LEARNINGS}
 
 Review all shipped products for improvement opportunities:
 - LocalGenius (localgenius.company) — AI marketing for local businesses

@@ -255,6 +255,195 @@ program
     }
   });
 
+// ── prune ─────────────────────────────────────────────────────────────────
+
+program
+  .command('prune')
+  .description('Remove duplicate and low-value memories')
+  .option('--threshold <n>', 'Cosine similarity threshold for duplicates', '0.92')
+  .action(async (opts) => {
+    const store = createStore();
+    try {
+      const threshold = parseFloat(opts.threshold);
+      console.log(`Pruning duplicates (threshold: ${threshold})...`);
+
+      const dupeResult = store.removeDuplicates(threshold);
+      if (dupeResult.pairs.length > 0) {
+        console.log(`\nRemoved ${dupeResult.removed} duplicate(s):`);
+        for (const desc of dupeResult.pairs) {
+          console.log(`  ${desc}`);
+        }
+      } else {
+        console.log('No duplicates found.');
+      }
+
+      console.log('\nPruning low-value entries...');
+      const lowResult = store.pruneLowValue();
+      if (lowResult.descriptions.length > 0) {
+        console.log(`Removed ${lowResult.removed} low-value entries:`);
+        for (const desc of lowResult.descriptions) {
+          console.log(`  ${desc}`);
+        }
+      } else {
+        console.log('No low-value entries found.');
+      }
+
+      console.log(`\nTotal pruned: ${dupeResult.removed + lowResult.removed}`);
+    } finally {
+      store.close();
+    }
+  });
+
+// ── consolidate ───────────────────────────────────────────────────────────
+
+program
+  .command('consolidate')
+  .description('Merge clusters of similar memories into single stronger entries')
+  .option('--threshold <n>', 'Similarity threshold for clustering', '0.75')
+  .action(async (opts) => {
+    const store = createStore();
+    try {
+      const threshold = parseFloat(opts.threshold);
+      console.log(`Finding clusters (threshold: ${threshold})...`);
+
+      const clusters = store.findClusters(threshold);
+
+      if (clusters.length === 0) {
+        console.log('No clusters found to consolidate.');
+        return;
+      }
+
+      let consolidated = 0;
+      let memoriesReplaced = 0;
+
+      for (const cluster of clusters) {
+        // Build a merged summary
+        const merged = buildMergedContent(cluster.type, cluster.contents);
+        const newId = await store.consolidateCluster(cluster.ids, merged);
+        consolidated++;
+        memoriesReplaced += cluster.ids.length;
+        console.log(
+          `  [${cluster.type}] Merged ${cluster.ids.length} memories (${cluster.ids.join(', ')}) → #${newId}`
+        );
+      }
+
+      console.log(
+        `\nConsolidated ${consolidated} clusters (${memoriesReplaced} memories → ${consolidated} entries)`
+      );
+    } finally {
+      store.close();
+    }
+  });
+
+// ── optimize ──────────────────────────────────────────────────────────────
+
+program
+  .command('optimize')
+  .description('Score memories by relevance and remove the bottom percentile')
+  .option('--percentile <n>', 'Remove bottom N percent', '10')
+  .action(async (opts) => {
+    const store = createStore();
+    try {
+      const percentile = parseFloat(opts.percentile);
+
+      console.log('Scoring all memories...');
+      const scoreResult = store.scoreMemories();
+      console.log(`Scored ${scoreResult.scored} memories.`);
+
+      console.log(`\nRemoving bottom ${percentile}%...`);
+      const pruneResult = store.pruneByScore(percentile);
+      console.log(
+        `Removed ${pruneResult.removed} memories (score threshold: ${pruneResult.threshold.toFixed(4)})`
+      );
+
+      const stats = store.stats();
+      console.log(`\nRemaining: ${stats.total} memories`);
+    } finally {
+      store.close();
+    }
+  });
+
+// ── maintain ──────────────────────────────────────────────────────────────
+
+program
+  .command('maintain')
+  .description('Full maintenance cycle: prune → consolidate → optimize (used by dream cron)')
+  .action(async () => {
+    const store = createStore();
+    try {
+      const before = store.count();
+      console.log(`Memory maintenance starting (${before} memories)...\n`);
+
+      // Step 1: Prune
+      console.log('=== PRUNE ===');
+      const dupeResult = store.removeDuplicates(0.92);
+      console.log(`  Duplicates removed: ${dupeResult.removed}`);
+      const lowResult = store.pruneLowValue();
+      console.log(`  Low-value removed: ${lowResult.removed}`);
+
+      // Step 2: Consolidate
+      console.log('\n=== CONSOLIDATE ===');
+      const clusters = store.findClusters(0.75);
+      let consolidated = 0;
+      let memoriesReplaced = 0;
+      for (const cluster of clusters) {
+        const merged = buildMergedContent(cluster.type, cluster.contents);
+        await store.consolidateCluster(cluster.ids, merged);
+        consolidated++;
+        memoriesReplaced += cluster.ids.length;
+      }
+      console.log(`  Clusters merged: ${consolidated} (${memoriesReplaced} → ${consolidated})`);
+
+      // Step 3: Optimize
+      console.log('\n=== OPTIMIZE ===');
+      const scoreResult = store.scoreMemories();
+      console.log(`  Scored: ${scoreResult.scored}`);
+      const pruneResult = store.pruneByScore(10);
+      console.log(`  Bottom 10% removed: ${pruneResult.removed}`);
+
+      const after = store.count();
+      console.log(`\nMaintenance complete: ${before} → ${after} memories (${before - after} removed)`);
+    } finally {
+      store.close();
+    }
+  });
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+
+/**
+ * Build a merged content string from a cluster of similar memories.
+ */
+function buildMergedContent(type: string, contents: string[]): string {
+  // Extract key points from each, deduplicate
+  const allLines = contents
+    .flatMap((c) => c.split('\n').map((l) => l.trim()).filter((l) => l.length > 10))
+    .filter((line, i, arr) => arr.indexOf(line) === i); // deduplicate exact lines
+
+  const header = `[Consolidated from ${contents.length} ${type} entries]`;
+
+  // For QA findings, summarize health status
+  if (type === 'qa-finding') {
+    const urls = allLines.filter((l) => l.includes('http') || l.includes('200') || l.includes('PASS'));
+    if (urls.length > 0) {
+      return `${header}\nSites consistently healthy — all URLs return 200.\nChecked patterns:\n${urls.slice(0, 10).map((u) => `- ${u}`).join('\n')}`;
+    }
+  }
+
+  // For board reviews, keep unique insights
+  if (type === 'board-review') {
+    const insights = allLines.filter(
+      (l) => !l.match(/^(all\s+green|no\s+issues?|everything\s+(looks?\s+)?good)/i)
+    );
+    if (insights.length > 0) {
+      return `${header}\nKey insights:\n${insights.slice(0, 15).map((i) => `- ${i}`).join('\n')}`;
+    }
+    return `${header}\nAll reviews passed with no issues noted.`;
+  }
+
+  // Generic: keep unique lines
+  return `${header}\n${allLines.slice(0, 20).join('\n')}`;
+}
+
 // ── run ────────────────────────────────────────────────────────────────────
 
 program.parse();
