@@ -9,23 +9,26 @@
 
 | Metric | Count |
 |--------|-------|
-| Source files (LocalGenius) | 270+ |
-| Source files (GM Website) | 35+ |
-| Total commits | 230+ |
-| Test specs (LocalGenius) | 770+ |
-| Test specs (Sites) | 83 |
+| Agent personas | 14 + founder |
 | GitHub repos | 6 (localgenius, great-minds, great-minds-plugin, shipyard-ai, dash-command-bar, pinned-notes) |
 | Archived repos | 2 (localgenius-sites, greatminds-website) |
 | Live deployments | 3 (localgenius.company, greatminds.company, www.shipyard.company) |
-| Agent personas | 10 + founder |
+| Source files (LocalGenius) | 265 |
+| Source files (GM Website) | 35+ |
+| Total commits | 240+ |
+| Test specs (LocalGenius) | 770+ |
 | PRs merged | 25+ |
-| Jensen board reviews | 23 |
+| Jensen board reviews | 23+ |
 | Margaret QA reports | 80+ |
-| Workshop video | Rendered (2 MP4s) |
-| Blog posts | 10 |
-| VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
-| Shipyard AI | New company on DO — website, pipeline, credit system |
-| GSD integration | 3 skills + context-guard hook in plugin |
+| Blog posts | 20 |
+| Product videos (Remotion) | 5 |
+| WordPress plugins shipped | 2 (Dash, Pinned) |
+| Plugin skills | 12 |
+| Board of Directors members | 4 (Jensen, Oprah, Buffett, Shonda) |
+| Shipyard AI spin-out | Live (www.shipyard.company) |
+| GSD integration | Active (plan, execute, verify, scope-check + context guard) |
+| Services page | Live (greatminds.company) |
+| VPS | DigitalOcean 8GB/4vCPU (164.90.151.82) |
 
 ## Jensen Huang — Board Reviews
 
@@ -38,33 +41,30 @@
 | #005 | Apr 2 | Surface ROI metrics in every digest | #3 | Fixed |
 | #006 | Apr 2 | Email data pipeline — don't send fictional data | — | Noted |
 | #007 | Apr 2 | Sites provisioning delivers placeholder | #4 | Fixed |
-| #008 | Apr 2 | Scope CORS on voice endpoint | #5 | **Fixed** |
+| #008 | Apr 2 | Scope CORS on voice endpoint | #5 | Fixed |
 | #009 | Apr 2 | Persist insight actions — in-memory Map | #6 | Fixed |
 | #010 | Apr 2 | Campaign engine compounds the open loop | — | Noted |
 | #011 | Apr 2 | Campaign suggestions not persisted | #7 | Fixed |
 | #012 | Apr 2 | Add inference latency logging | #8 | Fixed |
-| #013 | Apr 2 | Telemetry built but not wired to AI callsites | #9 | **Fixed** |
+| #013 | Apr 2 | Telemetry built but not wired to AI callsites | #9 | Fixed |
+| #014-023 | Apr 2-3 | Additional strategic reviews | — | Various |
 
-**Score: 13 reviews, 9 issues filed, 8 fixed, 1 open (#1 — architectural, deferred)**
+**Score: 23+ reviews, 9 issues filed, 8 fixed, 1 open (#1 — architectural, deferred)**
 
 ## Margaret Hamilton — QA Reports
+
+80+ reports filed. Key milestones:
 
 | Report | Key Findings | Verdict |
 |--------|-------------|---------|
 | #001 | Site 1 all 200s, Site 2 routing bugs | FIX FIRST |
 | #002 | 27 TypeScript errors in test files | FIX FIRST |
 | #003 | Post-fix verification — all green | ALL GREEN |
-| #004 | Favicon + meta tags review | PASS |
-| #005 | Nav consistency audit | FIX FIRST |
 | #006 | Consolidation — slug mismatch + test breaks | P0 FIX |
 | #007 | Post-fix — all 3 QA-006 bugs resolved | ALL GREEN |
-| #008 | Stale .next cache after route restructuring | GREEN |
-| #009 | Honesty pass verification | GREEN |
-| #010 | Shared header/footer verification | GREEN |
-| #011 | Final build + typecheck | GREEN |
 | #012 | Ship readiness — all gates green | GREEN |
 
-**Score: 12 reports, 3 P0s caught, all resolved. Ship readiness: GREEN.**
+**Score: 80+ reports, 3 P0s caught early, all resolved.**
 
 ## Steve Jobs — Creative Output
 
@@ -96,7 +96,7 @@
 | Data model (16 tables, Jensen's 4 questions) | Apr 1 |
 | API design (40+ endpoints) | Apr 1 |
 | Infrastructure plan ($5.07/user/month) | Apr 1 |
-| Full app scaffold (26 → 258 files) | Apr 1-2 |
+| Full app scaffold (26 -> 258 files) | Apr 1-2 |
 | Hybrid AI router (Claude + Cloudflare Workers AI) | Apr 2 |
 | Voice-to-text (Whisper on Cloudflare) | Apr 2 |
 | Stripe billing integration | Apr 2 |
@@ -113,31 +113,19 @@
 
 | URL | Status | Platform |
 |-----|--------|----------|
-| [localgenius.company](https://localgenius.company) | **Live** | Vercel + Neon |
-| [localgenius.company/sites](https://localgenius.company/sites) | **Live** | Vercel |
-| [localgenius.company/site/marias-kitchen-austin](https://localgenius.company/site/marias-kitchen-austin) | **Live** | Vercel |
-| [localgenius-sites.pages.dev](https://localgenius-sites.pages.dev) | **Live** | Cloudflare |
-| [greatminds.company](https://greatminds.company) | **Live** | Vercel |
+| [localgenius.company](https://localgenius.company) | Live | Vercel + Neon |
+| [greatminds.company](https://greatminds.company) | Live | Vercel |
+| [www.shipyard.company](https://www.shipyard.company) | Live | Cloudflare Pages |
 
 ## GitHub Repos
 
-| Repo | Stars | Status |
-|------|-------|--------|
-| sethshoultes/localgenius | — | Active |
-| sethshoultes/localgenius-sites | — | Archived (consolidated into localgenius) |
-| sethshoultes/greatminds-website | — | Archived (merged into great-minds/website) |
-| sethshoultes/great-minds | — | Active |
-
-## GitHub Issues
-
-| # | Title | Filed By | Status |
-|---|-------|----------|--------|
-| 1 | Data moat architecture | Jensen #1 | Open (architectural) |
-| 2 | AI honesty — false Google claims | Jensen #4 | Fixed |
-| 3 | Surface ROI in digest | Jensen #5 | Fixed |
-| 4 | Sites provisioning placeholder | Jensen #7 | Fixed |
-| 5 | CORS on voice endpoint | Jensen #8 | Fixed |
-| 6 | Persist insight actions | Jensen #9 | Fixed |
-| 7 | Campaign suggestions persistence | Jensen #11 | Fixed |
-| 8 | Inference latency logging | Jensen #12 | Fixed |
-| 9 | Telemetry wired to AI calls | Jensen #13 | Fixed |
+| Repo | Status |
+|------|--------|
+| sethshoultes/localgenius | Active |
+| sethshoultes/great-minds | Active |
+| sethshoultes/great-minds-plugin | Active |
+| sethshoultes/shipyard-ai | Active |
+| sethshoultes/dash-command-bar | Active |
+| sethshoultes/pinned-notes | Active |
+| sethshoultes/localgenius-sites | Archived |
+| sethshoultes/greatminds-website | Archived |

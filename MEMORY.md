@@ -1,37 +1,39 @@
-# Great Minds Agency — Shared Memory
+# Great Minds Agency -- Shared Memory
 
 ## Agency Knowledge
-- [Agency Identity](memory/agency-identity.md) — Core operating principles and partner dynamics
-- [CLAW Research](memory/claw-research.md) — OpenClaw, Nanobot, MAD patterns informing our architecture
-- [Dream Research](memory/dream-research.md) — Auto Dream / memory consolidation patterns
-- [Architecture Decisions](memory/architecture-decisions.md) — Moderator pattern, claude-swarm, debate-then-build
+- [Agency Identity](memory/agency-identity.md) -- Core operating principles and partner dynamics
+- [Architecture Decisions](memory/architecture-decisions.md) -- Dispatch, debate-then-build, board pattern
 
 ## Project History
-- [LocalGenius Learnings](memory/localgenius-learnings.md) — First project complete. 195KB, 8 deliverables, 10 rounds.
-- [Operational Learnings](memory/operational-learnings.md) — Consolidation, QA, architecture, and agent economics patterns
+- [LocalGenius Learnings](memory/localgenius-learnings.md) -- First product: 265 files, 8 deliverables, 10 rounds
+- [Operational Learnings](memory/operational-learnings.md) -- Consolidation, QA, agent economics
 
-## Lessons Learned
+## Key Learnings
 
-### Process
-- Establish canonical personas/facts as shared doc BEFORE parallel build (persona drift caught in review)
-- 2 debate rounds is the sweet spot — enough to align, not so many it wastes cycles
-- Creative reviewer role (James Park) is essential for cross-document consistency
-- Self-correcting targets > defending aspirational numbers
-- [Feature Branch Workflow](../../../.claude/projects/-Users-sethshoultes-Local-Sites-great-minds/memory/feedback_branch_workflow.md) — MANDATORY: all agents use branches + PRs, Margaret reviews, no direct pushes to main
-
-### Consolidation
-- Don't run two frontends for one product — consolidate into routes
-- Shared Header/Footer in root layout prevents orphan pages
-- Never market features that don't exist (honesty pass)
-
-### QA & Testing
-- Margaret Hamilton: QA must run continuously, not on-demand
-- Jensen's board reviews: highest-ROI agent (13 reviews, found real bugs)
+### Dispatch
+- tmux send-keys dispatch FAILED -- unreliable, agents get stuck, no error recovery
+- Agent tool with worktree isolation WORKS -- safe parallel execution, clean git state per agent
+- Each agent gets its own worktree branch; merges happen through PRs
 
 ### Architecture
-- In-memory state: always persist to DB, never use Maps for production state
+- Decoupled crons (bash + haiku) prevent bottleneck -- never run crons inside conversations
+- In-memory state always loses data -- persist to DB, never use Maps for production state
 - Hybrid AI router: Cloudflare Workers AI for fast/cheap, Claude for complex
+
+### Process
+- 2 debate rounds is the sweet spot -- enough to align, not so many it wastes cycles
+- Establish canonical personas/facts as shared doc BEFORE parallel build
+- Board of Directors pattern: 4 advisors + 1 tie-breaker (Marcus) works better than single reviewer
+- GSD integration: wave-based execution with fresh context prevents context rot
+- Feature branch workflow MANDATORY: all agents use branches + PRs, no direct pushes to main
+
+### Content & Products
+- Honesty pass: never market features that don't exist
+- Shared Header/Footer in root layout prevents orphan pages
+- Remotion for product videos -- 5 rendered, pipeline proven
+- WordPress plugins (Dash, Pinned) ship faster in their own repos
 
 ### Agent Economics
 - Haiku for sub-agents: conserves usage limits ~5x
-- Only directors and moderator need Sonnet-class models
+- Only directors and orchestrator need Sonnet-class models
+- 14 agents is current ceiling -- more creates coordination overhead
