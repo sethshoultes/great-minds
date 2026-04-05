@@ -1,3 +1,7 @@
+Apr 5, 2026 — 12:44 PM
+
+  Integration test narrate-cli on great-minds repo (dogfood) in CHANGELOG.human.md  ·  6ba631d
+
 Apr 5, 2026 — 12:42 PM
 
   Add narrate backfill command with cost preview and batch processing in backfill.js  ·  dd1f6e5
