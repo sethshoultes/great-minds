@@ -23,11 +23,13 @@
 | Blog posts | 20 |
 | Product videos (Remotion) | 5 |
 | Products built | 3 (Dash, Pinned, Narrate/Witness) |
-| Plugin skills | 15 |
+| Plugin skills | 17 |
 | Board of Directors members | 4 (Jensen, Oprah, Buffett, Shonda) |
 | Shipyard AI spin-out | Live (www.shipyard.company) |
 | GSD integration | Active (plan, execute, verify, scope-check + context guard) |
 | Daemon orchestration | Active (Agent SDK-based, replaces cron pipeline) |
+| OpenWolf-inspired features | 4 (anatomy, token ledger, buglog, do-not-repeat) |
+| Daemon resilience | Telegram, crash recovery, hung detection |
 | Memory store | SQLite + TF-IDF (155 memories) |
 | Services page | Live (greatminds.company) |
 | VPS | DigitalOcean 8GB/4vCPU (164.90.151.82) |

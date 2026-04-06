@@ -116,7 +116,7 @@ Inspired by [Get Shit Done](https://github.com/gsd-build/get-shit-done) -- struc
 | Blog posts | 20 |
 | Product videos (Remotion) | 5 |
 | Products built | 3 (Dash, Pinned, Narrate) |
-| Plugin skills | 15 |
+| Plugin skills | 17 |
 | PRs merged | 25+ |
 | VPS | DigitalOcean 8GB/4vCPU |
 
@@ -138,7 +138,7 @@ Inspired by [Get Shit Done](https://github.com/gsd-build/get-shit-done) -- struc
 npx plugins add sethshoultes/great-minds-plugin
 ```
 
-Includes: 14 agents, 15 skills, GSD integration, daemon orchestration, context guard hooks, `.planning/` templates.
+Includes: 14 agents, 17 skills, GSD integration, daemon orchestration, context guard hooks, `.planning/` templates.
 
 ## Docker Quick Start
 
@@ -174,10 +174,23 @@ Deploy on DigitalOcean (8GB/4vCPU recommended) or any Ubuntu VPS. See the [deplo
 
 The daemon (`daemon/`) is an Agent SDK-based long-running process that replaces all cron scripts. It watches for PRDs, runs the full GSD pipeline, handles featureDream cycles, and maintains memory. See the [daemon docs](https://greatminds.company/docs/daemon).
 
+### Daemon Resilience
+
+- **Telegram Notifications** — real-time alerts for pipeline events and failures
+- **Crash Recovery** — 2 retries with exponential backoff; failed PRDs archived
+- **Hung Agent Detection** — 10-minute agent timeout, 60-minute pipeline timeout
+
+### OpenWolf-Inspired Features
+
+- **File Anatomy** — token estimates per file for context budgeting (`/agency-anatomy`)
+- **Token Ledger** — cost tracking per agent across pipeline runs (`/agency-tokens`)
+- **Bug Memory** — 8 known bugs in searchable buglog, queried before debugging
+- **Do-Not-Repeat List** — past mistakes injected into every agent session
+
 ## Related Projects (7 Repos)
 
 - [great-minds](https://github.com/sethshoultes/great-minds) -- The agency repo (this one)
-- [great-minds-plugin](https://github.com/sethshoultes/great-minds-plugin) -- Claude Code plugin (installable agency, 15 skills)
+- [great-minds-plugin](https://github.com/sethshoultes/great-minds-plugin) -- Claude Code plugin (installable agency, 17 skills)
 - [localgenius](https://github.com/sethshoultes/localgenius) -- First product built by the agency
 - [dash-command-bar](https://github.com/sethshoultes/dash-command-bar) -- Dash WP command bar plugin
 - [pinned-notes](https://github.com/sethshoultes/pinned-notes) -- Pinned WP notes plugin

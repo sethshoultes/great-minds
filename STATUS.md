@@ -17,6 +17,8 @@
 - **Payments**: Stripe (test mode)
 - **CI**: GitHub -> Vercel auto-deploy
 - **VPS**: DigitalOcean 8GB/4vCPU droplet (164.90.151.82) — running, auth FIXED
+- **Daemon resilience**: Telegram notifications, crash recovery (2 retries + backoff), hung agent detection (10min agent / 60min pipeline)
+- **Developer intelligence**: file anatomy, token ledger, bug memory (8 known bugs), do-not-repeat list
 
 ## GitHub Repos (6)
 
@@ -42,7 +44,7 @@
 | Product | Type | Repo | Status |
 |---------|------|------|--------|
 | LocalGenius | Next.js SaaS app | localgenius | Live (265 source files) |
-| Great Minds Plugin | Claude Code plugin | great-minds-plugin | Published (15 skills) |
+| Great Minds Plugin | Claude Code plugin | great-minds-plugin | Published (17 skills) |
 | Dash | WordPress command bar plugin | dash-command-bar | Shipped (own repo) |
 | Pinned | WordPress pinned notes plugin | pinned-notes | Shipped (own repo) |
 | Narrate/Witness | Video narration product | — | Shipped |
@@ -81,6 +83,6 @@
 - Blog posts published: 20
 - Product videos rendered: 5
 - Products built: 3 (Dash, Pinned, Narrate/Witness)
-- Plugin skills: 15
+- Plugin skills: 17
 - GitHub repos: 6
 - Live deployments: 3

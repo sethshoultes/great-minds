@@ -127,6 +127,80 @@ npm install && ./bin/greatminds-daemon
           When running in Docker, use <code>docker compose logs -f</code> to tail output.
         </p>
 
+        <h2>Telegram Notifications</h2>
+
+        <p>
+          The daemon sends real-time notifications to Telegram for pipeline events: starts, completions,
+          failures, and hung agent detection. This lets you monitor the agency from your phone.
+        </p>
+
+        <h3>Setup</h3>
+
+        <ol>
+          <li>Message <strong>@BotFather</strong> on Telegram and create a new bot (<code>/newbot</code>)</li>
+          <li>Copy the bot token</li>
+          <li>Send a message to your bot, then fetch your chat ID via <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code></li>
+          <li>Set environment variables (see table below)</li>
+        </ol>
+
+        <h3>What Gets Notified</h3>
+
+        <ul>
+          <li>Pipeline started (PRD name)</li>
+          <li>Pipeline completed (duration, phases)</li>
+          <li>Pipeline failed (error, phase, retry count)</li>
+          <li>Agent hung (agent name, timeout duration)</li>
+          <li>PRD archived to failed (after all retries exhausted)</li>
+        </ul>
+
+        <h2>Crash Recovery</h2>
+
+        <p>
+          When a pipeline phase fails, the daemon retries it up to <strong>2 times</strong> with
+          exponential backoff (30s, then 60s). If all retries are exhausted, the PRD is moved to{' '}
+          <code>prds/failed/</code> so it does not block the queue. A Telegram notification is sent
+          on each failure and on final archival.
+        </p>
+
+        <h2>Hung Agent Detection</h2>
+
+        <p>
+          Individual agents are killed if they exceed the agent timeout (default: 10 minutes).
+          The entire pipeline is aborted if it exceeds the pipeline timeout (default: 60 minutes).
+          Hung agents trigger a Telegram alert and the phase is retried or skipped depending on
+          remaining retry budget.
+        </p>
+
+        <h2>Token Ledger</h2>
+
+        <p>
+          The daemon tracks token usage and estimated cost per agent across every pipeline run.
+          Use <code>/agency-tokens</code> to view the ledger. This helps identify which agents are
+          expensive and where to optimize prompt size or model choice.
+        </p>
+
+        <h2>Bug Memory</h2>
+
+        <p>
+          Known bugs are stored in <code>daemon/buglog.json</code> (currently 8 entries). Agents
+          query the buglog before debugging to avoid re-investigating known issues. New bugs can be
+          added manually or by agents during QA passes.
+        </p>
+
+        <h2>Environment Variables</h2>
+
+        <table>
+          <thead>
+            <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>TELEGRAM_BOT_TOKEN</code></td><td>—</td><td>Telegram bot token from BotFather</td></tr>
+            <tr><td><code>TELEGRAM_CHAT_ID</code></td><td>—</td><td>Telegram chat ID for notifications</td></tr>
+            <tr><td><code>AGENT_TIMEOUT_MS</code></td><td>600000 (10 min)</td><td>Max time for a single agent call</td></tr>
+            <tr><td><code>PIPELINE_TIMEOUT_MS</code></td><td>3600000 (60 min)</td><td>Max time for the entire pipeline</td></tr>
+          </tbody>
+        </table>
+
         <h2>Stopping</h2>
 
         <p>
