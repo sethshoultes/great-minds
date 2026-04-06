@@ -10,14 +10,18 @@ import {
 import { colors, fonts } from "../styles";
 
 const PERSONAS = [
+  "phil-jackson.webp",
   "jensen-huang.webp",
+  "oprah-winfrey.webp",
+  "warren-buffett.webp",
+  "shonda-rhimes.webp",
   "margaret-hamilton.webp",
   "rick-rubin.webp",
   "jony-ive.webp",
   "maya-angelou.webp",
+  "aaron-sorkin.webp",
   "sara-blakely.webp",
   "marcus-aurelius.webp",
-  "seth-shoultes.webp",
 ];
 
 /**
@@ -71,18 +75,17 @@ export const Scene2Premise: React.FC = () => {
         position: "relative",
       }}
     >
-      {/* Persona grid behind */}
+      {/* Persona grid below the duo */}
       {frame >= gridStart && (
         <div
           style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 160px)",
-            gap: 20,
-            opacity: 0.4,
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: 24,
+            marginTop: 40,
+            maxWidth: 900,
+            zIndex: 2,
           }}
         >
           {PERSONAS.map((p, i) => {
@@ -99,30 +102,40 @@ export const Scene2Premise: React.FC = () => {
               [0.8, 1],
               { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
             );
-            // Subtle breathing pulse
-            const breathe =
-              1 + 0.02 * Math.sin((frame - gridStart) / 30 + i);
+            const name = p.replace('.webp', '').split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
             return (
               <div
                 key={p}
                 style={{
-                  width: 160,
-                  height: 160,
-                  borderRadius: "50%",
-                  overflow: "hidden",
                   opacity: o,
-                  transform: `scale(${scale * breathe})`,
-                  border: `2px solid ${colors.surfaceLight}`,
+                  transform: `scale(${scale})`,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 8,
                 }}
               >
-                <Img
-                  src={staticFile(`personas/${p}`)}
+                <div
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
+                    width: 100,
+                    height: 100,
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    border: `2px solid ${colors.surfaceLight}`,
                   }}
-                />
+                >
+                  <Img
+                    src={staticFile(`personas/${p}`)}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+                <div style={{ fontFamily: fonts.body, fontSize: 14, color: colors.textMuted, textAlign: "center" }}>
+                  {name}
+                </div>
               </div>
             );
           })}

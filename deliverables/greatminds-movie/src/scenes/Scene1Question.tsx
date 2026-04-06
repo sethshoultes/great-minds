@@ -1,5 +1,5 @@
 import React from "react";
-import { useCurrentFrame, interpolate, useVideoConfig } from "remotion";
+import { useCurrentFrame, interpolate, useVideoConfig, staticFile, Img } from "remotion";
 import { colors, fonts } from "../styles";
 
 /**
@@ -41,6 +41,22 @@ export const Scene1Question: React.FC = () => {
         padding: "0 160px",
       }}
     >
+      {/* Logo + title */}
+      <div
+        style={{
+          opacity: interpolate(frame, [0, 30], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+          display: "flex",
+          alignItems: "center",
+          gap: 20,
+          marginBottom: 60,
+        }}
+      >
+        <Img src={staticFile("logo-icon.webp")} style={{ width: 160, height: 160, borderRadius: 20 }} />
+        <div style={{ fontFamily: fonts.body, fontSize: 72, fontWeight: 700, color: colors.text }}>
+          Great Minds
+        </div>
+      </div>
+
       <div
         style={{
           opacity: textOpacity,

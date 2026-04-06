@@ -77,8 +77,8 @@ export const Scene7Architecture: React.FC = () => {
         height: "100%",
         backgroundColor: colors.bg,
         display: "flex",
-        padding: "56px 100px",
-        gap: 60,
+        padding: "60px 80px",
+        gap: 40,
       }}
     >
       {/* Architecture diagram */}
@@ -133,8 +133,8 @@ export const Scene7Architecture: React.FC = () => {
               )}
               <div
                 style={{
-                  padding: "14px 24px",
-                  borderRadius: 10,
+                  padding: "18px 28px",
+                  borderRadius: 12,
                   backgroundColor: node.highlight
                     ? `${colors.blue}22`
                     : colors.surface,
@@ -142,7 +142,7 @@ export const Scene7Architecture: React.FC = () => {
                     node.highlight ? colors.blue : colors.surfaceLight
                   }`,
                   fontFamily: node.indent === 0 ? fonts.body : fonts.code,
-                  fontSize: node.indent === 0 ? 30 : 22,
+                  fontSize: node.indent === 0 ? 38 : 28,
                   fontWeight: node.indent === 0 ? 800 : 500,
                   color: node.highlight
                     ? colors.blue
@@ -164,7 +164,7 @@ export const Scene7Architecture: React.FC = () => {
       {/* Shipyard screenshot */}
       <div
         style={{
-          width: 560,
+          width: 700,
           opacity: shipyardOpacity,
           transform: `translateX(${shipyardSlide}px)`,
           display: "flex",
@@ -192,7 +192,7 @@ export const Scene7Architecture: React.FC = () => {
         <div
           style={{
             fontFamily: fonts.body,
-            fontSize: 22,
+            fontSize: 28,
             color: colors.accent,
             textAlign: "center",
             fontWeight: 600,

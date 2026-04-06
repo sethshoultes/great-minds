@@ -44,7 +44,7 @@ export const Scene3Debate: React.FC = () => {
           alignItems: "center",
           justifyContent: "center",
           gap: 12,
-          marginBottom: 56,
+          marginBottom: 32,
         }}
       >
         {PIPELINE_NODES.map((node, i) => {
@@ -100,7 +100,7 @@ export const Scene3Debate: React.FC = () => {
         style={{
           display: "flex",
           justifyContent: "center",
-          gap: 80,
+          gap: 120,
           flex: 1,
           alignItems: "center",
         }}
@@ -205,55 +205,53 @@ export const Scene3Debate: React.FC = () => {
         </div>
       </div>
 
-      {/* Rick Rubin at bottom */}
+      {/* Phil Jackson + Rick Rubin — side by side */}
       <div
         style={{
           display: "flex",
-          alignItems: "center",
           justifyContent: "center",
-          gap: 20,
-          opacity: interpolate(frame, [140, 160], [0, 1], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-          }),
-          transform: `translateY(${interpolate(
-            frame,
-            [140, 160],
-            [40, 0],
-            {
-              extrapolateLeft: "clamp",
-              extrapolateRight: "clamp",
-            }
-          )}px)`,
+          gap: 80,
+          marginTop: 20,
         }}
       >
+        {/* Phil */}
         <div
           style={{
-            width: 100,
-            height: 100,
-            borderRadius: "50%",
-            overflow: "hidden",
-            border: `3px solid ${colors.purple}`,
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            opacity: interpolate(frame, [100, 120], [0, 1], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            }),
           }}
         >
-          <Img
-            src={staticFile("personas/rick-rubin.webp")}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
+          <div style={{ width: 80, height: 80, borderRadius: "50%", overflow: "hidden", border: `3px solid ${colors.accent}` }}>
+            <Img src={staticFile("personas/phil-jackson.webp")} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          </div>
+          <div style={{ fontFamily: fonts.body, fontSize: 22, color: colors.accent, fontWeight: 600 }}>
+            Phil Jackson<br /><span style={{ fontSize: 16, color: colors.textMuted }}>orchestrates</span>
+          </div>
         </div>
+
+        {/* Rick */}
         <div
           style={{
-            fontFamily: fonts.body,
-            fontSize: 26,
-            color: colors.purple,
-            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            opacity: interpolate(frame, [120, 140], [0, 1], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            }),
           }}
         >
-          Rick Rubin -- strips to essence
+          <div style={{ width: 80, height: 80, borderRadius: "50%", overflow: "hidden", border: `3px solid ${colors.purple}` }}>
+            <Img src={staticFile("personas/rick-rubin.webp")} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          </div>
+          <div style={{ fontFamily: fonts.body, fontSize: 22, color: colors.purple, fontWeight: 600 }}>
+            Rick Rubin<br /><span style={{ fontSize: 16, color: colors.textMuted }}>strips to essence</span>
+          </div>
         </div>
       </div>
     </div>
