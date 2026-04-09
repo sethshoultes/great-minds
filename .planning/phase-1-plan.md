@@ -1,474 +1,905 @@
-# Phase 1 Plan — Narrate CLI (v1)
+# Phase 1 Plan — Pulse Benchmark Engine (MVP)
 
-**Generated:** 2026-04-05
-**Requirements:** `.planning/REQUIREMENTS.md`, `prds/witness.md`, `rounds/witness/decisions.md`
-**Total Tasks:** 10
-**Waves:** 4
+**Generated**: 2026-04-09
+**Requirements**: `rounds/localgenius-benchmark-engine/decisions.md` + `prds/localgenius-benchmark-engine.md`
+**Total Tasks**: 18
+**Waves**: 5 (Wave 0 is blocker)
+**Timeline**: 2 weeks (~500 LOC)
+**Product Name**: Pulse
+
+---
+
+## Executive Summary
+
+This plan implements the Pulse benchmark engine for LocalGenius — a competitive intelligence tool that shows restaurant owners how they compare to peers via a single percentile rank.
+
+**Key Insight from Codebase Scout**: LocalGenius already has production-ready infrastructure:
+- `benchmarkAggregates` table designed for this use case
+- Dual-write pattern in analytics.recordEvent()
+- Multi-tenant RLS architecture
+- Job scheduler framework
+
+**Build Strategy**: Extend existing infrastructure, don't reinvent. Focus on the UI layer and public distribution features.
 
 ---
 
 ## Requirements Traceability
 
-| Requirement(s) | Task | Wave |
-|----------------|------|------|
-| PS-1, PS-2, PS-3, PS-6 | phase-1-task-1 (Project scaffold) | 1 |
-| CFG-1..6 | phase-1-task-2 (Config loader) | 1 |
-| AI-1..10 | phase-1-task-3 (System prompt + AI caller) | 1 |
-| FMT-1..7 | phase-1-task-4 (Changelog formatter) | 1 |
-| OFF-1..5 | phase-1-task-5 (Offline fallback) | 1 |
-| CH-1..7, QA-2 | phase-1-task-6 (Post-commit hook engine) | 2 |
-| CMD-1..4 | phase-1-task-7 (`narrate init`) | 2 |
-| CMD-5, CMD-6 | phase-1-task-8 (`narrate log`) | 2 |
-| CMD-7, CMD-8 | phase-1-task-9 (`narrate backfill`) | 3 |
-| QA-1..6 | phase-1-task-10 (Integration test + dogfood) | 4 |
+| Requirement | Task(s) | Wave |
+|-------------|---------|------|
+| REQ-031: Data Audit | phase-1-task-0 | 0 |
+| REQ-025: Database Schema | phase-1-task-1 | 1 |
+| REQ-008: NAICS Codes | phase-1-task-1 | 1 |
+| REQ-016: Core Metrics | phase-1-task-2 | 1 |
+| INT-3, INT-4: Analytics Integration | phase-1-task-3 | 1 |
+| REQ-017: Nightly Batch Job | phase-1-task-4 | 2 |
+| REQ-018: API Endpoint | phase-1-task-5 | 2 |
+| REQ-009, REQ-015, REQ-028, REQ-037: Peer Groups | phase-1-task-4, task-5 | 2 |
+| REQ-019: PulseScore Component | phase-1-task-6 | 3 |
+| REQ-020: IndustryComparison Component | phase-1-task-7 | 3 |
+| REQ-021: PeerGroupSelector Component | phase-1-task-8 | 3 |
+| REQ-036: Insufficient Data State | phase-1-task-9 | 3 |
+| REQ-022: EmbeddableBadge Component | phase-1-task-10 | 3 |
+| REQ-023: Dashboard Page | phase-1-task-11 | 4 |
+| REQ-024: Public Report Page | phase-1-task-12 | 4 |
+| REQ-012: State of Local Restaurants | phase-1-task-13 | 4 |
+| REQ-014: Freemium Preview | phase-1-task-14 | 4 |
+| REQ-026: Badge Embed Script | phase-1-task-15 | 4 |
+| QA-1 to QA-5: Testing | phase-1-task-16, task-17 | 5 |
 
 ---
 
 ## Wave Execution Order
 
-### Wave 1 (Parallel — no dependencies)
+### Wave 0 (BLOCKER — Day 1)
 
+This task must complete before any code is written.
+
+```xml
+<task-plan id="phase-1-task-0" wave="0">
+  <title>Data Audit — Validate Core Metrics Exist</title>
+  <requirement>REQ-031: Audit existing schema to confirm 5 core metrics exist before build</requirement>
+  <description>CRITICAL BLOCKER. Before writing any code, validate that the 5 core metrics (engagement rate, post frequency, follower growth, response time, conversion rate) can be calculated from existing data. If metrics don't exist, this becomes a data collection project and timeline explodes.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/db/schema.ts" reason="Contains analyticsEvents (lines 397-422), attributionEvents (lines 427-455), benchmarkAggregates (lines 490-524)" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/analytics.ts" reason="Contains recordEvent() with dual-write to benchmarkAggregates" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Defines 5 core metrics (line 200-206)" />
+  </context>
+
+  <steps>
+    <step order="1">Query analyticsEvents for distinct eventType values: SELECT DISTINCT eventType FROM analytics_events</step>
+    <step order="2">Map each metric to existing event types:
+      - Engagement rate: social_engagement events ÷ follower count
+      - Post frequency: social_post events per week
+      - Follower growth: follower_count snapshots over time
+      - Response time: review_response events with timestamp deltas
+      - Conversion rate: attributionEvents with confidence > 0</step>
+    <step order="3">Document gaps: which metrics have data, which don't</step>
+    <step order="4">For missing metrics, identify the data collection change required</step>
+    <step order="5">Write audit report to .planning/data-audit-results.md</step>
+    <step order="6">Make GO/NO-GO decision: if >2 metrics missing, escalate to stakeholders</step>
+  </steps>
+
+  <verification>
+    <check type="manual">Review .planning/data-audit-results.md</check>
+    <check type="manual">Confirm GO decision documented before proceeding</check>
+  </verification>
+
+  <dependencies>
+    <!-- Wave 0: No dependencies - this IS the blocker -->
+  </dependencies>
+
+  <commit-message>docs(pulse): complete data audit for 5 core metrics availability</commit-message>
+</task-plan>
+```
+
+---
+
+### Wave 1 (Parallel — Days 2-4) — Foundation
+
+These tasks establish the data layer. They can run in parallel.
+
+```xml
 <task-plan id="phase-1-task-1" wave="1">
-  <title>Project scaffold and package.json</title>
-  <requirement>PS-1, PS-2, PS-3, PS-5, PS-6</requirement>
-  <description>
-    Create the narrate-cli project structure with package.json (ESM, bin field),
-    directory layout, and install the single runtime dependency (@anthropic-ai/sdk).
-    This is the foundation every other task builds on.
-  </description>
+  <title>Pulse Database Schema Extensions</title>
+  <requirement>REQ-025: Database schema for benchmarks, REQ-008: NAICS codes</requirement>
+  <description>Extend existing LocalGenius schema with Pulse-specific tables. Leverage the existing benchmarkAggregates table pattern. Add pulseRankings for storing calculated percentiles and naicsIndustries reference table.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Architecture decisions: ESM, no build step, native child_process" />
-    <file path="prds/witness.md" reason="Tech stack requirements" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/db/schema.ts" reason="Existing schema with benchmarkAggregates (lines 490-524), businesses (lines 124-159), multi-tenant RLS patterns" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/drizzle.config.ts" reason="Drizzle ORM configuration" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/.planning/REQUIREMENTS.md" reason="REQ-008: NAICS code requirements" />
   </context>
 
   <steps>
-    <step order="1">Create directory: deliverables/narrate-cli/</step>
-    <step order="2">Create package.json with: name "narrate-cli", type "module", bin {"narrate": "./bin/narrate.js"}, engines {"node": ">=18.0.0"}, version "0.1.0"</step>
-    <step order="3">Create bin/narrate.js — CLI entry point with shebang (#!/usr/bin/env node), imports commander or minimal arg parser, routes to commands</step>
-    <step order="4">Create directory structure: bin/, src/, src/commands/, src/lib/</step>
-    <step order="5">Run npm install @anthropic-ai/sdk in the project directory</step>
-    <step order="6">Create .gitignore (node_modules/)</step>
-    <step order="7">Verify: node bin/narrate.js --help prints usage without errors</step>
+    <step order="1">Add pulseRankings table to schema.ts:
+      - id: uuid primary key
+      - businessId: references businesses
+      - organizationId: references organizations (for RLS)
+      - naicsCode: varchar(6)
+      - regionType: enum('metro', 'state')
+      - regionCode: varchar(10)
+      - sizeBucket: enum('1-5', '6-15', '16-50')
+      - metricName: varchar(50)
+      - percentileRank: integer (0-100)
+      - peerCount: integer
+      - benchmarkDate: date
+      - calculatedAt: timestamp</step>
+    <step order="2">Add naicsIndustries reference table:
+      - code: varchar(6) primary key
+      - level: integer (2, 4, or 6)
+      - description: text
+      - parentCode: varchar(6) nullable</step>
+    <step order="3">Add unique constraint on pulseRankings: (businessId, metricName, benchmarkDate)</step>
+    <step order="4">Add composite index: (naicsCode, regionType, regionCode, sizeBucket, benchmarkDate)</step>
+    <step order="5">Seed naicsIndustries with restaurant codes: 722110, 722511, 722513, 722514, 722515</step>
+    <step order="6">Run npm run db:generate && npm run db:push</step>
   </steps>
 
   <verification>
-    <check type="manual">node bin/narrate.js --help runs without error</check>
-    <check type="manual">package.json has "type": "module" and correct bin field</check>
-    <check type="manual">Only @anthropic-ai/sdk in dependencies (minimal deps)</check>
+    <check type="build">npm run build</check>
+    <check type="manual">psql: SELECT * FROM information_schema.tables WHERE table_name LIKE 'pulse%'</check>
+    <check type="manual">psql: SELECT * FROM naics_industries WHERE code LIKE '722%'</check>
   </verification>
 
-  <dependencies />
+  <dependencies>
+    <depends-on task-id="phase-1-task-0" reason="Requires data audit GO decision" />
+  </dependencies>
 
-  <commit-message>feat: scaffold narrate-cli project with ESM package.json and CLI entry point</commit-message>
+  <commit-message>feat(pulse): add database schema for rankings and NAICS industries</commit-message>
 </task-plan>
+```
 
+```xml
 <task-plan id="phase-1-task-2" wave="1">
-  <title>Configuration loader (.narraterc.json)</title>
-  <requirement>CFG-1, CFG-2, CFG-3, CFG-4, CFG-5, CFG-6</requirement>
-  <description>
-    Build the config module that reads .narraterc.json from repo root,
-    merges with defaults, and exposes a clean config object. Handles
-    missing file gracefully (uses defaults). API key comes from env var only.
-  </description>
+  <title>Core Metrics Service</title>
+  <requirement>REQ-016: 5 core metrics tracked and calculated</requirement>
+  <description>Create a metrics normalization service that transforms raw analytics events into the 5 core Pulse metrics. This service will be used by the nightly batch job.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Config spec: 3 fields (model, ignore, attribution), defaults, env var for API key" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/analytics.ts" reason="Existing analytics aggregation patterns (getWeeklyAggregates, getAttributionSummary)" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/db/schema.ts" reason="analyticsEvents and attributionEvents schemas" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/.planning/REQUIREMENTS.md" reason="Metric definitions (REQ-016)" />
   </context>
 
   <steps>
-    <step order="1">Create src/lib/config.js</step>
-    <step order="2">Define defaults: { model: "claude-haiku-4-5-20251001", ignore: [], attribution: true }</step>
-    <step order="3">Export async function loadConfig(repoRoot) that: reads .narraterc.json if exists, merges with defaults, returns config object</step>
-    <step order="4">Export function getApiKey() that reads ANTHROPIC_API_KEY from process.env, returns null if missing</step>
-    <step order="5">Do NOT support tone, changelog path, or maxDiffLines in config (hardcoded/cut per decisions)</step>
-    <step order="6">Handle malformed JSON gracefully — warn and use defaults</step>
+    <step order="1">Create /src/services/pulse-metrics.ts</step>
+    <step order="2">Define MetricDefinition interface: { name, calculate: (events) => number, unit }</step>
+    <step order="3">Implement engagementRate: (likes + comments) / followers * 100</step>
+    <step order="4">Implement postFrequency: count(social_post events) / weeks in period</step>
+    <step order="5">Implement followerGrowth: (current - previous) / previous * 100</step>
+    <step order="6">Implement responseTime: avg(review_response.timestamp - review.timestamp)</step>
+    <step order="7">Implement conversionRate: attributed_conversions / total_impressions * 100</step>
+    <step order="8">Export getMetricsForBusiness(businessId, dateRange) function</step>
+    <step order="9">Add JSDoc documentation for each metric calculation</step>
   </steps>
 
   <verification>
-    <check type="manual">Import config.js and call loadConfig() with no .narraterc.json — returns defaults</check>
-    <check type="manual">Create a .narraterc.json with custom model — loadConfig() returns merged config</check>
-    <check type="manual">getApiKey() returns env var value or null</check>
+    <check type="test">npm run test -- --grep "pulse-metrics"</check>
+    <check type="manual">Call getMetricsForBusiness with test business, verify 5 metrics returned</check>
   </verification>
 
-  <dependencies />
+  <dependencies>
+    <depends-on task-id="phase-1-task-0" reason="Requires data audit to confirm metric sources" />
+  </dependencies>
 
-  <commit-message>feat: add config loader for .narraterc.json with 3-field schema</commit-message>
+  <commit-message>feat(pulse): add core metrics normalization service</commit-message>
 </task-plan>
+```
 
+```xml
 <task-plan id="phase-1-task-3" wave="1">
-  <title>System prompt and AI summarizer</title>
-  <requirement>AI-1, AI-2, AI-3, AI-4, AI-5, AI-6, AI-7, AI-8, AI-9, AI-10, CH-6, CH-7</requirement>
-  <description>
-    Build the AI module that sends a diff + commit message to Claude API
-    and returns a plain-English summary. Uses the exact v1 system prompt
-    from decisions.md. Enforces 500-line diff limit (hardcoded).
-  </description>
+  <title>Analytics Integration Hook</title>
+  <requirement>INT-3, INT-4: Leverage existing benchmarkAggregates and recordEvent() for dual-write</requirement>
+  <description>Extend the existing analytics.recordEvent() to capture Pulse-relevant data. Ensures new events automatically flow into benchmark aggregations.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Exact system prompt text, model name, max diff lines" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/analytics.ts" reason="Existing recordEvent() with updateBenchmarks() dual-write (line 129-177)" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/api/middleware/tenant.ts" reason="getSizeBucket() helper function" />
   </context>
 
   <steps>
-    <step order="1">Create src/lib/summarize.js</step>
-    <step order="2">Define SYSTEM_PROMPT constant — exact text from decisions.md v1 system prompt</step>
-    <step order="3">Define MAX_DIFF_LINES = 500 (hardcoded constant)</step>
-    <step order="4">Export function truncateDiff(diff, maxLines) — splits by newline, truncates, appends "[DIFF TRUNCATED]" marker</step>
-    <step order="5">Export async function summarize({ diff, commitMessage, config }) that: creates Anthropic client, truncates diff if needed, sends system prompt + user message (diff + commit msg), returns response text</step>
-    <step order="6">Add timeout of 30 seconds on API call to prevent hangs</step>
-    <step order="7">If API call fails, throw descriptive error (caller decides fallback behavior)</step>
+    <step order="1">Review existing updateBenchmarks() in analytics.ts</step>
+    <step order="2">Add Pulse metric mappings to the metricName field:
+      - 'pulse_engagement_rate'
+      - 'pulse_post_frequency'
+      - 'pulse_follower_growth'
+      - 'pulse_response_time'
+      - 'pulse_conversion_rate'</step>
+    <step order="3">Ensure business.vertical (NAICS code equivalent) flows to aggregates</step>
+    <step order="4">Ensure business.city flows to aggregates</step>
+    <step order="5">Use getSizeBucket(business.employeeCount) for size categorization</step>
+    <step order="6">Add unit tests for the integration</step>
   </steps>
 
   <verification>
-    <check type="manual">truncateDiff with 600-line diff returns 500 lines + truncation marker</check>
-    <check type="manual">With valid API key, summarize() returns a sentence starting with a verb</check>
-    <check type="manual">System prompt matches decisions.md exactly</check>
+    <check type="test">npm run test -- --grep "analytics"</check>
+    <check type="manual">Record test event, query benchmarkAggregates for pulse_ prefix</check>
   </verification>
 
-  <dependencies />
+  <dependencies>
+    <depends-on task-id="phase-1-task-0" reason="Requires data audit completion" />
+  </dependencies>
 
-  <commit-message>feat: add AI summarizer with v1 system prompt and 500-line diff limit</commit-message>
+  <commit-message>feat(pulse): integrate Pulse metrics into analytics dual-write pipeline</commit-message>
 </task-plan>
-
-<task-plan id="phase-1-task-4" wave="1">
-  <title>Changelog formatter and writer</title>
-  <requirement>FMT-1, FMT-2, FMT-3, FMT-4, FMT-5, FMT-6, FMT-7</requirement>
-  <description>
-    Build the changelog module that formats entries in the locked format
-    (natural date, indented sentence, hash with dot separator) and appends
-    them to CHANGELOG.human.md. Handles file creation, attribution footer.
-  </description>
-
-  <context>
-    <file path="rounds/witness/decisions.md" reason="Changelog format spec: date format, entry structure, spacing, attribution" />
-  </context>
-
-  <steps>
-    <step order="1">Create src/lib/changelog.js</step>
-    <step order="2">Define CHANGELOG_FILE = "CHANGELOG.human.md" (hardcoded)</step>
-    <step order="3">Export function formatDate(date) — returns "Apr 5, 2026 — 7:36 AM" format using Intl.DateTimeFormat or manual formatting</step>
-    <step order="4">Export function formatEntry({ date, summary, hash }) — returns formatted string with: date line, blank line, 2-space indented summary + " · " + short hash, trailing blank line</step>
-    <step order="5">Export async function appendEntry(repoRoot, entry, config) — reads existing file (or creates), prepends new entry at top (newest first), writes back. If config.attribution is true, ensures attribution footer exists at end of file.</step>
-    <step order="6">Attribution footer text: "*Narrated by Narrate — your code, in plain English*"</step>
-    <step order="7">Ensure output has no raw markdown symbols (no ##, no **) — plain text optimized for terminal</step>
-  </steps>
-
-  <verification>
-    <check type="manual">formatDate(new Date("2026-04-05T07:36:00")) returns "Apr 5, 2026 — 7:36 AM"</check>
-    <check type="manual">formatEntry produces exact format from decisions.md example</check>
-    <check type="manual">appendEntry creates CHANGELOG.human.md if missing, appends correctly if exists</check>
-    <check type="manual">Attribution footer appears once at end of file when enabled</check>
-  </verification>
-
-  <dependencies />
-
-  <commit-message>feat: add changelog formatter with natural dates and locked entry format</commit-message>
-</task-plan>
-
-<task-plan id="phase-1-task-5" wave="1">
-  <title>Offline fallback summarizer</title>
-  <requirement>OFF-1, OFF-2, OFF-3, OFF-4, OFF-5</requirement>
-  <description>
-    Build the rule-based fallback that generates a grammatical sentence
-    from diff headers and commit message when the API is unavailable.
-    Must NOT produce file lists — must produce real sentences.
-  </description>
-
-  <context>
-    <file path="rounds/witness/decisions.md" reason="Offline fallback spec: sentence-based, not file list, examples" />
-  </context>
-
-  <steps>
-    <step order="1">Create src/lib/fallback.js</step>
-    <step order="2">Export function extractChangedFiles(diff) — parse diff headers to get file paths</step>
-    <step order="3">Export function categorizeChanges(files) — group by type: added, modified, deleted, renamed</step>
-    <step order="4">Export function generateFallback({ diff, commitMessage }) — produces a grammatical sentence:
-      - If commit message is meaningful (not "fix", "wip", "stuff"): use it as base, append file context
-      - If commit message is unhelpful: construct from diff headers using verb + file description
-      - Example good output: "Updated authentication logic in auth.js and config.ts"
-      - Must start with a verb (matching AI prompt rules)</step>
-    <step order="5">Never produce output like "Modified 3 files: ..." — always a natural sentence</step>
-    <step order="6">Handle edge cases: empty diff (initial commit), single file, many files (summarize top 2-3)</step>
-  </steps>
-
-  <verification>
-    <check type="manual">generateFallback with meaningful commit msg produces sentence incorporating the message</check>
-    <check type="manual">generateFallback with "wip" commit msg produces sentence from diff headers only</check>
-    <check type="manual">Output never matches the "bad" pattern: "Modified N files: ..."</check>
-    <check type="manual">Output always starts with a verb</check>
-  </verification>
-
-  <dependencies />
-
-  <commit-message>feat: add rule-based offline fallback with sentence generation</commit-message>
-</task-plan>
+```
 
 ---
 
-### Wave 2 (Parallel — depends on Wave 1)
+### Wave 2 (Parallel, after Wave 1 — Days 5-7) — Data Layer
 
-<task-plan id="phase-1-task-6" wave="2">
-  <title>Post-commit hook engine</title>
-  <requirement>CH-1, CH-2, CH-3, CH-4, CH-5, QA-2</requirement>
-  <description>
-    Build the core hook engine: the script that runs on post-commit,
-    spawns a detached child process (fire-and-forget), reads the diff
-    and commit message, calls the summarizer (AI or fallback), and
-    appends to the changelog. The hook script itself must return in < 50ms.
-  </description>
+```xml
+<task-plan id="phase-1-task-4" wave="2">
+  <title>Nightly Benchmark Calculation Job</title>
+  <requirement>REQ-017: Nightly batch percentile calculation, REQ-009: Curated peer groups, REQ-015: 50+ business threshold, REQ-028: Regional fallback</requirement>
+  <description>Create the nightly batch job that calculates percentile rankings for each business within their peer group. Uses PostgreSQL PERCENTILE_CONT() for accurate statistical ranking with metro-to-state fallback.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Hook spec: detached child, fire-and-forget, < 50ms return" />
-    <file path="deliverables/narrate-cli/src/lib/summarize.js" reason="AI summarizer to call" />
-    <file path="deliverables/narrate-cli/src/lib/fallback.js" reason="Offline fallback to use when API unavailable" />
-    <file path="deliverables/narrate-cli/src/lib/changelog.js" reason="Changelog writer to append entry" />
-    <file path="deliverables/narrate-cli/src/lib/config.js" reason="Config + API key loader" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/scheduler.ts" reason="Job scheduler framework with cron registration" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/jobs/analytics-rollup.ts" reason="Pattern for batch aggregation jobs" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/pulse-metrics.ts" reason="Metrics service from task-2" />
   </context>
 
   <steps>
-    <step order="1">Create src/lib/git.js — exports: getLastDiff(repoRoot), getCommitMessage(repoRoot), getCommitHash(repoRoot), getRepoRoot(). All use child_process.execSync with native git commands.</step>
-    <step order="2">Create src/lib/hook-worker.js — the detached worker script that: loads config, reads diff/message/hash via git.js, calls summarize() (or fallback on error), calls appendEntry(), exits cleanly</step>
-    <step order="3">Create src/lib/hook-runner.js — exports function runHook(repoRoot) that: spawns hook-worker.js as detached child (child_process.spawn with detached: true, stdio: 'ignore'), calls unref(), returns immediately (< 50ms)</step>
-    <step order="4">In hook-worker.js: wrap everything in try/catch. On API failure, use generateFallback(). On any failure, log error to .narrate-error.log and exit silently (never crash git).</step>
-    <step order="5">Apply ignore patterns from config: filter diff to exclude files matching config.ignore globs before sending to AI</step>
+    <step order="1">Create /src/services/jobs/pulse-benchmark.ts with PulseBenchmarkJob class</step>
+    <step order="2">Implement peer group query:
+      SELECT business_id, naics_code, city, size_bucket, metric_value
+      FROM benchmark_aggregates
+      WHERE metric_name LIKE 'pulse_%'
+      GROUP BY naics_code, city, size_bucket
+      HAVING count(DISTINCT business_id) >= 10</step>
+    <step order="3">Implement metro fallback: if peer count < 10 at city level, expand to state</step>
+    <step order="4">Implement percentile calculation using PERCENTILE_CONT:
+      PERCENT_RANK() WITHIN GROUP (ORDER BY metric_value) * 100</step>
+    <step order="5">Insert/update pulseRankings table with calculated percentiles</step>
+    <step order="6">Track peer count for each ranking (for UI display)</step>
+    <step order="7">Register job in scheduler.ts: cron '0 2 * * *' (2 AM daily)</step>
+    <step order="8">Add job result logging: businesses processed, duration, errors</step>
+    <step order="9">Handle edge cases: NULL metrics, division by zero, empty cohorts</step>
   </steps>
 
   <verification>
-    <check type="manual">runHook() returns in < 50ms (measure with console.time)</check>
-    <check type="manual">After runHook(), CHANGELOG.human.md is updated within ~5 seconds (async)</check>
-    <check type="manual">With no API key, fallback entry appears in changelog</check>
-    <check type="manual">With API key, AI-generated entry appears</check>
-    <check type="manual">Ignored files (e.g., package-lock.json) are excluded from diff sent to AI</check>
+    <check type="test">npm run test -- --grep "pulse-benchmark"</check>
+    <check type="manual">curl -X POST localhost:3000/api/cron/pulse-benchmark -H "X-Cron-Secret: $SECRET"</check>
+    <check type="manual">Query pulseRankings: SELECT COUNT(*) FROM pulse_rankings WHERE benchmark_date = CURRENT_DATE</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Needs project structure and dependencies installed" />
-    <depends-on task-id="phase-1-task-2" reason="Needs config loader" />
-    <depends-on task-id="phase-1-task-3" reason="Needs AI summarizer" />
-    <depends-on task-id="phase-1-task-4" reason="Needs changelog writer" />
-    <depends-on task-id="phase-1-task-5" reason="Needs offline fallback" />
+    <depends-on task-id="phase-1-task-1" reason="Requires pulseRankings schema" />
+    <depends-on task-id="phase-1-task-2" reason="Requires metrics service" />
+    <depends-on task-id="phase-1-task-3" reason="Requires analytics integration" />
   </dependencies>
 
-  <commit-message>feat: add post-commit hook engine with detached worker and < 50ms return</commit-message>
+  <commit-message>feat(pulse): add nightly benchmark calculation job with PERCENTILE_CONT</commit-message>
 </task-plan>
+```
 
-<task-plan id="phase-1-task-7" wave="2">
-  <title>narrate init command</title>
-  <requirement>CMD-1, CMD-2, CMD-3, CMD-4, QA-1</requirement>
-  <description>
-    Implement the `narrate init` command that installs the post-commit hook,
-    detects existing hooks (appends rather than overwrites), and outputs
-    the exact 4-line init message from decisions.md. Must complete in < 2 seconds.
-  </description>
+```xml
+<task-plan id="phase-1-task-5" wave="2">
+  <title>Benchmarks API Endpoint</title>
+  <requirement>REQ-018: GET /api/pulse/benchmarks/:customerId</requirement>
+  <description>Create the single REST endpoint that powers the Pulse dashboard. Returns percentile rank, peer group metadata, and comparison metrics.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Init experience: exact output text, hook conflict detection behavior" />
-    <file path="deliverables/narrate-cli/bin/narrate.js" reason="CLI entry point to register init command" />
-    <file path="deliverables/narrate-cli/src/lib/hook-runner.js" reason="The hook invocation code that init will install" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/api/analytics/route.ts" reason="API route pattern with auth, response format" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/api/middleware/auth.ts" reason="verifyAuth() middleware" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/api/middleware/tenant.ts" reason="Multi-tenant context" />
   </context>
 
   <steps>
-    <step order="1">Create src/commands/init.js</step>
-    <step order="2">Detect .git directory — error if not a git repo</step>
-    <step order="3">Check if .git/hooks/post-commit exists:
-      - If no: create it with narrate hook code
-      - If yes: read it, check if narrate already installed (idempotent), if not append narrate section with clear markers (# --- narrate start --- / # --- narrate end ---)</step>
-    <step order="4">Hook script content: shebang, call to node with path to hook-runner.js, passing repo root</step>
-    <step order="5">Make hook file executable (chmod +x)</step>
-    <step order="6">Print exact output:
-      "  Narrate is watching."
-      ""
-      "  Hook installed in .git/hooks/post-commit"
-      "  Changelog will appear in CHANGELOG.human.md"
-      ""
-      "  Make your next commit to see it work."</step>
-    <step order="7">Wire into CLI entry point (bin/narrate.js) as the "init" subcommand</step>
+    <step order="1">Create /src/app/api/pulse/benchmarks/[customerId]/route.ts</step>
+    <step order="2">Add GET handler with verifyAuth() middleware</step>
+    <step order="3">Security check: verify customerId matches auth.businessId</step>
+    <step order="4">Query pulseRankings for latest benchmarkDate matching businessId</step>
+    <step order="5">Query peer group metadata: industry name, region, size range, peer count</step>
+    <step order="6">Build response shape:
+      {
+        data: {
+          percentileRank: number,
+          peerGroup: { industry, region, sizeRange, peerCount },
+          metrics: [{ name, value, percentile, median, p25, p75 }]
+        },
+        meta: { timestamp, benchmarkDate }
+      }</step>
+    <step order="7">Handle errors: 401 (no auth), 403 (wrong customer), 404 (no data)</step>
+    <step order="8">Add response caching headers (5 min cache, data updates nightly)</step>
   </steps>
 
   <verification>
-    <check type="manual">Run `node bin/narrate.js init` in a git repo — prints exact 4-line output</check>
-    <check type="manual">.git/hooks/post-commit exists and is executable</check>
-    <check type="manual">Run init again — idempotent, doesn't duplicate hook code</check>
-    <check type="manual">In a repo with existing post-commit hook — narrate appends, doesn't clobber</check>
-    <check type="manual">Completes in < 2 seconds</check>
+    <check type="test">npm run test -- --grep "api/pulse/benchmarks"</check>
+    <check type="manual">curl -H "Authorization: Bearer $TOKEN" localhost:3000/api/pulse/benchmarks/$ID</check>
+    <check type="manual">Verify 401 without token, 403 with wrong customer ID</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Needs CLI entry point" />
-    <depends-on task-id="phase-1-task-6" reason="Needs hook-runner.js to reference in the installed hook" />
+    <depends-on task-id="phase-1-task-1" reason="Requires pulseRankings schema" />
+    <depends-on task-id="phase-1-task-4" reason="Requires data from benchmark job" />
   </dependencies>
 
-  <commit-message>feat: add narrate init command with hook conflict detection</commit-message>
+  <commit-message>feat(pulse): add GET /api/pulse/benchmarks/:customerId endpoint</commit-message>
 </task-plan>
-
-<task-plan id="phase-1-task-8" wave="2">
-  <title>narrate log command</title>
-  <requirement>CMD-5, CMD-6, FMT-5</requirement>
-  <description>
-    Implement `narrate log` that pretty-prints CHANGELOG.human.md in the
-    terminal with optional --since date filtering. No raw markdown — 
-    designed for terminal readability.
-  </description>
-
-  <context>
-    <file path="rounds/witness/decisions.md" reason="Log command spec, --since flag, terminal rendering" />
-    <file path="deliverables/narrate-cli/bin/narrate.js" reason="CLI entry point to register log command" />
-    <file path="deliverables/narrate-cli/src/lib/changelog.js" reason="Changelog file path constant and format knowledge" />
-  </context>
-
-  <steps>
-    <step order="1">Create src/commands/log.js</step>
-    <step order="2">Read CHANGELOG.human.md from repo root</step>
-    <step order="3">Parse entries — split by date headers, extract date + summary + hash from each entry</step>
-    <step order="4">If --since flag provided: parse the date value (support "yesterday", "last week", ISO dates, relative like "3d"), filter entries to only those after the date</step>
-    <step order="5">Pretty-print to terminal: use ANSI colors if terminal supports them (dim for dates, normal for summaries, dim for hashes). No raw markdown symbols.</step>
-    <step order="6">Handle empty changelog gracefully: "No entries yet. Make a commit to get started."</step>
-    <step order="7">Wire into CLI entry point as the "log" subcommand with --since option</step>
-  </steps>
-
-  <verification>
-    <check type="manual">With entries in changelog: `narrate log` prints formatted output</check>
-    <check type="manual">With --since=yesterday: only recent entries shown</check>
-    <check type="manual">With empty/missing changelog: friendly message printed</check>
-    <check type="manual">No ## or ** or other markdown artifacts in output</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Needs CLI entry point" />
-    <depends-on task-id="phase-1-task-4" reason="Needs changelog format knowledge for parsing" />
-  </dependencies>
-
-  <commit-message>feat: add narrate log command with --since date filtering</commit-message>
-</task-plan>
+```
 
 ---
 
-### Wave 3 (After Wave 2)
+### Wave 3 (Parallel, after Wave 2 — Days 8-10) — UI Components
 
+```xml
+<task-plan id="phase-1-task-6" wave="3">
+  <title>PulseScore Hero Component</title>
+  <requirement>REQ-019: Hero component, REQ-002: Single percentile on first screen</requirement>
+  <description>The most important component in Pulse. Displays the single percentile number prominently. This is the emotional hook — instant clarity, one number, one answer.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/digest/WeeklyDigest.tsx" reason="Existing metrics display with animations" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/lib/animations.ts" reason="fadeUpStagger animation utilities" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="UX requirement: single percentile hero" />
+  </context>
+
+  <steps>
+    <step order="1">Create /src/components/pulse/PulseScore.tsx with 'use client'</step>
+    <step order="2">Define props: { percentileRank: number, metricLabel?: string, loading?: boolean }</step>
+    <step order="3">Render "You're ahead of {percentileRank}% of restaurants" in large typography</step>
+    <step order="4">Alternative phrasing option: "You're in the {100-percentileRank}th percentile"</step>
+    <step order="5">Add subtle entrance animation using existing fadeUpStagger</step>
+    <step order="6">Add context subtext: "in {metricLabel}" if provided</step>
+    <step order="7">Handle loading state with skeleton placeholder</step>
+    <step order="8">Apply brand voice: confident, direct, no hedging</step>
+  </steps>
+
+  <verification>
+    <check type="build">npm run build</check>
+    <check type="manual">Import in test page, verify typography is prominent</check>
+    <check type="manual">Verify loading skeleton renders correctly</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-5" reason="Needs API response shape understanding" />
+  </dependencies>
+
+  <commit-message>feat(pulse): add PulseScore hero component</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-7" wave="3">
+  <title>IndustryComparison Charts Component</title>
+  <requirement>REQ-020: 3-4 comparison charts, REQ-010: Charts showing position vs peers</requirement>
+  <description>Visual comparison showing customer's position across 4 metrics. Fixed layout (no customization). Uses existing sparkline patterns for consistency.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/digest/WeeklyDigest.tsx" reason="Sparkline component pattern" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="4 metrics, no customization" />
+  </context>
+
+  <steps>
+    <step order="1">Create /src/components/pulse/IndustryComparison.tsx</step>
+    <step order="2">Define props:
+      { metrics: Array<{
+        name: string,
+        yourValue: number,
+        percentile: number,
+        median: number,
+        p25: number,
+        p75: number
+      }> }</step>
+    <step order="3">Create MetricCard subcomponent showing:
+      - Your value (prominent)
+      - Position indicator (green above median, neutral in band, red below p25)
+      - Percentile band visualization (p25-median-p75)</step>
+    <step order="4">Implement exactly 4 cards: Engagement, Frequency, Growth, Response Time</step>
+    <step order="5">Use 2x2 grid layout on desktop, single column on mobile</step>
+    <step order="6">Add loading state per card (independent)</step>
+    <step order="7">Color coding: green > median, gray in band, red < p25</step>
+  </steps>
+
+  <verification>
+    <check type="build">npm run build</check>
+    <check type="manual">Render with mock data, verify all 4 charts display</check>
+    <check type="manual">Test responsive layout on mobile viewport</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-5" reason="Needs API metrics response shape" />
+  </dependencies>
+
+  <commit-message>feat(pulse): add IndustryComparison charts component</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-8" wave="3">
+  <title>PeerGroupSelector Display Component</title>
+  <requirement>REQ-021: Read-only peer group display</requirement>
+  <description>Shows which peer group the customer is being compared against. Builds trust through transparency. Read-only, no selection — curated only.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/shared/" reason="Existing UI component patterns" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Curated peer groups, no browsing" />
+  </context>
+
+  <steps>
+    <step order="1">Create /src/components/pulse/PeerGroupSelector.tsx</step>
+    <step order="2">Define props: { industry: string, region: string, sizeRange: string, peerCount: number }</step>
+    <step order="3">Display: "Comparing to {peerCount} {industry} businesses in {region} ({sizeRange} employees)"</step>
+    <step order="4">Style as subtle info card (supporting role, not prominent)</step>
+    <step order="5">Add info icon with tooltip: "Your peer group is selected based on your industry, location, and business size to ensure meaningful comparisons."</step>
+    <step order="6">Handle edge case: if peerCount < 50, show softer confidence indicator</step>
+  </steps>
+
+  <verification>
+    <check type="build">npm run build</check>
+    <check type="manual">Render component, verify tooltip works</check>
+    <check type="manual">Verify no interactive/edit elements</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-5" reason="Needs peer group data shape" />
+  </dependencies>
+
+  <commit-message>feat(pulse): add PeerGroupSelector display component</commit-message>
+</task-plan>
+```
+
+```xml
 <task-plan id="phase-1-task-9" wave="3">
-  <title>narrate backfill command</title>
-  <requirement>CMD-7, CMD-8</requirement>
-  <description>
-    Implement `narrate backfill --last=90d` that processes historical commits,
-    shows a cost preview with confirmation, and batch-processes with rate
-    limiting. Most complex command — needs progress display and resume support.
-  </description>
+  <title>Insufficient Data State Component</title>
+  <requirement>REQ-036: Graceful message when cohort < threshold</requirement>
+  <description>When peer group has insufficient data for meaningful benchmarks, show helpful message explaining why and when to check back. Not an error state — an informational state.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Backfill spec: cost preview, confirmation, --last flag" />
-    <file path="deliverables/narrate-cli/src/lib/summarize.js" reason="AI summarizer to call for each commit" />
-    <file path="deliverables/narrate-cli/src/lib/fallback.js" reason="Fallback if API fails mid-backfill" />
-    <file path="deliverables/narrate-cli/src/lib/changelog.js" reason="Append entries in chronological order" />
-    <file path="deliverables/narrate-cli/src/lib/git.js" reason="Git operations to list commits and get diffs" />
-    <file path="deliverables/narrate-cli/src/lib/config.js" reason="Config and API key" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/shared/NotificationBanner.tsx" reason="Existing notification patterns" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Minimum 10 for display, 50 for full confidence" />
   </context>
 
   <steps>
-    <step order="1">Create src/commands/backfill.js</step>
-    <step order="2">Parse --last flag: support "90d", "30d", "2w" etc. Convert to a date threshold.</step>
-    <step order="3">Use git log to list all commits since the threshold date</step>
-    <step order="4">Filter out commits that already have entries in CHANGELOG.human.md (by hash)</step>
-    <step order="5">Show cost preview: "Found {N} commits to summarize. Estimated cost: ~${X} (Haiku). Continue? [y/n]"</step>
-    <step order="6">On confirmation: process commits in batches (10 at a time) with 1-second delay between batches to avoid rate limits</step>
-    <step order="7">Show progress: "[{done}/{total}] Processing {hash} — {first 50 chars of commit msg}..."</step>
-    <step order="8">On completion: "Backfill complete. {N} entries added to CHANGELOG.human.md"</step>
-    <step order="9">Wire into CLI entry point as the "backfill" subcommand with --last option</step>
+    <step order="1">Create /src/components/pulse/InsufficientDataState.tsx</step>
+    <step order="2">Define props: { peerGroup: { industry, region, size }, currentCount: number, minRequired: number }</step>
+    <step order="3">Friendly message: "We need more restaurants like yours to show meaningful benchmarks."</step>
+    <step order="4">Context: "Currently tracking {currentCount} {industry} businesses in {region}. Benchmarks appear when we reach {minRequired}."</step>
+    <step order="5">Add hopeful note: "As more restaurants join LocalGenius, your benchmarks will unlock."</step>
+    <step order="6">Style as informational (blue/gray), not error (red)</step>
+    <step order="7">Include illustration or icon suggesting "coming soon"</step>
   </steps>
 
   <verification>
-    <check type="manual">narrate backfill --last=7d in a repo with recent commits shows cost preview</check>
-    <check type="manual">After confirming, entries appear in CHANGELOG.human.md in chronological order</check>
-    <check type="manual">Running backfill again skips already-processed commits</check>
-    <check type="manual">Progress output shows during processing</check>
+    <check type="build">npm run build</check>
+    <check type="manual">Render with currentCount=5, minRequired=10</check>
+    <check type="manual">Verify messaging is encouraging, not discouraging</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-6" reason="Needs git.js, summarizer, changelog writer" />
-    <depends-on task-id="phase-1-task-8" reason="Needs changelog parser to detect existing entries" />
+    <depends-on task-id="phase-1-task-5" reason="Needs to understand when this state triggers" />
   </dependencies>
 
-  <commit-message>feat: add narrate backfill command with cost preview and batch processing</commit-message>
+  <commit-message>feat(pulse): add InsufficientDataState component</commit-message>
 </task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-10" wave="3">
+  <title>EmbeddableBadge Component</title>
+  <requirement>REQ-022: Badge component with tiers, REQ-033: Calculation date</requirement>
+  <description>Badge showing "Top X% in Engagement" for customer websites. Includes qualification date to prevent outdated displays. Three tiers: Gold (Top 10%), Silver (Top 25%), Bronze (Top 50%).</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Badge tiers and date requirement" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/" reason="Existing styling patterns" />
+  </context>
+
+  <steps>
+    <step order="1">Create /src/components/pulse/EmbeddableBadge.tsx</step>
+    <step order="2">Define props:
+      { tier: 'gold' | 'silver' | 'bronze',
+        percentile: number,
+        metricName: string,
+        businessName: string,
+        qualifiedDate: string,
+        variant?: 'light' | 'dark' }</step>
+    <step order="3">Map tiers: gold = top 10%, silver = top 25%, bronze = top 50%</step>
+    <step order="4">Design badge: Pulse logo, tier badge, "{businessName}" text, "Top {X}% in {metric}"</step>
+    <step order="5">Include date: "Verified {qualifiedDate}" in small text</step>
+    <step order="6">Create distinct visual styles: gold = gold/amber, silver = gray/silver, bronze = bronze/copper</step>
+    <step order="7">Support light/dark background variants</step>
+    <step order="8">Keep component dependency-free for embed use</step>
+  </steps>
+
+  <verification>
+    <check type="build">npm run build</check>
+    <check type="manual">Render all 3 tiers, verify visual distinction</check>
+    <check type="manual">Test on light and dark backgrounds</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-5" reason="Needs percentile thresholds from API" />
+  </dependencies>
+
+  <commit-message>feat(pulse): add EmbeddableBadge component with tier system</commit-message>
+</task-plan>
+```
 
 ---
 
-### Wave 4 (After Wave 3 — Final verification)
+### Wave 4 (Parallel, after Wave 3 — Days 11-13) — Integration
 
-<task-plan id="phase-1-task-10" wave="4">
-  <title>Integration test and dogfood on great-minds repo</title>
-  <requirement>QA-1, QA-2, QA-3, QA-4, QA-5, QA-6</requirement>
-  <description>
-    End-to-end verification: install narrate in the great-minds repo,
-    make test commits, verify changelog entries are accurate and well-formatted.
-    Run all commands. Fix any issues found. This is the dogfood test
-    specified in the PRD build notes.
-  </description>
+```xml
+<task-plan id="phase-1-task-11" wave="4">
+  <title>Main Pulse Dashboard Page</title>
+  <requirement>REQ-023: Dashboard page integrating all components</requirement>
+  <description>The main Pulse dashboard that brings together all components into a cohesive, opinionated layout. This is where the magic happens — one page, one number, instant clarity.</description>
 
   <context>
-    <file path="deliverables/narrate-cli/package.json" reason="Package to install globally or link" />
-    <file path="deliverables/narrate-cli/bin/narrate.js" reason="CLI entry point" />
-    <file path="prds/witness.md" reason="Success criteria: installs cleanly, produces accurate entries on great-minds repo" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/" reason="Next.js App Router patterns" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/pulse/" reason="All Pulse components from Wave 3" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/lib/auth-client.ts" reason="Client-side auth utilities" />
   </context>
 
   <steps>
-    <step order="1">From deliverables/narrate-cli/, run npm link to make narrate available globally</step>
-    <step order="2">In the great-minds repo root, run narrate init — verify exact output</step>
-    <step order="3">Make a test commit — verify CHANGELOG.human.md is created/updated within 5 seconds</step>
-    <step order="4">Verify entry format matches decisions.md: natural date, indented sentence starting with verb, hash with · separator</step>
-    <step order="5">Run narrate log — verify terminal output is clean (no markdown symbols)</step>
-    <step order="6">Run narrate log --since=today — verify filtering works</step>
-    <step order="7">Run narrate backfill --last=7d — verify cost preview, confirmation, and batch processing</step>
-    <step order="8">Unset ANTHROPIC_API_KEY and make a commit — verify offline fallback produces a sentence (not a file list)</step>
-    <step order="9">Test idempotent init (run narrate init again — no duplicate hook)</step>
-    <step order="10">Verify CHANGELOG.human.md is valid markdown and git-friendly (git diff shows clean changes)</step>
+    <step order="1">Create /src/app/pulse/dashboard/page.tsx</step>
+    <step order="2">Add authentication check — redirect to /login if not authenticated</step>
+    <step order="3">Fetch benchmark data from /api/pulse/benchmarks/:customerId</step>
+    <step order="4">Layout structure (fixed, not customizable):
+      - Header: "Pulse" branding
+      - Hero: PulseScore (full width, prominent)
+      - Subhead: PeerGroupSelector (subtle, informational)
+      - Body: IndustryComparison (2x2 grid)</step>
+    <step order="5">Conditional rendering: if peerCount < 10, show InsufficientDataState instead</step>
+    <step order="6">Add loading skeleton for entire page while data fetches</step>
+    <step order="7">Add error boundary with friendly error message</step>
+    <step order="8">Add "Last updated: {benchmarkDate}" footer</step>
   </steps>
 
   <verification>
-    <check type="manual">narrate init prints exact 4-line output from decisions.md</check>
-    <check type="manual">Post-commit hook fires and changelog updates within 5 seconds</check>
-    <check type="manual">Entry format matches locked spec exactly</check>
-    <check type="manual">narrate log output has no raw markdown</check>
-    <check type="manual">narrate backfill processes historical commits with progress</check>
-    <check type="manual">Offline fallback produces grammatical sentence</check>
-    <check type="manual">Init is idempotent and doesn't clobber existing hooks</check>
+    <check type="build">npm run build</check>
+    <check type="test">npm run test -- --grep "pulse/dashboard"</check>
+    <check type="manual">Visit /pulse/dashboard as authenticated user</check>
+    <check type="manual">Verify layout: hero number prominent, charts below</check>
+    <check type="manual">Verify redirect to login when not authenticated</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-7" reason="Needs init command" />
-    <depends-on task-id="phase-1-task-8" reason="Needs log command" />
-    <depends-on task-id="phase-1-task-9" reason="Needs backfill command" />
+    <depends-on task-id="phase-1-task-5" reason="Requires API endpoint" />
+    <depends-on task-id="phase-1-task-6" reason="Requires PulseScore" />
+    <depends-on task-id="phase-1-task-7" reason="Requires IndustryComparison" />
+    <depends-on task-id="phase-1-task-8" reason="Requires PeerGroupSelector" />
+    <depends-on task-id="phase-1-task-9" reason="Requires InsufficientDataState" />
   </dependencies>
 
-  <commit-message>test: integration test narrate-cli on great-minds repo (dogfood)</commit-message>
+  <commit-message>feat(pulse): add main dashboard page with integrated components</commit-message>
 </task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-12" wave="4">
+  <title>Public Report Page Template</title>
+  <requirement>REQ-024: SEO-friendly public report page</requirement>
+  <description>Page template for public benchmark reports like "State of Local Restaurants". Optimized for SEO with proper meta tags, structured data, and social sharing.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/" reason="Next.js App Router patterns" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Public reports for SEO/PR" />
+  </context>
+
+  <steps>
+    <step order="1">Create /src/app/pulse/reports/[slug]/page.tsx</step>
+    <step order="2">Add generateMetadata() for SEO:
+      - title: "{Report Title} | Pulse by LocalGenius"
+      - description: Dynamic summary
+      - Open Graph tags for social sharing</step>
+    <step order="3">Add JSON-LD structured data (Article schema)</step>
+    <step order="4">Create report layout sections:
+      - Hero: Report title, publish date, key stat
+      - Executive Summary: 3 bullet points
+      - Key Metrics: Charts/visualizations
+      - Methodology: Data collection explanation
+      - CTA: "See where your restaurant ranks"</step>
+    <step order="5">Style for readability with proper typography hierarchy</step>
+    <step order="6">Add social sharing buttons (Twitter, LinkedIn, Facebook)</step>
+    <step order="7">Add badge embed code section for easy copying</step>
+    <step order="8">Add "Powered by LocalGenius" footer with signup CTA</step>
+  </steps>
+
+  <verification>
+    <check type="build">npm run build</check>
+    <check type="manual">Visit /pulse/reports/test-report</check>
+    <check type="manual">Check meta tags with View Source</check>
+    <check type="manual">Validate structured data at search.google.com/test/rich-results</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-10" reason="Needs badge component for embed section" />
+  </dependencies>
+
+  <commit-message>feat(pulse): add public report page template with SEO optimization</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-13" wave="4">
+  <title>State of Local Restaurants Report</title>
+  <requirement>REQ-012: First public benchmark report</requirement>
+  <description>Create the first public benchmark report content. This is the content that drives SEO and establishes LocalGenius as a thought leader in local business marketing.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Report content requirements" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/pulse/reports/" reason="Report page template" />
+  </context>
+
+  <steps>
+    <step order="1">Create /content/reports/state-of-local-restaurants.json (or .md with frontmatter)</step>
+    <step order="2">Write Executive Summary:
+      - Key finding 1: Average restaurant engagement rate
+      - Key finding 2: Top performing regions
+      - Key finding 3: Size correlation with performance</step>
+    <step order="3">Add Key Metrics section with visualizations:
+      - Median engagement rate by size
+      - Post frequency distribution
+      - Response time benchmarks</step>
+    <step order="4">Add Regional Insights: top 5 metros, lagging metros</step>
+    <step order="5">Add Size Analysis: small (1-5) vs medium (6-15) vs large (16-50)</step>
+    <step order="6">Add Methodology: data collection, anonymization, statistical approach</step>
+    <step order="7">Add CTA: "See where your restaurant ranks — sign up for LocalGenius"</step>
+    <step order="8">Generate placeholder charts (can be updated with real data post-launch)</step>
+  </steps>
+
+  <verification>
+    <check type="build">npm run build</check>
+    <check type="manual">Visit /pulse/reports/state-of-local-restaurants</check>
+    <check type="manual">Verify all sections render</check>
+    <check type="manual">Verify CTA links to signup</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-12" reason="Requires report page template" />
+    <depends-on task-id="phase-1-task-4" reason="Needs benchmark data for content" />
+  </dependencies>
+
+  <commit-message>content(pulse): add State of Local Restaurants benchmark report</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-14" wave="4">
+  <title>Freemium Preview Interface</title>
+  <requirement>REQ-014: Preview with signup gate</requirement>
+  <description>Public preview showing partial benchmark data to drive signups. Shows industry-level stats but hides personal percentile behind auth.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/" reason="Page routing patterns" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/pulse/" reason="Pulse components" />
+  </context>
+
+  <steps>
+    <step order="1">Create /src/app/pulse/preview/page.tsx (public, no auth required)</step>
+    <step order="2">Accept query params: ?industry=restaurants&region=denver</step>
+    <step order="3">Create public API endpoint: /api/pulse/preview for aggregate stats only</step>
+    <step order="4">Show industry-level stats: "Restaurants in Denver average X% engagement"</step>
+    <step order="5">Add blurred/locked charts overlay with message: "Sign up to see your exact rank"</step>
+    <step order="6">Add prominent CTA button: "See How You Stack Up" → /signup</step>
+    <step order="7">Track preview page views for conversion analytics</step>
+    <step order="8">Add social sharing: "Share industry insights with your network"</step>
+  </steps>
+
+  <verification>
+    <check type="build">npm run build</check>
+    <check type="manual">Visit /pulse/preview?industry=restaurants&region=denver (no auth)</check>
+    <check type="manual">Verify charts are blurred</check>
+    <check type="manual">Verify CTA links to signup</check>
+    <check type="manual">Verify no personal data exposed</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-7" reason="Requires IndustryComparison for blur overlay" />
+    <depends-on task-id="phase-1-task-5" reason="Needs API data structure understanding" />
+  </dependencies>
+
+  <commit-message>feat(pulse): add freemium preview with signup gate</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-15" wave="4">
+  <title>Badge Embed Script</title>
+  <requirement>REQ-026: Lightweight embeddable script for customer HTML</requirement>
+  <description>JavaScript embed script that customers add to their websites to display their Pulse badge. Must be lightweight, work without React, and handle CORS.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/public/" reason="Static assets location" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Badge embed requirements" />
+  </context>
+
+  <steps>
+    <step order="1">Create /public/badges/pulse-badge.js (vanilla JS, no dependencies)</step>
+    <step order="2">Script accepts data attributes: data-business-id, data-metric, data-theme</step>
+    <step order="3">Create public badge API: /api/pulse/badges/[businessId]/route.ts
+      - Returns: { tier, percentile, metric, qualifiedDate, businessName }
+      - No auth required (public badges)
+      - Add rate limiting</step>
+    <step order="4">Render badge using vanilla JS DOM manipulation</step>
+    <step order="5">Include inline CSS scoped to .pulse-badge class (prevent conflicts)</step>
+    <step order="6">Add CORS headers to badge API: Access-Control-Allow-Origin: *</step>
+    <step order="7">Handle errors: invalid business ID, no badge qualification</step>
+    <step order="8">Keep script under 5KB minified</step>
+    <step order="9">Document embed code in help center format</step>
+  </steps>
+
+  <verification>
+    <check type="manual">Create test.html with embed script, verify badge renders</check>
+    <check type="manual">Test cross-origin: serve HTML from different port</check>
+    <check type="manual">Verify script size: ls -la public/badges/pulse-badge.js</check>
+    <check type="manual">Test in Chrome, Firefox, Safari</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-10" reason="Requires badge design/styling from component" />
+  </dependencies>
+
+  <commit-message>feat(pulse): add embeddable badge script for customer websites</commit-message>
+</task-plan>
+```
+
+---
+
+### Wave 5 (After Wave 4 — Day 14) — Testing & Polish
+
+```xml
+<task-plan id="phase-1-task-16" wave="5">
+  <title>Integration Tests</title>
+  <requirement>QA-1 to QA-4: Tests for calculations, fallback, badges, auth</requirement>
+  <description>Comprehensive integration tests ensuring Pulse calculations are correct, fallback logic works, and security is enforced.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/vitest.config.ts" reason="Test configuration" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/__tests__/" reason="Existing test patterns" />
+  </context>
+
+  <steps>
+    <step order="1">Create /src/__tests__/services/pulse-benchmark.test.ts</step>
+    <step order="2">Test percentile calculation accuracy with seed data (50+ businesses)</step>
+    <step order="3">Test edge cases: 1 business, 9 businesses, exactly 10, 100+</step>
+    <step order="4">Test metro-to-state fallback when metro < 10</step>
+    <step order="5">Create /src/__tests__/api/pulse-benchmarks.test.ts</step>
+    <step order="6">Test 401 for unauthenticated requests</step>
+    <step order="7">Test 403 when accessing different customer's data</step>
+    <step order="8">Test badge tier assignment: verify 10%/25%/50% thresholds</step>
+    <step order="9">Test NULL handling and empty cohort edge cases</step>
+  </steps>
+
+  <verification>
+    <check type="test">npm run test -- --grep "pulse" --coverage</check>
+    <check type="manual">Verify coverage > 80% for Pulse code</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-4" reason="Tests benchmark job" />
+    <depends-on task-id="phase-1-task-5" reason="Tests API endpoint" />
+    <depends-on task-id="phase-1-task-10" reason="Tests badge qualification" />
+  </dependencies>
+
+  <commit-message>test(pulse): add integration tests for benchmark calculation and API</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-17" wave="5">
+  <title>E2E Tests</title>
+  <requirement>QA-5: End-to-end tests with Playwright</requirement>
+  <description>End-to-end tests verifying the complete Pulse user flow from landing to dashboard.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/playwright.config.ts" reason="Playwright config" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/e2e/" reason="Existing E2E patterns" />
+  </context>
+
+  <steps>
+    <step order="1">Create /e2e/pulse.spec.ts</step>
+    <step order="2">Test: Unauthenticated user at /pulse/dashboard redirects to login</step>
+    <step order="3">Test: Authenticated user sees PulseScore hero number</step>
+    <step order="4">Test: Peer group info displays correctly</step>
+    <step order="5">Test: All 4 comparison charts render</step>
+    <step order="6">Test: InsufficientDataState shows when peerCount < 10</step>
+    <step order="7">Test: Public report page loads at /pulse/reports/state-of-local-restaurants</step>
+    <step order="8">Test: Freemium preview shows blurred charts and CTA</step>
+    <step order="9">Test: Badge embed script loads and renders on external page</step>
+  </steps>
+
+  <verification>
+    <check type="test">npx playwright test pulse</check>
+    <check type="manual">npx playwright test pulse --headed (visual verification)</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-11" reason="Tests dashboard page" />
+    <depends-on task-id="phase-1-task-13" reason="Tests public report" />
+    <depends-on task-id="phase-1-task-14" reason="Tests freemium preview" />
+    <depends-on task-id="phase-1-task-15" reason="Tests badge embed" />
+  </dependencies>
+
+  <commit-message>test(pulse): add E2E tests for dashboard, reports, and badges</commit-message>
+</task-plan>
+```
 
 ---
 
 ## Risk Notes
 
-**High Priority (mitigate during build):**
-- **Hook clobber risk** — Task 7 includes explicit hook conflict detection with append behavior and idempotency markers
-- **Detached process hang** — Task 6 includes 30-second timeout on API calls and unref() on spawned process
-- **Concurrent changelog writes** — During rapid commits, multiple detached workers could race. Mitigation: use append-only writes with fs.appendFile (atomic on most OS). Accept minor risk for v1.
+### Critical Risks (Must Mitigate Before Build)
 
-**Medium Priority (address if time permits):**
-- **Rate limiting on backfill** — Task 9 includes 1-second delay between 10-commit batches. May need tuning.
-- **npm global PATH in hook** — Hook script should resolve narrate path explicitly. Task 7 should embed the full path to hook-worker.js rather than relying on PATH.
-- **ESM in hook context** — git hooks run in minimal shell. The hook spawns node directly with an absolute file path, avoiding PATH issues.
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| RISK-001: Data doesn't exist | CRITICAL | Wave 0 data audit is a hard gate. No code until GO decision. |
+| RISK-005: Insights creep | CRITICAL | REQUIREMENTS.md explicitly excludes insights. Refer stakeholders there. |
+| RISK-006: Timeline slip | CRITICAL | Day 5 checkpoint: schema + job + API scaffolded or cut scope. |
 
-**Low Priority (v1.1):**
-- **Windows compatibility** — v1 targets macOS/Linux. Windows (WSL) testing deferred.
-- **Package name collision** — Check `narrate-cli` availability on npm before publish.
+### High Risks (Monitor During Build)
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| RISK-002: Sparse cohorts | HIGH | InsufficientDataState component. Metro→state fallback. |
+| RISK-003: Privacy exposure | HIGH | Minimum 10 businesses. No individual identification possible. |
+| RISK-011: PERCENTILE_CONT edge cases | HIGH | Unit tests for empty groups, single values, precision. |
+| RISK-012: Auth integration | HIGH | Reuse LocalGenius auth middleware. Don't write custom. |
+| RISK-016: Badge CORS | HIGH | Test cross-origin in Wave 4. CORS headers on badge API. |
+
+### Architectural Notes
+
+- **LocalGenius infrastructure is production-ready**: benchmarkAggregates, dual-write, RLS all exist.
+- **Extend, don't reinvent**: Pulse adds pulseRankings table and new job, reuses everything else.
+- **Multi-tenant security**: All queries must respect organization_id RLS.
+- **~500 LOC target**: Components are focused. If any task exceeds 100 LOC, reconsider.
 
 ---
 
-## Execution Summary
+## Execution Timeline
+
+| Day | Wave | Tasks | Checkpoint |
+|-----|------|-------|------------|
+| 1 | 0 | Data Audit | GO/NO-GO decision |
+| 2-4 | 1 | Schema, Metrics, Analytics | Foundation complete |
+| 5-7 | 2 | Batch Job, API | Day 5: 30% complete or cut scope |
+| 8-10 | 3 | All UI Components | Components in Storybook |
+| 11-13 | 4 | Dashboard, Reports, Preview, Badge Script | Integration complete |
+| 14 | 5 | Tests | Ship! |
+
+---
+
+## Wave Summary
 
 ```
-Wave 1: [task-1, task-2, task-3, task-4, task-5]  ← 5 parallel tasks (scaffold + modules)
-Wave 2: [task-6, task-7, task-8]                   ← 3 parallel tasks (hook + commands)
-Wave 3: [task-9]                                    ← 1 task (backfill, needs log parser)
-Wave 4: [task-10]                                   ← 1 task (integration test / dogfood)
+Wave 0: [task-0]                                    ← BLOCKER (data audit)
+Wave 1: [task-1, task-2, task-3]                    ← 3 parallel (foundation)
+Wave 2: [task-4, task-5]                            ← 2 parallel (data layer)
+Wave 3: [task-6, task-7, task-8, task-9, task-10]   ← 5 parallel (components)
+Wave 4: [task-11, task-12, task-13, task-14, task-15] ← 5 parallel (integration)
+Wave 5: [task-16, task-17]                          ← 2 parallel (testing)
 ```
 
-**Estimated scope:** 10 tasks across 4 waves. Each task = 1 atomic commit.
+**Total**: 18 tasks, 5 waves (+ blocker wave), 14 days
+
+---
+
+## Sign-Off Checklist
+
+Before each wave, verify:
+- [ ] Previous wave tasks all committed
+- [ ] Build passes: `npm run build`
+- [ ] Tests pass: `npm run test`
+- [ ] No lint errors: `npm run lint`
+
+Before ship (end of Wave 5):
+- [ ] All 18 tasks committed
+- [ ] E2E tests pass
+- [ ] Security review: auth, CORS, RLS
+- [ ] Performance: API < 200ms, page load < 3s
+- [ ] Accessibility: keyboard navigation, screen reader
+- [ ] Mobile responsive
+
+---
+
+*"The strength of the team is each individual member. The strength of each member is the team." — Phil Jackson*
+
+---
+
+**Now we build.**

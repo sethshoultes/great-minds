@@ -1,3 +1,11 @@
+Apr 6, 2026 — 5:30 PM
+
+  Document daemon resilience and developer intelligence features  ·  abfbd16
+
+Apr 5, 2026 — 8:50 PM
+
+  Fix daemon crash — path → filePath in chokidar watcher  ·  7bcd83a
+
 Apr 5, 2026 — 4:34 PM
 
   Add Great Minds Agency movie script -- 4-act, 10-scene video blueprint  ·  40b8eb3
