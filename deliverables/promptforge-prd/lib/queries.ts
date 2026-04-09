@@ -256,3 +256,44 @@ export function updateTestOutputs(id: string, outputA: string, outputB: string):
   `);
   return getStmt.get(id) as Test | undefined;
 }
+
+// ============================================
+// REVERT OPERATIONS
+// ============================================
+
+/**
+ * Revert a prompt to a previous version
+ * This creates a NEW version with the old content (does not delete any versions)
+ * and updates the prompt's current_content
+ *
+ * @param promptId - The prompt ID to revert
+ * @param versionNumber - The version number to revert to
+ * @returns The new version created, or undefined if prompt/version not found
+ */
+export function revertToVersion(promptId: string, versionNumber: number): Version | undefined {
+  // First, get the prompt to ensure it exists
+  const prompt = getPromptById(promptId);
+  if (!prompt) {
+    return undefined;
+  }
+
+  // Get the version to revert to
+  const targetVersion = getVersion(promptId, versionNumber);
+  if (!targetVersion) {
+    return undefined;
+  }
+
+  // Create a new version with the old content
+  const newVersion = createVersion(promptId, targetVersion.content);
+
+  // Update the prompt's current content and version
+  const now = new Date().toISOString();
+  const updateStmt = db.prepare(`
+    UPDATE prompts
+    SET current_content = ?, current_version = ?, updated_at = ?
+    WHERE id = ?
+  `);
+  updateStmt.run(targetVersion.content, newVersion.version_number, now, promptId);
+
+  return newVersion;
+}
