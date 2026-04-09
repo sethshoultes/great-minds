@@ -9,14 +9,28 @@
  * <script src="https://pulse.localgenius.com/badges/badge-embed.js"
  *         data-pulse-id="abc123"
  *         data-theme="light"
- *         data-size="medium"></script>
+ *         data-size="medium"
+ *         data-api-base="https://staging.pulse.localgenius.com"></script>
+ *
+ * Attributes:
+ * - data-pulse-id (required): The unique badge identifier
+ * - data-theme (optional): "light" or "dark" (default: "light")
+ * - data-size (optional): "small", "medium", or "large" (default: "medium")
+ * - data-api-base (optional): Override API base URL for staging/dev environments
+ *                             (default: "https://pulse.localgenius.com")
  */
 
 (function () {
   "use strict";
 
   // Configuration
-  var API_BASE = "https://pulse.localgenius.com";
+  // API_BASE can be overridden via data-api-base attribute on the script tag
+  // or falls back to the production URL
+  var currentScript = document.currentScript || (function() {
+    var scripts = document.getElementsByTagName('script');
+    return scripts[scripts.length - 1];
+  })();
+  var API_BASE = currentScript.getAttribute('data-api-base') || "https://pulse.localgenius.com";
   var BADGE_ENDPOINT = "/api/badges/";
 
   // Size configurations

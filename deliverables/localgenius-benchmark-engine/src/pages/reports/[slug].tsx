@@ -444,6 +444,14 @@ export const getServerSideProps: GetServerSideProps<
                 percentile: benchmark.responseTimePercentile,
                 interpretation: `${benchmark.responseTimePercentile}th percentile for response time`,
               },
+              {
+                name: "conversionRate",
+                displayName: "Conversion Rate",
+                value: Number(benchmark.conversionRate),
+                unit: "%",
+                percentile: benchmark.conversionRatePercentile,
+                interpretation: `${benchmark.conversionRatePercentile}th percentile for conversion`,
+              },
             ],
             peerGroup: {
               description:
@@ -537,6 +545,14 @@ export const getServerSideProps: GetServerSideProps<
               unit: "hours",
               percentile: benchmark.responseTimePercentile,
               interpretation: `${benchmark.responseTimePercentile}th percentile for response time`,
+            },
+            {
+              name: "conversionRate",
+              displayName: "Conversion Rate",
+              value: Number(benchmark.conversionRate),
+              unit: "%",
+              percentile: benchmark.conversionRatePercentile,
+              interpretation: `${benchmark.conversionRatePercentile}th percentile for conversion`,
             },
           ],
           peerGroup: {
