@@ -1,0 +1,54 @@
+{
+  "business_type": "plumber",
+  "display_name": "Plumbing / HVAC",
+  "faqs": [
+    {
+      "question": "What areas do you serve?",
+      "answer": "We serve multiple areas in the region. Please contact us with your address and we'll confirm if we can provide service to your location."
+    },
+    {
+      "question": "Do you offer emergency services?",
+      "answer": "Yes, we provide emergency plumbing services for urgent situations like burst pipes, severe leaks, and backed-up sewers. Call us anytime for emergency assistance."
+    },
+    {
+      "question": "How much do you charge?",
+      "answer": "Pricing depends on the type of work needed. We provide free estimates for most jobs. Contact us to describe your issue and we'll give you an upfront quote."
+    },
+    {
+      "question": "What are your hours of operation?",
+      "answer": "Our regular business hours vary. We also offer emergency services outside normal hours. Call us to schedule or for after-hours emergencies."
+    },
+    {
+      "question": "What services do you offer?",
+      "answer": "We handle all plumbing needs including repairs, installations, drain cleaning, water heaters, sewer lines, and fixture replacement. Contact us with your specific needs."
+    },
+    {
+      "question": "How do I schedule an appointment?",
+      "answer": "You can schedule by calling our office or requesting a quote online. We'll work with you to find a convenient time for your service."
+    },
+    {
+      "question": "Do you offer financing?",
+      "answer": "We offer financing options for larger projects. Ask us about payment plans to make your plumbing project more affordable."
+    },
+    {
+      "question": "Are your technicians licensed?",
+      "answer": "Yes, all our technicians are licensed, insured, and experienced. We're committed to providing professional, quality workmanship."
+    },
+    {
+      "question": "Do you guarantee your work?",
+      "answer": "Yes, we stand behind our work with a satisfaction guarantee. Ask us about warranty details for parts and labor on your specific project."
+    },
+    {
+      "question": "Can you help with water heater issues?",
+      "answer": "Absolutely. We repair and install all types of water heaters including tankless, gas, and electric models. Contact us if you're having hot water problems."
+    },
+    {
+      "question": "How quickly can you come out?",
+      "answer": "We strive for same-day service when possible. For emergencies, we prioritize urgent calls. Contact us and we'll get to you as quickly as we can."
+    },
+    {
+      "question": "Do you provide written estimates?",
+      "answer": "Yes, we provide written estimates before beginning any work. You'll know exactly what to expect with no hidden fees or surprises."
+    }
+  ]
+}
