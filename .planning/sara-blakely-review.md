@@ -1,28 +1,33 @@
-# Sara Blakely Gut-Check: Pulse MVP
+# Sara Blakely Gut-Check: Phase 1 Plan
+
+**Verdict**: This is plumbing, not product.
 
 ## Would a customer pay for this?
 
-**Maybe once.** You're selling "you're in the 72nd percentile" to someone working 14-hour days. She'll look once, feel mildly validated, then never come back. A percentile tells me where I am. It doesn't tell me what to do Monday morning. You built a mirror, not a coach.
+No. You're shipping two markdown files to prove Git works. That's a test, not value. The *idea* underneath — AI personas debating your problems — has potential. But this plan doesn't touch that. You're proving the factory works before proving anyone wants what it makes.
 
-## What's confusing / bounce risk?
+## What's confusing / what makes someone bounce?
 
-- **5 metrics is 4 too many.** One number. Make it count.
-- **"Engagement rate" means nothing** to a taco shop owner. Say: "Your posts get 3x more likes than the average spot on your block."
-- **No "so what."** Dashboard shows rank but no next step. That's when they close the tab.
-- **Bronze badge = "You're mediocre."** Nobody displays that. Cut to one tier or zero.
+- 338 lines and 4 "waves" to ship 2 files. Over-engineered.
+- No mention of who the customer is or what problem they have.
+- "Pipeline verification" is internal jargon. Nobody googles that.
 
 ## 30-Second Elevator Pitch
 
-*"Pulse shows restaurant owners exactly where they rank against similar spots in their city—one number, updated weekly. Stop guessing if your marketing is working. Top performers get a badge for their website. It's like Yelp stars, but for your hustle."*
+*"Submit any hard decision. Watch Steve Jobs and Elon Musk debate it in real-time. Walk away thinking differently."*
+
+That's the product. This plan doesn't ship that — it ships a test of whether you can write files. Different thing.
 
 ## $0 Marketing Test
 
-Call 10 existing customers. Tell them they're top 25%. Ask: *"Would you put this badge on your website?"* If 7+ say yes without hesitation, you've got something. If they shrug, your whole viral loop is dead.
+Post ONE spicy Steve vs. Elon debate on LinkedIn/Twitter. Real topic people argue about (remote work, AI replacing jobs, whatever). See if anyone shares it or asks "where can I get this for MY question?" If crickets, the pipeline doesn't matter.
 
 ## Retention Hook
 
-**Weak.** Checking a static percentile monthly isn't a habit. Add: "You improved 12% this month" — beat your own best, not just rank vs. strangers. Personal trend > peer comparison for stickiness.
+Missing. Nothing here makes someone come back tomorrow. The hook should be: *"I need to see what the minds think about THIS."* Make the debates so good people forward them. This plan has zero customer-facing anything.
 
 ---
 
-**Bottom line:** Good infrastructure. But you're shipping a *feature*, not a *habit*. Add the "what do I do now?" and I'm in.
+**Bottom line**: Ship it if you must — infrastructure is hygiene. But the second this pushes, run ONE real debate and show it to five strangers. Their reaction is the only test that matters. Everything else is homework.
+
+*— Sara*

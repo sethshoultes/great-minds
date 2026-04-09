@@ -1,3 +1,11 @@
+Apr 9, 2026 — 4:20 PM
+
+  Add README and example debate transcript in README.md and example-output.md  ·  ca82936
+
+Apr 9, 2026 — 4:00 PM
+
+  Push remaining uncommitted deliverables in CHANGELOG.human.md  ·  e55cbaa
+
 Apr 9, 2026 — 4:00 PM
 
   Merge all feature branches to main — resolve conflicts accepting newest in Root.tsx  ·  3a88455
