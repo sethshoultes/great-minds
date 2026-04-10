@@ -1,3 +1,11 @@
+Apr 9, 2026 — 6:36 PM
+
+  Workshop: simple, memorable, no SDK required — 7 slides + 4 hands-on exercises in AGENTS-ASSEMBLE-WORKSHOP.md  ·  1c592f5
+
+Apr 9, 2026 — 6:05 PM
+
+  Ship agents-assemble-workshop: slides, script, 7 exercises (1011 lines)  ·  5f735a8
+
 Apr 9, 2026 — 5:50 PM
 
   Complete agents-assemble-workshop deliverables  ·  9bdee8a
