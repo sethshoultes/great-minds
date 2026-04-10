@@ -1,0 +1,66 @@
+{
+  "business_type": "general",
+  "display_name": "General Business",
+  "faqs": [
+    {
+      "question": "What are your hours of operation?",
+      "answer": "Our hours can vary, so I'd recommend checking our website or giving us a quick call for our current schedule. We're always happy to help!"
+    },
+    {
+      "question": "Are you open on weekends?",
+      "answer": "Our weekend hours may differ from weekdays. Please check with us for the most accurate information about when we're available."
+    },
+    {
+      "question": "Where are you located?",
+      "answer": "You can find our full address and directions on our website. We'd love to see you in person!"
+    },
+    {
+      "question": "How can I contact you?",
+      "answer": "The best way to reach us is by phone or through the contact form on our website. We try to respond to all inquiries as quickly as possible."
+    },
+    {
+      "question": "What's the best way to reach you?",
+      "answer": "For quick questions, give us a call. For more detailed inquiries, email works great and gives us time to provide a thorough response."
+    },
+    {
+      "question": "Do you take appointments?",
+      "answer": "We may offer appointments depending on the service. Contact us to schedule a time that works best for you."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept most major credit and debit cards, as well as cash. For specific payment questions, just ask us when you visit or call."
+    },
+    {
+      "question": "Do you have parking available?",
+      "answer": "Yes, we have parking available for our customers. If you need specific directions to our parking area, just give us a call."
+    },
+    {
+      "question": "What's your cancellation policy?",
+      "answer": "Our cancellation policy varies depending on the service. Please contact us directly to discuss your specific situation, and we'll work with you."
+    },
+    {
+      "question": "Is there a consultation fee?",
+      "answer": "This depends on the type of service you need. Contact us to discuss your needs and we'll explain any associated costs upfront."
+    },
+    {
+      "question": "Do you serve my area?",
+      "answer": "We serve customers in our local area and surrounding communities. Give us a call to confirm we can help with your specific location."
+    },
+    {
+      "question": "Are you wheelchair accessible?",
+      "answer": "Yes, we strive to be accessible to all customers. If you have specific accessibility needs, please let us know and we'll do our best to accommodate you."
+    },
+    {
+      "question": "Do you offer emergency services?",
+      "answer": "This depends on the nature of your emergency. Contact us directly and we'll let you know if we can help with urgent situations."
+    },
+    {
+      "question": "Are you hiring?",
+      "answer": "We're always interested in meeting talented people! Check our website or contact us directly to learn about current opportunities."
+    },
+    {
+      "question": "Do you have holiday hours?",
+      "answer": "Our hours may change during holidays. Check our website or give us a call before visiting to confirm we're open."
+    }
+  ]
+}

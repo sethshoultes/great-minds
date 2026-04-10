@@ -1,0 +1,345 @@
+/**
+ * LocalGenius Admin Styles
+ *
+ * Minimal, clean WordPress-native styling.
+ * Following WordPress admin color palette and conventions.
+ *
+ * @package LocalGenius
+ */
+
+/* Settings page container */
+.localgenius-settings {
+	max-width: 800px;
+	margin: 20px auto 0 0;
+}
+
+/* Page title with logo */
+.localgenius-title {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 24px;
+	font-size: 23px;
+	font-weight: 400;
+}
+
+.localgenius-logo {
+	color: #1e1e1e;
+	font-weight: 600;
+}
+
+/* Status card */
+.localgenius-status-card {
+	display: flex;
+	align-items: flex-start;
+	gap: 16px;
+	padding: 20px 24px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	margin-bottom: 24px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.localgenius-status-card.is-active {
+	border-left: 4px solid #00a32a;
+}
+
+.localgenius-status-card.is-inactive {
+	border-left: 4px solid #dba617;
+}
+
+.localgenius-status-indicator {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	flex-shrink: 0;
+	margin-top: 6px;
+}
+
+.localgenius-status-card.is-active .localgenius-status-indicator {
+	background: #00a32a;
+	box-shadow: 0 0 0 3px rgba(0, 163, 42, 0.2);
+}
+
+.localgenius-status-card.is-inactive .localgenius-status-indicator {
+	background: #dba617;
+	box-shadow: 0 0 0 3px rgba(219, 166, 23, 0.2);
+}
+
+.localgenius-status-content h2 {
+	margin: 0 0 8px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #1e1e1e;
+}
+
+.localgenius-stats {
+	margin: 0;
+	font-size: 13px;
+	color: #646970;
+}
+
+.localgenius-stats-sep {
+	margin: 0 8px;
+	opacity: 0.5;
+}
+
+/* Detected info box */
+.localgenius-detected-info {
+	padding: 16px 20px;
+	background: #f0f6fc;
+	border: 1px solid #c5d9ed;
+	border-radius: 4px;
+	margin-bottom: 24px;
+}
+
+.localgenius-detected-info h3 {
+	margin: 0 0 12px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #1e1e1e;
+}
+
+.localgenius-detected-info ul {
+	margin: 0 0 8px;
+	padding: 0;
+	list-style: none;
+}
+
+.localgenius-detected-info li {
+	margin-bottom: 4px;
+	font-size: 13px;
+	color: #3c434a;
+}
+
+.localgenius-detected-info .description {
+	margin: 0;
+	font-size: 12px;
+	color: #646970;
+	font-style: italic;
+}
+
+/* Form sections */
+.localgenius-form-section {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 24px;
+	margin-bottom: 24px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.localgenius-form-section h2 {
+	margin: 0 0 8px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #1e1e1e;
+}
+
+.localgenius-section-desc {
+	margin: 0 0 20px;
+	font-size: 13px;
+	color: #646970;
+}
+
+/* Form table customization */
+.localgenius-form-table th {
+	padding: 16px 10px 16px 0;
+	font-weight: 600;
+	font-size: 14px;
+	width: 200px;
+}
+
+.localgenius-form-table td {
+	padding: 16px 10px;
+}
+
+.localgenius-form-table tr {
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.localgenius-form-table tr:last-child {
+	border-bottom: none;
+}
+
+/* Form inputs */
+.localgenius-select {
+	min-width: 280px;
+	max-width: 100%;
+	padding: 8px 12px;
+	font-size: 14px;
+	line-height: 1.5;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	background-color: #fff;
+}
+
+.localgenius-select:focus {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+	outline: 2px solid transparent;
+}
+
+.localgenius-input {
+	padding: 8px 12px;
+	font-size: 14px;
+	line-height: 1.5;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+}
+
+.localgenius-input:focus {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+	outline: 2px solid transparent;
+}
+
+.localgenius-textarea {
+	padding: 10px 12px;
+	font-size: 14px;
+	line-height: 1.5;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	resize: vertical;
+	min-height: 80px;
+}
+
+.localgenius-textarea:focus {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+	outline: 2px solid transparent;
+}
+
+/* Form field descriptions */
+.localgenius-form-table .description {
+	margin-top: 8px;
+	font-size: 12px;
+	color: #646970;
+}
+
+/* Submit button */
+.localgenius-submit {
+	padding: 8px 24px !important;
+	font-size: 14px !important;
+	height: auto !important;
+}
+
+/* Preview section */
+.localgenius-preview-section {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 24px;
+	margin-top: 24px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.localgenius-preview-section h2 {
+	margin: 0 0 8px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #1e1e1e;
+}
+
+.localgenius-preview-section > .description {
+	margin: 0 0 20px;
+	font-size: 13px;
+	color: #646970;
+}
+
+.localgenius-preview-frame {
+	padding: 24px;
+	background: #f0f0f1;
+	border-radius: 4px;
+	margin-bottom: 16px;
+}
+
+.localgenius-preview-device {
+	position: relative;
+	width: 100%;
+	max-width: 320px;
+	height: 200px;
+	margin: 0 auto;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.localgenius-preview-widget-demo {
+	position: absolute;
+	bottom: 16px;
+	right: 16px;
+	text-align: right;
+}
+
+.localgenius-preview-bubble {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 50px;
+	height: 50px;
+	background: #2271b1;
+	border-radius: 50%;
+	color: #fff;
+	box-shadow: 0 2px 8px rgba(34, 113, 177, 0.4);
+	cursor: pointer;
+	transition: transform 0.2s ease;
+}
+
+.localgenius-preview-bubble:hover {
+	transform: scale(1.05);
+}
+
+.localgenius-preview-icon {
+	width: 24px;
+	height: 24px;
+}
+
+.localgenius-preview-note {
+	margin: 8px 0 0;
+	font-size: 11px;
+	color: #646970;
+}
+
+.localgenius-preview-cta {
+	margin: 0;
+	text-align: center;
+}
+
+.localgenius-preview-cta .button {
+	display: inline-flex;
+	align-items: center;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+	.localgenius-settings {
+		margin: 10px 0 0;
+	}
+
+	.localgenius-form-table th,
+	.localgenius-form-table td {
+		display: block;
+		width: 100%;
+		padding: 8px 0;
+	}
+
+	.localgenius-form-table th {
+		padding-bottom: 4px;
+	}
+
+	.localgenius-select,
+	.localgenius-input {
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.localgenius-status-card {
+		padding: 16px;
+	}
+
+	.localgenius-form-section {
+		padding: 16px;
+	}
+}

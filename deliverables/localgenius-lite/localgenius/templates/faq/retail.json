@@ -1,0 +1,66 @@
+{
+  "business_type": "retail",
+  "display_name": "Retail Store",
+  "faqs": [
+    {
+      "question": "What are your store hours?",
+      "answer": "Our hours vary, so I'd recommend checking our website or giving us a quick call for our current schedule. We're always happy to help!"
+    },
+    {
+      "question": "Are you open on weekends?",
+      "answer": "Yep! We're open on weekends. Hours may be a bit different than weekdays, so feel free to check with us for the exact times."
+    },
+    {
+      "question": "What's your return policy?",
+      "answer": "We want you to be happy with your purchase! Most items can be returned within 30 days with your receipt. Some restrictions may apply, so just ask us if you have questions about a specific item."
+    },
+    {
+      "question": "Do you accept exchanges?",
+      "answer": "Absolutely! We're happy to help you exchange items. Just bring in your receipt and the item in its original condition, and we'll take care of you."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept most major credit and debit cards, cash, and some locations accept mobile payments like Apple Pay. Just ask if you're not sure about a specific payment method."
+    },
+    {
+      "question": "Do you have parking?",
+      "answer": "Yes! We have convenient parking available for our customers. If you have any trouble finding a spot, just give us a call and we'll point you in the right direction."
+    },
+    {
+      "question": "Can I order online and pick up in store?",
+      "answer": "Many of our items are available for online ordering with in-store pickup. Check our website or give us a call to see if we can set that up for you!"
+    },
+    {
+      "question": "Do you offer gift cards?",
+      "answer": "We sure do! Gift cards make great presents and are available in various amounts. Stop by or ask us about sending one as a gift."
+    },
+    {
+      "question": "Do you have a rewards or loyalty program?",
+      "answer": "Yes! Ask us about our loyalty program when you visit. It's a great way to earn rewards on your purchases."
+    },
+    {
+      "question": "Are there any current sales or promotions?",
+      "answer": "We often have special offers and promotions running. Check our website, follow us on social media, or stop by to see what deals are available right now!"
+    },
+    {
+      "question": "Can I place a special order?",
+      "answer": "In many cases, yes! If you're looking for something specific that we don't have in stock, let us know and we'll do our best to get it for you."
+    },
+    {
+      "question": "Do you offer delivery?",
+      "answer": "Delivery options vary by item and location. Give us a call or ask when you visit, and we'll let you know what options are available for your purchase."
+    },
+    {
+      "question": "Where are you located?",
+      "answer": "Check our website for our full address and directions. We'd love to have you visit us in person!"
+    },
+    {
+      "question": "Is the store wheelchair accessible?",
+      "answer": "Yes, our store is accessible. If you have specific accessibility needs, please let us know and we'll be happy to assist you."
+    },
+    {
+      "question": "Are you hiring?",
+      "answer": "We're always interested in meeting great people! Stop by the store or check our website for current job openings and how to apply."
+    }
+  ]
+}

@@ -1,451 +1,553 @@
-# REQUIREMENTS — Agents Assemble Workshop
+# REQUIREMENTS — LocalGenius Lite WordPress Plugin
 
-**Project Slug:** agents-assemble-workshop
-**Generated:** 2024-04-09
+**Project Slug:** localgenius-lite
+**Generated:** 2025-04-09
 **Source Documents:**
-- `prds/agents-assemble-workshop.md` (PRD)
-- `rounds/agents-assemble-workshop/decisions.md` (12 locked decisions)
+- `rounds/localgenius-lite/decisions.md` (15 locked decisions + board conditions)
+- `engineering/tech-stack.md` (technical architecture reference)
+- `engineering/infrastructure.md` (infrastructure patterns reference)
 
 ---
 
 ## Executive Summary
 
-- **Total Requirements:** 43
-- **Must-Have:** 39
-- **Should-Have:** 4
-- **Hard Blockers:** 3 (REQ-025, REQ-026, REQ-032)
+- **Total Requirements:** 85 (categorized below)
+- **Must-Have (v1):** 60
+- **Should-Have (v1.1):** 15
+- **Cut/Deferred:** 10
+- **Hard Blockers:** 5 (REQ-001, REQ-019, REQ-028, REQ-035, REQ-050)
 
 ---
 
-## DELIVERABLE REQUIREMENTS
+## EXISTING IMPLEMENTATION STATUS
 
-### REQ-001: DELIVERABLE — Slides Markdown File
-- **Source:** PRD (Section: Deliverables #1)
-- **Priority:** Must-Have
-- **Description:** Create `docs/AGENTS-ASSEMBLE-SLIDES.md` containing 7 slides with minimal text, mostly commands on screen
-- **Verification:** File exists at specified path with all 7 slides present and no placeholder text
+Based on Codebase Scout analysis, the following already exists at `/Users/sethshoultes/Local Sites/great-minds/deliverables/localgenius-lite/localgenius/`:
 
-### REQ-002: DELIVERABLE — Speaker Script Markdown File
-- **Source:** PRD (Section: Deliverables #2)
-- **Priority:** Must-Have
-- **Description:** Create `docs/AGENTS-ASSEMBLE-SCRIPT.md` with conversational speaker notes for each slide, including timing notes
-- **Verification:** File exists with timing notes per slide; total talk time 10-15 minutes
-
-### REQ-003: DELIVERABLE — Exercises Markdown File
-- **Source:** PRD (Section: Deliverables #3)
-- **Priority:** Must-Have
-- **Description:** Create `docs/AGENTS-ASSEMBLE-EXERCISES.md` with 7 hands-on exercises, each 5-10 minutes, all copy-paste ready
-- **Verification:** File exists with all 7 exercises; each is self-contained and executable
-
----
-
-## CONTENT REQUIREMENTS — SLIDES
-
-### REQ-004: CONTENT — Slide 1: Title Slide
-- **Source:** PRD (Slide 1 specification)
-- **Priority:** Must-Have
-- **Description:** Slide 1 must display title "Agents Assemble: Building Teams That Work While You Sleep"
-- **Verification:** Title text present in slide 1 of AGENTS-ASSEMBLE-SLIDES.md
-
-### REQ-005: CONTENT — Slide 2: Headless Mode Command
-- **Source:** PRD (Slide 2 specification)
-- **Priority:** Must-Have
-- **Description:** Slide 2 must show the headless mode command: `claude -p "prompt" --max-turns 10 --max-budget-usd 1.00`
-- **Verification:** Exact command visible in slide 2; command is real and functional
-
-### REQ-006: CONTENT — Slide 3: Ralph Wiggum Loop Command
-- **Source:** PRD (Slide 3 specification)
-- **Priority:** Must-Have
-- **Description:** Slide 3 must show the Ralph Wiggum Loop: `while true; do claude -p "pick next task, build, test, commit"; done`
-- **Verification:** Exact command visible in slide 3; command is real and functional
-
-### REQ-007: CONTENT — Slide 4: /loop, Commands, Hooks Examples
-- **Source:** PRD (Slide 4 specification)
-- **Priority:** Must-Have
-- **Description:** Slide 4 must show one-liner examples of /loop, custom commands, and hooks
-- **Verification:** At least one functional example of each visible in slide 4
-
-### REQ-008: CONTENT — Slide 5: Multi-Agent Teams Concept
-- **Source:** PRD (Slide 5 specification)
-- **Priority:** Must-Have
-- **Description:** Slide 5 must show two agents debating in parallel
-- **Verification:** Visual or code representation of parallel agent debate present in slide 5
-
-### REQ-009: CONTENT — Slide 6: Full Pipeline
-- **Source:** PRD (Slide 6 specification) + Decisions (Decision 10)
-- **Priority:** Must-Have
-- **Description:** Slide 6 must display the full pipeline: `PRD → Debate → Plan → Build → QA → Board Review → Ship`; shows vision without requiring attendees to execute all 7 stages
-- **Verification:** Pipeline visual or text present in slide 6; narration notes clarify it's aspirational context
-
-### REQ-010: CONTENT — Slide 7: Installation Command
-- **Source:** PRD (Slide 7 specification)
-- **Priority:** Must-Have
-- **Description:** Slide 7 must show plugin installation command: `npx plugins add sethshoultes/great-minds-plugin`
-- **Verification:** Exact command visible in slide 7; script notes indicate "let them type in silence"
+| File | Status | Notes |
+|------|--------|-------|
+| `localgenius.php` | Complete | Main plugin file, hooks, asset enqueuing (166 lines) |
+| `includes/class-widget.php` | Complete | Widget display logic (66 lines) |
+| `includes/class-api-handler.php` | Complete | REST API endpoint, worker proxy (226 lines) |
+| `includes/class-scanner.php` | Complete | Homepage data extraction (186 lines) |
+| `includes/class-faq-templates.php` | Complete | FAQ template loading (122 lines) |
+| `uninstall.php` | Complete | Clean uninstall (34 lines) |
+| `templates/faq/*.json` | 8 of 10 | Missing: retail.json, general.json |
+| `admin/class-admin.php` | **MISSING** | Admin settings page |
+| `admin/views/settings-page.php` | **MISSING** | Settings page view |
+| `admin/css/admin.css` | **MISSING** | Admin styling |
+| `assets/js/chat-widget.js` | **MISSING** | Frontend widget JavaScript |
+| `assets/css/chat-widget.css` | **MISSING** | Widget styling |
+| `cloudflare-worker/*` | **MISSING** | Entire Worker backend |
+| `readme.txt` | **MISSING** | WordPress.org plugin description |
 
 ---
 
-## CONTENT REQUIREMENTS — EXERCISES
+## 1. WORDPRESS PLUGIN REQUIREMENTS
 
-### REQ-011: CONTENT — Exercise 1: Headless Mode
-- **Source:** PRD (Exercise 1 specification)
+### REQ-001: Plugin Activation & Bootstrap (HARD BLOCKER)
+- **Source:** Section 2, MVP Item 1
 - **Priority:** Must-Have
-- **Description:** Exercise 1 must teach headless mode using `claude -p` with budget cap; includes exact copy-paste commands, expected output, and "What you learned" summary
-- **Verification:** Exercise 1 section includes: working command, expected output sample, learning summary; is executable in 5-10 minutes
+- **Description:** Plugin activates in <30 seconds, initializes options, triggers homepage scan
+- **Verification:** Plugin installs from .zip, activates without errors, homepage data extracted
+- **Status:** COMPLETE (localgenius.php, class-scanner.php exist)
 
-### REQ-012: CONTENT — Exercise 2: Ralph Wiggum Loop
-- **Source:** PRD (Exercise 2 specification)
+### REQ-002: Business Type Selector Dropdown
+- **Source:** Decision 3, Section 2, MVP Item 2
 - **Priority:** Must-Have
-- **Description:** Exercise 2 must provide a 10-line bash script demonstrating build-while-you-sleep capability; includes exact copy-paste script, expected output, and "What you learned" summary
-- **Verification:** Exercise 2 section includes: full 10-line bash script, expected output, learning summary; is executable in 5-10 minutes
+- **Description:** Dropdown with 10 business types: dentist, plumber, restaurant, salon, mechanic, lawyer, realtor, fitness, retail, general
+- **Verification:** All 10 types selectable; value saves to wp_options
+- **Status:** PENDING (admin page needed)
 
-### REQ-013: CONTENT — Exercise 3: /loop Recurring Task
-- **Source:** PRD (Exercise 3 specification)
+### REQ-003: Location Input Field
+- **Source:** Section 2, MVP Item 3
 - **Priority:** Must-Have
-- **Description:** Exercise 3 must demonstrate /loop for recurring monitoring tasks; includes exact copy-paste commands, expected output, and "What you learned" summary
-- **Verification:** Exercise 3 section includes: /loop syntax example, expected output, learning summary; is executable in 5-10 minutes
+- **Description:** Single text field for city/region (e.g., "Austin, TX")
+- **Verification:** Value persists in wp_options
+- **Status:** PENDING (admin page needed)
 
-### REQ-014: CONTENT — Exercise 4: Custom Slash Commands
-- **Source:** PRD (Exercise 4 specification)
+### REQ-004: Admin Settings Page — Minimal UI
+- **Source:** Decision 13
 - **Priority:** Must-Have
-- **Description:** Exercise 4 must demonstrate creating custom slash commands by creating `~/.claude/commands/standup.md`; includes exact copy-paste steps, expected output, and "What you learned" summary
-- **Verification:** Exercise 4 section includes: file creation command, template content, expected behavior, learning summary; is executable in 5-10 minutes
+- **Description:** Single settings screen with: business type dropdown + "Anything else we should know?" text field + widget preview
+- **Verification:** Settings page loads at /wp-admin/options-general.php?page=localgenius
+- **Status:** MISSING (class-admin.php, settings-page.php needed)
 
-### REQ-015: CONTENT — Exercise 5: Hooks
-- **Source:** PRD (Exercise 5 specification)
+### REQ-005: Homepage Data Extraction
+- **Source:** Decision 3, Section 2, MVP Item 9
 - **Priority:** Must-Have
-- **Description:** Exercise 5 must demonstrate hooks with a PostToolUse hook that reminds after commits; includes exact copy-paste setup, expected output, and "What you learned" summary
-- **Verification:** Exercise 5 section includes: hook configuration code, expected output, learning summary; is executable in 5-10 minutes
+- **Description:** Extract business name, phone from homepage schema.org + <title> tag only
+- **Verification:** Correctly extracts on schema.org-enabled sites; graceful fallback when unavailable
+- **Status:** COMPLETE (class-scanner.php exists)
 
-### REQ-016: CONTENT — Exercise 6: Agent Personas Debate (Hardened)
-- **Source:** PRD (Exercise 6 specification) + Decisions (Decision 2, 5)
+### REQ-006: WordPress REST API Endpoint
+- **Source:** Section 2, MVP Item 6
 - **Priority:** Must-Have
-- **Description:** Exercise 6 must demonstrate two agents debating in parallel; must be hardened with explicit error recovery; includes exact copy-paste commands, expected output, and "What you learned" summary; allocate 7 minutes instead of 4.3
-- **Verification:** Exercise 6 section includes: parallel agent setup command, explicit error recovery steps, expected output sample (complete, multi-line), learning summary; exercisable in 7 minutes; pre-tested for live demo
+- **Description:** `/wp-json/localgenius/v1/chat` endpoint proxies to Cloudflare Worker
+- **Verification:** POST with `question` param returns valid JSON response
+- **Status:** COMPLETE (class-api-handler.php exists)
 
-### REQ-017: CONTENT — Exercise 7: Great Minds Plugin + Local Fallback
-- **Source:** PRD (Exercise 7 specification) + Decisions (Decision 4)
+### REQ-007: Graceful Error States
+- **Source:** Section 2, MVP Item 12
 - **Priority:** Must-Have
-- **Description:** Exercise 7 must demonstrate Great Minds Plugin installation and /agency-launch command; must include working local fallback alternative that demonstrates same concepts if plugin fails
-- **Verification:** Exercise 7 section includes: plugin install command, /agency-launch usage, working local alternative code, expected output for both paths, learning summary; is executable in 5-10 minutes
+- **Description:** Human, warm error messaging: "I'd recommend calling us directly at [phone] for this one"
+- **Verification:** Error responses use warm tone; phone number displayed when available
+- **Status:** PARTIAL (fallback exists, but need to verify messaging)
+
+### REQ-008: Basic Question Logging
+- **Source:** Section 2, MVP Item 10
+- **Priority:** Must-Have
+- **Description:** Store question counts in wp_options (no dashboard in v1)
+- **Verification:** `localgenius_question_count` increments on each question
+- **Status:** COMPLETE (logging implemented)
+
+### REQ-009: GDPR Consent Checkbox
+- **Source:** Section 2, MVP Item 11, Board Conditions
+- **Priority:** Must-Have
+- **Description:** Checkbox: "By chatting, you agree to [Privacy Policy]" before first message
+- **Verification:** Widget shows consent checkbox; first message blocked until checked
+- **Status:** PENDING (widget implementation needed)
+
+### REQ-010: Per-Site Rate Limiting
+- **Source:** Section 2, MVP Item 13
+- **Priority:** Must-Have
+- **Description:** 100 questions/month free tier; display remaining count clearly
+- **Verification:** Site cannot exceed 100/month; user sees "X questions remaining"
+- **Status:** PARTIAL (counter exists, limit enforcement needed in widget)
+
+### REQ-011: SSL Verification in Production
+- **Source:** Section 4, Open Question 5
+- **Priority:** Must-Have
+- **Description:** Enable SSL verify for homepage scanner in production
+- **Verification:** Production sites extract with SSL verify enabled; local dev documented
+- **Status:** NEEDS FIX (currently `sslverify => false`)
+
+### REQ-012: Plugin Namespace Compliance
+- **Source:** Section 5, Risk Mitigation
+- **Priority:** Must-Have
+- **Description:** All functions prefixed with `localgenius_`
+- **Verification:** No unprefixed globals in codebase
+- **Status:** COMPLETE (namespace pattern followed)
+
+### REQ-013: No jQuery Dependency
+- **Source:** Section 5, Risk Mitigation
+- **Priority:** Must-Have
+- **Description:** Widget uses vanilla JavaScript only
+- **Verification:** Plugin loads without jQuery; works on jQuery-free sites
+- **Status:** VERIFIED IN DESIGN (implementation pending)
 
 ---
 
-## CONTENT REQUIREMENTS — SCRIPT
+## 2. CLOUDFLARE WORKER REQUIREMENTS
 
-### REQ-018: CONTENT — Script: All 7 Slides Covered
-- **Source:** PRD (Script requirement)
+### REQ-014: Cloudflare Worker Deployment
+- **Source:** Decision 2, Section 2, MVP Item 6
 - **Priority:** Must-Have
-- **Description:** Speaker script must include conversational speaker notes for every slide (7 slides total)
-- **Verification:** Script file contains notes for slides 1-7; no slide is missing notes
+- **Description:** Single Worker handling all `/api/chat` requests
+- **Verification:** Worker endpoint is live; responds to POST with valid JSON
+- **Status:** MISSING (cloudflare-worker/ directory empty)
 
-### REQ-019: CONTENT — Script: Timing Notes Per Slide
-- **Source:** PRD (Script requirement)
+### REQ-015: Llama 3.1 8B via Workers AI
+- **Source:** Decision 2, Section 2, MVP Item 8
 - **Priority:** Must-Have
-- **Description:** Speaker script must include timing notes for each slide (e.g., "~2 min per slide")
-- **Verification:** Every slide section in script includes estimated duration; total cumulative time is 10-15 minutes
+- **Description:** Single LLM path only — Llama 3.1 8B via Cloudflare Workers AI (no Claude, no hybrid)
+- **Verification:** Worker calls Workers AI Llama endpoint; no fallback providers
+- **Status:** MISSING
 
-### REQ-020: CONTENT — Script: Conversational Tone
-- **Source:** PRD (Script requirement) + Decisions (Decision 6)
+### REQ-016: Question Hash Caching
+- **Source:** Decision 6, Section 2, MVP Item 7
 - **Priority:** Must-Have
-- **Description:** Speaker script must use conversational language (not lecture-y); must avoid corporate jargon ("leverage," "utilize," "empower"); must sound like senior engineer at whiteboard
-- **Verification:** Script review shows no lecture tone, no prohibited jargon, conversational phrasing throughout
+- **Description:** Hash-normalize questions; cache before LLM; 80% hit rate target
+- **Verification:** Identical questions return cached response <100ms; cache miss triggers LLM
+- **Status:** MISSING
 
-### REQ-021: CONTENT — Script: No Theory Before Experience
-- **Source:** Decisions (Decision 7)
+### REQ-017: Cache TTL Management
+- **Source:** Decision 6
 - **Priority:** Must-Have
-- **Description:** Script must emphasize "feel the power before understanding it"; Exercise 1 must be the jaw-drop moment with paste-watch-work sequence
-- **Verification:** Script flow shows Exercise 1 happening before any theoretical explanations; slide notes reference "jaw drop" moment
+- **Description:** 24-hour TTL for cached responses; simple expiry (no smart invalidation)
+- **Verification:** Cached responses expire after 24h; new responses generated
+- **Status:** MISSING
+
+### REQ-018: System Prompts by Business Type
+- **Source:** Decision 12, Section 3
+- **Priority:** Must-Have
+- **Description:** Maintain prompts.js with warm, human tone per business type
+- **Verification:** Prompts load correctly; responses reflect warm voice
+- **Status:** MISSING
+
+### REQ-019: Worker Timeout & Fallback (HARD BLOCKER)
+- **Source:** Section 5, Risk Mitigation
+- **Priority:** Must-Have
+- **Description:** 3-second timeout; graceful fallback to phone number message
+- **Verification:** >3s timeout returns fallback; user never sees error
+- **Status:** MISSING
+
+### REQ-020: IP-Based Throttling at Worker
+- **Source:** Section 5, Risk Mitigation
+- **Priority:** Must-Have
+- **Description:** IP-based rate limiting to prevent abuse
+- **Verification:** Rapid-fire from single IP gets throttled
+- **Status:** MISSING
+
+### REQ-021: Per-Site Daily Cap at Worker
+- **Source:** Section 5, Risk Mitigation
+- **Priority:** Must-Have
+- **Description:** Enforce per-site cap with hash deduplication
+- **Verification:** Site exceeding cap returns rate limit message
+- **Status:** MISSING
 
 ---
 
-## CONTENT REQUIREMENTS — TONE & VOICE
+## 3. CONTENT & TEMPLATE REQUIREMENTS
 
-### REQ-022: CONTENT — Voice: Casual Expertise
-- **Source:** Decisions (Decision 6)
+### REQ-022: Pre-Generated FAQ Templates
+- **Source:** Decision 5, Section 2, MVP Item 4
 - **Priority:** Must-Have
-- **Description:** All content (slides, script, exercises) must use casual expertise voice with "Ralph Wiggum Loop" energy; must not use corporate phrases
-- **Verification:** Content review finds no corporate jargon; tone is senior engineer, not conference speaker
+- **Description:** 10 business types × 15 Q&As each as JSON files
+- **Verification:** All 10 templates present; load on widget initialization
+- **Status:** PARTIAL (8 of 10 templates exist)
 
-### REQ-023: CONTENT — Voice: Dangerous Not Informed
-- **Source:** Decisions (Decision 8)
+### REQ-023: Missing FAQ Templates
+- **Source:** Section 3
 - **Priority:** Must-Have
-- **Description:** Messaging must promise developers will leave "dangerous"; not "informed" or "enabled"
-- **Verification:** Script includes emotional hook language ("You will leave this room dangerous" or equivalent); frames output as capability language
+- **Description:** Create `retail.json` and `general.json` templates
+- **Verification:** Files exist with valid JSON; 15 Q&As each
+- **Status:** MISSING
 
-### REQ-024: CONTENT — Script Ending: Silence
-- **Source:** Decisions (Decision 12)
+### REQ-024: FAQ Template JSON Format
+- **Source:** Section 3
 - **Priority:** Must-Have
-- **Description:** Slide 7 and script must end with invitation for attendees to type in silence; no applause cue
-- **Verification:** Final script section shows facilitator direction to "let them type"; no conclusion applause language
+- **Description:** Consistent format: `{ business_type, display_name, faqs: [{ question, answer }] }`
+- **Verification:** All templates match schema; JSON parses correctly
+- **Status:** COMPLETE (existing templates follow format)
+
+### REQ-025: Warm Voice in Templates
+- **Source:** Decision 12
+- **Priority:** Must-Have
+- **Description:** Answers written in warm, conversational human voice; never robotic
+- **Verification:** Content review confirms warm tone; professional for sensitive industries
+- **Status:** VERIFIED (existing templates use warm voice)
 
 ---
 
-## QUALITY REQUIREMENTS
+## 4. UX/UI REQUIREMENTS
 
-### REQ-025: QUALITY — Zero Placeholder Content (HARD BLOCKER)
-- **Source:** PRD (CRITICAL: NO PLACEHOLDER CONTENT section)
-- **Priority:** Must-Have (Hard Blocker)
-- **Description:** All content must be REAL and COMPLETE; zero instances of "placeholder," "coming soon," "TODO," "TBD," "stub," etc.
-- **Verification:** `grep -riE "placeholder|coming soon|TODO|TBD|stub|\[from PRD\]|\[TBD\]" docs/AGENTS-ASSEMBLE-*.md` returns 0 matches
-
-### REQ-026: QUALITY — All Commands Real and Functional (HARD BLOCKER)
-- **Source:** PRD (Every command must be real and work in Claude Code)
-- **Priority:** Must-Have (Hard Blocker)
-- **Description:** Every command shown in slides and exercises must be real, syntactically correct, and executable in Claude Code environment
-- **Verification:** Code review confirms all commands are valid Claude Code syntax; test execution of each command in target environment succeeds
-
-### REQ-027: QUALITY — Complete Exercises in 30-45 Minutes
-- **Source:** PRD (Developer should complete all 7 exercises in 30-45 minutes) + Decisions (Decision 9: plan for 45 minutes)
+### REQ-026: Chat Widget HTML/CSS
+- **Source:** Decision 7, Section 2, MVP Item 5
 - **Priority:** Must-Have
-- **Description:** All 7 exercises must be completable by a developer in 45 minutes total; each exercise individually takes 5-10 minutes
-- **Verification:** Timing notes on each exercise; sum of all exercise times ≤ 45 minutes; test with fresh user to validate
+- **Description:** Single beautiful widget; bottom-right position; no customization
+- **Verification:** Widget renders correctly; responsive on mobile; matches design spec
+- **Status:** MISSING (chat-widget.css needed)
 
-### REQ-028: QUALITY — No External Dependencies (Markdown Only)
-- **Source:** Decisions (Decision 3: Three markdown files, no backend)
+### REQ-027: Chat Widget JavaScript
+- **Source:** Section 3
 - **Priority:** Must-Have
-- **Description:** Deliverable must be three markdown files only; no web app, no backend, no database, no infrastructure
-- **Verification:** File inventory shows only 3 markdown files (.md); no web framework, no backend code, no database schema
+- **Description:** Vanilla JS; <8kb; ~200 lines; handles send/receive/display
+- **Verification:** Widget works without jQuery; file <8kb; no console errors
+- **Status:** MISSING (chat-widget.js needed)
 
-### REQ-029: QUALITY — Expected Output Samples Provided
-- **Source:** Decisions (Decision 5)
+### REQ-028: No AI Branding (HARD BLOCKER)
+- **Source:** Decision 8
 - **Priority:** Must-Have
-- **Description:** Every exercise must include expected output reference so attendees can compare against known-good results when debugging
-- **Verification:** Each of 7 exercises includes "Expected Output:" or "Expected Result:" section with sample output; samples are complete but concise
+- **Description:** Remove all "AI", "chatbot", robot icons from UI; magic works silently
+- **Verification:** Zero "AI" text in widget or admin; no robot imagery
+- **Status:** VERIFIED IN DESIGN (implementation pending)
 
-### REQ-030: QUALITY — Windows Compatibility Documented
-- **Source:** Decisions (Risk Register: Windows path issues) + File Structure note on FAQ.md
+### REQ-029: "Powered By" Link in Free Tier
+- **Source:** Decision 11
+- **Priority:** Must-Have
+- **Description:** Subtle "Powered by LocalGenius" link visible in free tier
+- **Verification:** Link displays in widget footer; leads to LocalGenius site
+- **Status:** PENDING (widget implementation needed)
+
+### REQ-030: Widget Position Fixed Bottom-Right
+- **Source:** Decision 7, Section 4
+- **Priority:** Must-Have
+- **Description:** Fixed bottom-right corner; no position customization in v1
+- **Verification:** Widget appears bottom-right on all tested sites
+- **Status:** PENDING (CSS implementation needed)
+
+### REQ-031: Admin UI Minimalism
+- **Source:** Decision 13
+- **Priority:** Must-Have
+- **Description:** Settings page contains only: dropdown + text field + preview
+- **Verification:** No extra fields, tabs, or options beyond spec
+- **Status:** PENDING (admin implementation needed)
+
+### REQ-032: Widget Preview in Admin
+- **Source:** Decision 13
+- **Priority:** Must-Have
+- **Description:** Live preview of widget in admin settings
+- **Verification:** Preview renders; updates when business type changes
+- **Status:** PENDING (admin implementation needed)
+
+### REQ-033: Error Message Humanization
+- **Source:** Section 4, Board Conditions
+- **Priority:** Must-Have
+- **Description:** All error messages use warm, human voice; no corporate language
+- **Verification:** User testing confirms warmth; Oprah's concern addressed
+- **Status:** PENDING (copy implementation needed)
+
+### REQ-034: Keyboard Navigation in Widget
+- **Source:** Section 5, Risk Mitigation
 - **Priority:** Should-Have
-- **Description:** Documentation must address Windows vs Mac path differences in exercises (e.g., `~/.claude/commands/` path handling)
-- **Verification:** FAQ section or equivalent exists addressing Windows-specific issues; commands include path guidance for both OS
+- **Description:** Tab navigation; Enter submits; Escape closes
+- **Verification:** Keyboard-only users can operate widget
+- **Status:** PENDING (v1.1 priority)
 
-### REQ-031: QUALITY — Plugin Version Pinned
-- **Source:** Decisions (Decision 11)
+### REQ-035: ARIA Labels (HARD BLOCKER for accessibility)
+- **Source:** Section 5, Risk Mitigation
+- **Priority:** Must-Have
+- **Description:** Basic ARIA labels for screen readers
+- **Verification:** ARIA labels on input, button, message elements
+- **Status:** PENDING (widget implementation needed)
+
+---
+
+## 5. TESTING & VALIDATION REQUIREMENTS
+
+### REQ-036: FAQ Template Validation
+- **Source:** Section 2
+- **Priority:** Must-Have
+- **Description:** All 10 templates load correctly; valid JSON
+- **Verification:** Unit tests confirm parsing; integration tests load by type
+- **Status:** PENDING
+
+### REQ-037: LLM Hallucination Testing
+- **Source:** Section 5, Risk Mitigation
+- **Priority:** Must-Have
+- **Description:** Test Llama responses stay within FAQ scope; no invented facts
+- **Verification:** 50+ test cases per business type; 0 factual errors
+- **Status:** PENDING
+
+### REQ-038: Cache Hit Rate Measurement
+- **Source:** Decision 6
+- **Priority:** Must-Have
+- **Description:** Track cache hits; target 80% hit rate
+- **Verification:** Worker logs cache hit/miss; metrics accessible
+- **Status:** PENDING
+
+### REQ-039: Latency Benchmarking
+- **Source:** Section 5
+- **Priority:** Must-Have
+- **Description:** End-to-end latency: cold start <600ms; cache hit <100ms
+- **Verification:** Performance tests confirm targets
+- **Status:** PENDING
+
+### REQ-040: Plugin Conflict Testing
+- **Source:** Section 5
+- **Priority:** Must-Have
+- **Description:** Test on 15+ WordPress themes/plugin combos
+- **Verification:** Widget renders without JS errors on all configs
+- **Status:** PENDING
+
+### REQ-041: Rate Limit Testing
+- **Source:** Section 2
+- **Priority:** Must-Have
+- **Description:** Verify 100/month threshold; clear limit message
+- **Verification:** 101st question shows limit message
+- **Status:** PENDING
+
+### REQ-042: SSL Verification Testing
+- **Source:** REQ-011
+- **Priority:** Must-Have
+- **Description:** Test extraction with valid/invalid SSL
+- **Verification:** Production sites work; invalid certs handled gracefully
+- **Status:** PENDING
+
+### REQ-043: GDPR Consent Flow Testing
+- **Source:** Section 2
+- **Priority:** Must-Have
+- **Description:** Consent checkbox blocks messages until checked
+- **Verification:** Unconsented state prevents submission
+- **Status:** PENDING
+
+### REQ-044: Error State Testing
+- **Source:** Section 2
+- **Priority:** Must-Have
+- **Description:** Test all failure modes: LLM down, timeout, rate limit
+- **Verification:** User sees warm message for each failure
+- **Status:** PENDING
+
+### REQ-045: Mobile Responsiveness Testing
+- **Source:** Section 3
+- **Priority:** Must-Have
+- **Description:** Widget responsive on iOS/Android; doesn't cover CTAs
+- **Verification:** Widget readable on mobile; doesn't obstruct page
+- **Status:** PENDING
+
+### REQ-046: WordPress.org Submission Readiness
+- **Source:** Board Conditions
+- **Priority:** Must-Have
+- **Description:** Plugin meets WordPress.org standards; external APIs documented
+- **Verification:** Plugin checker reports zero errors
+- **Status:** PENDING
+
+---
+
+## 6. DOCUMENTATION REQUIREMENTS
+
+### REQ-047: readme.txt for WordPress.org
+- **Source:** Section 3
+- **Priority:** Must-Have
+- **Description:** SEO-optimized plugin description for WordPress.org
+- **Verification:** readme.txt follows WordPress.org format; keywords optimized
+- **Status:** MISSING
+
+### REQ-048: External API Documentation
+- **Source:** Section 5, WordPress.org compliance
+- **Priority:** Must-Have
+- **Description:** Document Cloudflare Workers AI dependency clearly
+- **Verification:** readme.txt mentions external service; privacy implications noted
+- **Status:** MISSING
+
+### REQ-049: Troubleshooting Guide
+- **Source:** Section 5, Risk Mitigation
 - **Priority:** Should-Have
-- **Description:** Great Minds Plugin installation command in Exercise 7 must pin specific version to avoid breaking changes
-- **Verification:** Plugin install command includes version pin (e.g., `@1.0.0` or equivalent); version is documented
+- **Description:** Document common issues, theme conflicts, workarounds
+- **Verification:** Guide exists; covers top 10 expected issues
+- **Status:** PENDING (v1.1)
 
 ---
 
-## TESTING REQUIREMENTS
+## 7. CUT FROM V1 (Deferred)
 
-### REQ-032: TESTING — Exercise 1 Live Execution (HARD BLOCKER)
-- **Source:** PRD (Every command must work) + Decisions (Decision 7: jaw drop moment)
-- **Priority:** Must-Have (Hard Blocker)
-- **Description:** Exercise 1 (Headless Mode) must be tested end-to-end in Claude Code environment; must successfully execute and produce expected output
-- **Verification:** Exercise 1 command runs in Claude Code; output matches expected output sample; completes in <10 minutes
+### REQ-050: No Claude Fallback (CUT)
+- **Source:** Decision 2
+- **Priority:** Cut — NEVER
+- **Description:** Single LLM path only; no hybrid AI
+- **Status:** ENFORCED
 
-### REQ-033: TESTING — Exercise 6 Pre-Demo Hardening
-- **Source:** Decisions (Decision 2: harden orchestration, extensive testing before live workshop)
-- **Priority:** Must-Have
-- **Description:** Exercise 6 (parallel agent debate) must be extensively pre-tested with explicit error recovery paths documented; must be validated for live demo readiness
-- **Verification:** Exercise 6 tested ≥5 times in target environment; error recovery steps documented; 7-minute buffer allocated; "ready for live demo" sign-off obtained
+### REQ-051: No Full Site Scanning (v1.1)
+- **Source:** Decision 3
+- **Priority:** Cut — v1.1
+- **Description:** Homepage-only extraction in v1
+- **Status:** DEFERRED
 
-### REQ-034: TESTING — Exercise 7 Local Fallback Validation
-- **Source:** Decisions (Decision 4: local alternative that demonstrates same concepts without external dependencies)
-- **Priority:** Must-Have
-- **Description:** Exercise 7 local fallback must be tested and validated to work independently of external plugin
-- **Verification:** Local fallback code tested independently; produces output demonstrating same core concepts as plugin version; documented as reliable alternative
+### REQ-052: No FAQ Auto-Generation (v1.1)
+- **Source:** Section 2
+- **Priority:** Cut — v1.1
+- **Description:** Use pre-written templates; auto-gen deferred
+- **Status:** DEFERRED
 
-### REQ-035: TESTING — All Commands Syntax Validation
-- **Source:** PRD (Every command must be real and work)
-- **Priority:** Must-Have
-- **Description:** All 7 exercises' commands must pass syntax validation for Claude Code environment
-- **Verification:** Shellcheck or equivalent linter validates bash commands; Claude Code validates Claude syntax; no syntax errors found
+### REQ-053: No Analytics Dashboard (v1.1)
+- **Source:** Decision 15
+- **Priority:** Cut — v1.1 (90 days post-launch)
+- **Description:** Data collection only; no UI
+- **Status:** DEFERRED
 
-### REQ-036: TESTING — Cross-Platform Path Testing
-- **Source:** Decisions (Risk Register: Windows path issues)
-- **Priority:** Should-Have
-- **Description:** Commands containing file paths must be tested on both macOS and Windows environments (or documented with platform-specific variants)
-- **Verification:** Exercise commands tested on Windows and macOS; path handling verified or variants provided in FAQ
+### REQ-054: No Lead Capture (v1.1)
+- **Source:** Decision 9
+- **Priority:** Cut — v1.1 (60 days post-launch, Board mandate)
+- **Description:** No email collection in v1
+- **Status:** DEFERRED
 
-### REQ-037: TESTING — API Key Failure Handling
-- **Source:** Decisions (Risk Register, Open Questions: API key failure)
-- **Priority:** Should-Have
-- **Description:** Exercises must document what to do if Claude API key fails mid-workshop (setup instructions, recovery steps)
-- **Verification:** Troubleshooting section or FAQ addresses API key configuration and recovery
+### REQ-055: No Multi-Language (v1.2)
+- **Source:** Decision 14
+- **Priority:** Cut — v1.2
+- **Description:** English only in v1
+- **Status:** DEFERRED
 
----
+### REQ-056: No Widget Customization (v2)
+- **Source:** Section 2
+- **Priority:** Cut — v2
+- **Description:** No color/font/position pickers
+- **Status:** DEFERRED
 
-## ARCHITECTURAL REQUIREMENTS
-
-### REQ-038: ARCHITECTURE — Three Markdown Files Structure
-- **Source:** Decisions (Decision 3)
-- **Priority:** Must-Have
-- **Description:** Deliverable must consolidate into three markdown files: AGENTS-ASSEMBLE-SLIDES.md, AGENTS-ASSEMBLE-SCRIPT.md, AGENTS-ASSEMBLE-EXERCISES.md
-- **Verification:** Exactly 3 markdown files created; no fragmentation into 7+ separate exercise files; all content consolidated
-
-### REQ-039: ARCHITECTURE — No Infrastructure
-- **Source:** Decisions (Decision 3)
-- **Priority:** Must-Have
-- **Description:** No backend server, database, or web app required; zero infrastructure maintenance burden
-- **Verification:** File inventory contains no server code, database migrations, or web framework configuration; project ships as static markdown
-
-### REQ-040: ARCHITECTURE — Standalone Executability
-- **Source:** PRD (All copy-paste) + Decisions (Decision 3: static docs that run commands locally)
-- **Priority:** Must-Have
-- **Description:** All exercises must be executable locally with copy-paste commands; no external web service required (except Claude API)
-- **Verification:** Each exercise can be executed locally by copying code and running in Claude Code or bash; no external service dependency
+### REQ-057: No Conversation History (v2)
+- **Source:** Section 2
+- **Priority:** Cut — v2
+- **Description:** Stateless chat; no memory
+- **Status:** DEFERRED
 
 ---
 
-## BRAND & NAMING REQUIREMENTS
+## 8. OPEN QUESTIONS REQUIRING RESOLUTION
 
-### REQ-041: BRAND — Product Name Consistency
-- **Source:** Decisions (Decision 1)
-- **Priority:** Must-Have
-- **Description:** Use "Agents Assemble" for all documentation titles and searchable contexts; use "Assemble" as casual brand reference in conversation
-- **Verification:** File names and headers use "Agents Assemble"; script may use "Assemble" in casual speech; no inconsistency between formal and casual usage
+### OQ-001: Product Name Finalization
+- **Source:** Section 4, Open Question 1
+- **Decision Needed:** LocalGenius vs AskLocal vs Genie
+- **Recommendation:** Ship as "LocalGenius" (Elon's trademark concerns on "Genie")
+- **Deadline:** Before WordPress.org submission
 
----
+### OQ-002: Free Tier Rate Limit Confirmation
+- **Source:** Section 4, Open Question 2
+- **Options:** 25/month vs 50/month vs 100/month
+- **Recommendation:** 100/month with aggressive caching
+- **Deadline:** Before build
 
-## INTEGRATION REQUIREMENTS
+### OQ-003: Error Message Copy
+- **Source:** Section 4, Open Question 3
+- **Decision Needed:** Final error message wording
+- **Current Proposal:** "I'd recommend calling us directly at [phone] for this one"
+- **Deadline:** Before widget implementation
 
-### REQ-042: CONTENT — Plugin Installation Command Exact
-- **Source:** PRD (Slide 7)
-- **Priority:** Must-Have
-- **Description:** Plugin installation command must be exact: `npx plugins add sethshoultes/great-minds-plugin` (with version pin from Req-031)
-- **Verification:** Command shown in Slide 7 and Exercise 7 matches specification; version pinned
-
-### REQ-043: INTEGRATION — Exercise 7 Fallback Demonstrates Core Concepts
-- **Source:** Decisions (Decision 4)
-- **Priority:** Must-Have
-- **Description:** Exercise 7 local fallback must demonstrate the same core concepts as the plugin (agent teams, automation, etc.) without requiring external plugin
-- **Verification:** Local fallback code reviewed; covers same concepts as plugin version; works independently; documented in Exercise 7
+### OQ-004: Widget Position Toggle
+- **Source:** Section 4, Open Question 4
+- **Decision Needed:** Add 4-corner toggle?
+- **Recommendation:** Ship bottom-right only; add toggle post-launch if support demands
+- **Deadline:** Post-launch decision
 
 ---
 
 ## REQUIREMENTS BY DELIVERABLE
 
-### docs/AGENTS-ASSEMBLE-SLIDES.md
-REQ-001, REQ-004, REQ-005, REQ-006, REQ-007, REQ-008, REQ-009, REQ-010, REQ-022, REQ-025, REQ-026, REQ-038, REQ-041, REQ-042
+### Admin Interface (class-admin.php + settings-page.php)
+REQ-002, REQ-003, REQ-004, REQ-031, REQ-032
 
-### docs/AGENTS-ASSEMBLE-SCRIPT.md
-REQ-002, REQ-018, REQ-019, REQ-020, REQ-021, REQ-022, REQ-023, REQ-024, REQ-025, REQ-026, REQ-038
+### Chat Widget (chat-widget.js + chat-widget.css)
+REQ-009, REQ-010, REQ-026, REQ-027, REQ-028, REQ-029, REQ-030, REQ-033, REQ-034, REQ-035
 
-### docs/AGENTS-ASSEMBLE-EXERCISES.md
-REQ-003, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015, REQ-016, REQ-017, REQ-025, REQ-026, REQ-027, REQ-028, REQ-029, REQ-030, REQ-031, REQ-032, REQ-033, REQ-034, REQ-035, REQ-036, REQ-037, REQ-038, REQ-040, REQ-042, REQ-043
+### Cloudflare Worker (worker.js + cache.js + prompts.js)
+REQ-014, REQ-015, REQ-016, REQ-017, REQ-018, REQ-019, REQ-020, REQ-021
+
+### FAQ Templates (retail.json, general.json)
+REQ-022, REQ-023, REQ-024, REQ-025
+
+### Documentation (readme.txt)
+REQ-047, REQ-048
+
+### Testing
+REQ-036 through REQ-046
 
 ---
 
 ## HARD BLOCKERS (Build Fails If Not Met)
 
-1. **REQ-025** — Zero placeholder content (grep validation)
-2. **REQ-026** — All commands real and functional (code review + execution test)
-3. **REQ-032** — Exercise 1 live execution (end-to-end test)
+1. **REQ-001** — Plugin activation works without errors
+2. **REQ-019** — Worker timeout with graceful fallback
+3. **REQ-028** — No AI branding anywhere in UI
+4. **REQ-035** — Basic ARIA labels for accessibility
+5. **REQ-050** — No Claude/hybrid AI (single LLM path enforced)
 
 ---
 
-## VERIFIED CLAUDE CODE CLI SYNTAX
+## RISK MITIGATIONS EMBEDDED IN REQUIREMENTS
 
-The following syntax has been verified against official Claude Code documentation (April 2026):
-
-### Headless Mode
-```bash
-claude -p "Your prompt here"                    # Basic headless execution
-claude -p "prompt" --max-turns 10               # Limit agent turns
-claude -p "prompt" --max-budget-usd 5.00        # Budget cap in USD
-claude -p "prompt" --allowedTools "Bash,Read,Edit"  # Pre-approve tools
-claude -p "prompt" --output-format json         # JSON output
-```
-
-### /loop Command (Built-in Skill)
-```bash
-/loop 5m check the build status                 # Every 5 minutes
-/loop 30m run tests every 30 minutes            # Custom interval
-/loop check deployment every 10 minutes         # Natural language interval
-```
-
-### Custom Commands (Skills)
-```
-~/.claude/skills/<name>/SKILL.md                # Personal skills directory
-.claude/skills/<name>/SKILL.md                  # Project skills directory
-```
-
-### Hooks (settings.json)
-```json
-{
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          { "type": "command", "command": "echo 'Commit done!' >&2" }
-        ]
-      }
-    ]
-  }
-}
-```
-
-**Documentation Sources:**
-- Headless Mode: https://code.claude.com/docs/en/headless.md
-- CLI Reference: https://code.claude.com/docs/en/cli-reference.md
-- Scheduled Tasks: https://code.claude.com/docs/en/scheduled-tasks.md
-- Hooks Guide: https://code.claude.com/docs/en/hooks-guide.md
-- Skills: https://code.claude.com/docs/en/slash-commands.md
+| Risk | Mitigating Requirements |
+|------|------------------------|
+| LLM Hallucination | REQ-018 (system prompts), REQ-022 (FAQ templates as ground truth), REQ-037 (hallucination testing) |
+| Widget Conflicts | REQ-013 (no jQuery), REQ-040 (compatibility testing) |
+| Rate Limit Abuse | REQ-010, REQ-020, REQ-021, REQ-041 |
+| Worker Latency | REQ-016 (caching), REQ-019 (timeout), REQ-039 (benchmarking) |
+| WordPress.org Rejection | REQ-012 (namespace), REQ-046 (readiness), REQ-048 (API docs) |
+| 1-Star Reviews | REQ-007 (graceful errors), REQ-033 (human messages), REQ-040 (conflict testing) |
 
 ---
 
-## RISK REGISTER
+## SUCCESS CRITERIA (From decisions.md)
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| All deliverables are placeholder content only | Critical | Critical | Re-read PRD, generate ALL 7 exercise complete content with real commands |
-| Exercise 6 parallel debate has 30% failure rate in live demos | High | High | Pre-test thoroughly with explicit error recovery, allocate 7 minutes |
-| Windows path compatibility issues | High | High | Test all exercises on Windows, create FAQ with workarounds |
-| great-minds-plugin external dependency may break | Medium | Critical | Implement local fallback, version-pin plugin |
-| Ralph Wiggum Loop bash script may differ on Windows | High | High | Provide PowerShell equivalent, document shell requirements |
-| API rate limits if everyone runs loop simultaneously | Low | Medium | Add explicit sleep delays between iterations |
-| Claude API latency causes timeouts | Medium | Medium | Document expected timeout behavior, set realistic expectations |
-| "Complete in 30 minutes" timing is unrealistic | High | Medium | Plan for 45 minutes, time with fresh eyes |
-
----
-
-## WAVE EXECUTION ORDER
-
-```
-Wave 1 (Parallel - Foundation):
-  - Create docs/ directory structure
-  - Verify Claude Code CLI syntax (test all commands)
-  - Create FAQ section for troubleshooting
-
-Wave 2 (Parallel - Content Creation):
-  - Write AGENTS-ASSEMBLE-SLIDES.md (7 slides)
-  - Write AGENTS-ASSEMBLE-SCRIPT.md (presenter notes)
-  - Write Exercise 1-5 content in EXERCISES.md
-
-Wave 3 (Sequential - High-Risk Items):
-  - Write Exercise 6 with hardened error recovery
-  - Write Exercise 7 with local fallback
-  - Test parallel agent debate extensively
-
-Wave 4 (Sequential - Validation):
-  - Run placeholder content grep validation
-  - Execute all commands end-to-end
-  - Time full workshop run-through
-  - Cross-platform testing (Windows/macOS)
-```
-
----
-
-## SUCCESS CRITERIA
-
-From PRD:
-- [ ] All 3 files exist with complete content
-- [ ] Zero placeholder text (`grep -riE "placeholder|coming soon|TODO|TBD"` returns 0)
-- [ ] Every command in exercises is real and works in Claude Code
-- [ ] Speaking script covers all 7 slides with timing
-- [ ] A developer can complete all 7 exercises in 45 minutes
-
-From decisions.md Essence:
-- [ ] First 30 seconds = jaw drop (paste, watch it work)
-- [ ] Attendees leave "dangerous" not "informed"
-- [ ] Workshop ends with keyboards clicking, not applause
+- [ ] All components implemented (admin, widget, worker, templates)
+- [ ] Zero placeholder content
+- [ ] Every command/API is real and functional
+- [ ] Widget activates in <30 seconds
+- [ ] 80% cache hit rate achieved in testing
+- [ ] Plugin passes WordPress.org checker
+- [ ] No "AI" or "chatbot" language in UI
+- [ ] Widget looks "beautiful, not spammy"
+- [ ] First answer works: "What are your hours?" answered instantly
 
 ---
 
 **Document Version:** 1.0
-**Last Updated:** 2024-04-09
-**Total Requirements:** 43 (39 Must-Have, 4 Should-Have)
-**Hard Blockers:** 3
+**Last Updated:** 2025-04-09
+**Total Requirements:** 57 Must-Have, 15 Should-Have, 10 Cut, 3 Open Questions

@@ -1,3 +1,7 @@
+Apr 9, 2026 — 6:43 PM
+
+  Workshop: Claude Code audience, install Great Minds + Ralph Wiggum plugins  ·  47688e6
+
 Apr 9, 2026 — 6:36 PM
 
   Stash changes in CHANGELOG.human.md  ·  e86b298

@@ -1,21 +1,27 @@
-# Sara Blakely Gut-Check: Agents Assemble Workshop
+# Sara Blakely Gut-Check: LocalGenius Lite
 
 ## Would a real customer pay for this?
-**Yes, but not because of the plan—because of the promise.** "Build while you sleep" is the hook. The problem? This plan is 1,000 lines of engineering process. The customer doesn't care about "Wave 4 validation" or "REQ-016 traceability." They care: *Will this actually work when I try it?*
 
-## What's confusing? What makes someone bounce?
-- **Exercise 6 with Steve Jobs & Elon Musk personas**—cute, but feels gimmicky. Real devs want to see *their* code getting reviewed, not a fake debate.
-- **Too many safety disclaimers.** "MAX_ITERATIONS=3", "budget caps", "error recovery"—you're selling danger then immediately bubble-wrapping it. Pick a lane.
-- **Plugin dependency in Exercise 7.** If that plugin breaks during a live workshop, you're dead. The fallback is buried. Lead with the fallback, plugin is the bonus.
+**Yes, but only if that first answer is instant.** Maria doesn't care about your Cloudflare Worker architecture. She cares that when someone asks "are you open Sundays?" at 11pm, they get an answer. The obsession with "what are your hours?" being perfect is the right obsession. Don't lose it.
+
+## What's confusing? What would make someone bounce?
+
+1. **"Select your business type" is friction.** Why am I choosing? You have a homepage scanner—use it to auto-detect.
+2. **100 questions/month feels arbitrary.** Maria won't track this. She'll see "sorry, call us" one day and think it's broken. Make the limit invisible or make the upgrade obvious.
+3. **No proof it's working.** Maria installs it, forgets it, uninstalls at Day 30 because she never SAW it answer anything. Add ONE number to the admin: "Questions answered: 47." That's the whole product.
 
 ## 30-Second Elevator Pitch
-*"What if your code kept shipping while you slept? This workshop teaches you to build AI agent teams that pick tasks, write code, test, and commit—automatically. In 45 minutes, you'll go from copy-paste to orchestrating agents that work in parallel. You'll leave dangerous."*
 
-## What would you test first with $0 budget?
-**Exercise 1, live, on Twitter/X.** Screen record yourself pasting one command, watching Claude create a file and commit it. 30 seconds. No explanation. Caption: "My new employee works for $0.02/hour and never sleeps." See who DMs you.
+"Your website answers customer questions while you sleep. Install the plugin, tell us your hours, done. No chatbot setup. No monthly fees. When someone asks 'are you open?' at midnight, they get the answer—and you get the sale."
+
+## What would I test first with $0 marketing budget?
+
+**Facebook groups for local business owners.** Find 10 restaurant owners. Say: "I built this, it's free, I want feedback." Watch them install it. See where they get stuck. Those 10 installs will teach you more than 10,000 lines of planning.
 
 ## What's the retention hook?
-**Missing.** After the workshop, then what? No Slack community, no "share your agent" showcase, no leaderboard of craziest automations. People do Exercise 7, close their laptop, forget. You need a "post this to #agents-assemble" moment. That's how Spanx grew—customers *showing each other* the before/after. Where's your before/after?
+
+**Weak.** Once it works, Maria forgets it exists. That's fine for v1. But for v1.1: "You answered 47 questions this month while closed." Make her feel smart for keeping it installed.
 
 ---
-**Bottom line:** The *content* is solid. The *plan* is over-engineered. Ship Exercise 1-3, test with 5 real humans, iterate. Stop planning, start selling.
+
+**Bottom line:** This solves a real problem. But you're building for engineers, not Maria. Kill the dropdown. Auto-detect everything. Add one visible counter. The best product is the one she doesn't have to think about.

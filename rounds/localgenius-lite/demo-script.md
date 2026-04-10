@@ -4,91 +4,98 @@
 ---
 
 **NARRATOR:**
-It's eleven-thirty at night. Maria runs a dental practice in Riverside. She's been up since five. And right now, someone's on her website asking if she takes Delta Dental.
+Here's a number that should keep you up at night: 83%.
 
-[SCREEN: A dental practice homepage, well-designed but static. A visitor's cursor hovers over the "Contact" page. The office phone number sits there, unhelpful. It's almost midnight.]
-
-**NARRATOR:**
-They won't call. They never call. They'll Google another dentist who has the answer *right now*. And Maria? She'll never know she lost them.
-
-[SCREEN: The visitor closes the tab. Gone.]
+[SCREEN: Black. The number "83%" fades in, stark white.]
 
 **NARRATOR:**
-Here's the thing nobody talks about: small businesses don't lose customers because their service is bad. They lose them in the gaps. The eleven-thirty questions. The Sunday afternoon "are you open tomorrow?" The "do you have parking?" asked at two in the morning by someone who can't sleep and is finally dealing with that thing they've been putting off.
+That's how many people will leave your website if they can't find an answer in under two minutes. They don't call. They don't email. They just... leave.
 
-[SCREEN: A WordPress dashboard. Clean, familiar.]
-
-**NARRATOR:**
-So we built something.
-
-[SCREEN: Mouse clicks "Add New Plugin." Types "LocalGenius." One result appears. Click "Install." Click "Activate." Three seconds total.]
+[SCREEN: A plumber's website. Professional. Nice logo. Hours listed. A chat bubble that says "Leave us a message!" It's 10:47 PM.]
 
 **NARRATOR:**
-LocalGenius. You install it. That's step one. You want to know step two?
+Mike Deluca runs a plumbing company in Phoenix. Good guy. Thirty years in the business. His website cost him four grand. Right now, someone's standing in their kitchen with water pooling around their feet, and they're on Mike's site asking one question—
 
-[SCREEN: The LocalGenius settings page appears. A simple dropdown menu: "What type of business is this?" Options scroll past: Restaurant, Salon, Auto Repair, Legal Services... The cursor selects "Dental Practice."]
-
-**NARRATOR:**
-Pick your business type. That's it. There is no step three.
-
-[SCREEN: A subtle animation. "Scanning your homepage..." Then: "Business name detected: Riverside Family Dentistry. Phone: (951) 555-0147." A green checkmark.]
+[SCREEN: The visitor types in Google: "emergency plumber phoenix open now"]
 
 **NARRATOR:**
-The plugin just read Maria's homepage. Found her business name. Found her phone number. And loaded a hundred of the questions that dental patients actually ask—what insurance do you take, do you see kids, what should I bring to my first appointment.
+"Can you come tonight?"
 
-[SCREEN: The WordPress dashboard shows "LocalGenius: Active" with a small preview of the chat widget.]
-
-**NARRATOR:**
-Now let's go see what her customers see.
-
-[SCREEN: The Riverside Family Dentistry homepage. In the bottom right corner, a small, elegant chat bubble appears. Not aggressive. Not flashing. Just... there.]
+[SCREEN: Mike's site. Static. No answer. The visitor's cursor hovers... then clicks away to a competitor.]
 
 **NARRATOR:**
-That's it. That's the whole thing.
+Mike's phone didn't ring. His inbox stayed empty. He lost a $400 job because his website couldn't say: "Yes. Call us. We're here."
 
-[SCREEN: The cursor clicks the chat bubble. A friendly widget opens: "Hi! I'm here to help with questions about Riverside Family Dentistry."]
-
-**NARRATOR:**
-Eleven-thirty at night. That person with the Delta Dental question? Let's ask.
-
-[SCREEN: User types: "Do you accept Delta Dental insurance?"]
+[SCREEN: Cut to black. Beat.]
 
 **NARRATOR:**
-*pause*
+What if it could?
 
-[SCREEN: The response appears, smooth and immediate: "We work with many insurance providers. Please contact our office with your insurance details and we'll verify your coverage before your appointment. You can reach us at (951) 555-0147."]
-
-**NARRATOR:**
-Not a hallucination. Not a made-up answer. The widget knows what it knows—and knows what it doesn't. It gives real information and hands off to a human when it should.
-
-[SCREEN: User types: "Are you accepting new patients?"]
-
-[SCREEN: Response: "We welcome new patients! Please call our office or fill out our new patient forms to get started with your first appointment."]
+[SCREEN: WordPress dashboard. Mouse clicks Plugins > Add New. Types "LocalGenius." Install. Activate. Done in four seconds.]
 
 **NARRATOR:**
-Another question answered. Another person who didn't bounce.
+LocalGenius. Install it. I'm serious, that's the whole thing—install it and answer one question.
 
-[SCREEN: Quick montage of questions being asked and answered: "Do you handle emergencies?" "What should I bring to my first visit?" "Do you see children?" Each answer appears instantly, professionally, helpfully.]
-
-**NARRATOR:**
-And here's what Maria sees in the morning.
-
-[SCREEN: WordPress dashboard. LocalGenius stats: "23 questions answered while you were away." A small chart shows activity overnight and early morning.]
+[SCREEN: LocalGenius settings. A dropdown: "What type of business are you?" The cursor scrolls through: Dentist, Restaurant, Salon, Law Office... lands on "Plumbing / HVAC." Click.]
 
 **NARRATOR:**
-Twenty-three conversations that would have been twenty-three lost opportunities. Twenty-three people who got answers instead of silence.
+What kind of business. That's it. Done.
 
-[SCREEN: The chat widget, peaceful in the corner of the site.]
-
-**NARRATOR:**
-One plugin. One dropdown menu. Zero configuration. And your website stops losing customers at eleven-thirty at night.
-
-[SCREEN: LocalGenius logo. Tagline: "Your Website, Finally Helpful."]
+[SCREEN: The plugin scans. Text appears: "Detected: Deluca Plumbing. Phone: (602) 555-0183." A green checkmark pulses once.]
 
 **NARRATOR:**
-LocalGenius. Because nobody should lose a customer to a question they would have happily answered—if only they'd been awake to hear it.
+It just read Mike's homepage. Grabbed his business name, his phone number. And it already knows what plumbing customers ask. "Do you do emergencies?" "What do you charge?" "How fast can you get here?"
 
-[SCREEN: Fade to wordmark.]
+[SCREEN: Mike's website. Bottom right corner. A subtle chat bubble appears. Clean. Unobtrusive. Waiting.]
+
+**NARRATOR:**
+Now watch.
+
+[SCREEN: 11:12 PM. A visitor opens the chat. Types: "Do you handle emergency calls?"]
+
+**NARRATOR:**
+Eleven at night. Burst pipe. Panic.
+
+[SCREEN: The response appears instantly: "We know plumbing issues can't wait. We provide emergency services for urgent situations like burst pipes and major leaks. Give us a call at (602) 555-0183 and we'll see what we can do."]
+
+**NARRATOR:**
+That's not a canned response. That's not a robot. That's Mike—or the best version of Mike, the one who's awake at 11 PM with exactly the right answer.
+
+[SCREEN: The visitor taps the phone number. The call screen appears: "Calling Deluca Plumbing..."]
+
+**NARRATOR:**
+And Mike's phone rings.
+
+[SCREEN: Mike's dashboard the next morning. A card reads: "14 questions answered overnight. 0 missed opportunities."]
+
+**NARRATOR:**
+Fourteen people who got answers instead of silence. Fourteen conversations that happened while Mike was sleeping.
+
+[SCREEN: Rapid-fire montage. Different businesses, different widgets, same magic:
+- Dental site: "Do you take Blue Cross?" / Answer appears.
+- Restaurant: "Are you open Thanksgiving?" / Answer appears.
+- Salon: "Do you do balayage?" / Answer appears.
+- Auto shop: "Do you work on BMWs?" / Answer appears.]
+
+**NARRATOR:**
+Every business type. Every common question. Every hour of the night.
+
+[SCREEN: Back to Mike's website. The chat bubble sits quietly in the corner.]
+
+**NARRATOR:**
+One plugin. One dropdown. Zero configuration. And suddenly your website doesn't just sit there—it *works*.
+
+[SCREEN: The chat opens. A customer types: "Can you come out today?" The answer appears: "We strive for same-day service when possible. Give us a call at (602) 555-0183 and we'll get to you as quickly as we can."]
+
+**NARRATOR:**
+*That's* the answer that wins the job. That's the answer that used to disappear into voicemail.
+
+[SCREEN: LocalGenius logo materializes. Tagline below: "Your website. Finally awake."]
+
+**NARRATOR:**
+LocalGenius. Because nobody should lose a customer at midnight... to a question they would've answered by 8 AM.
+
+[SCREEN: Fade to black. Small text: "Install free at wordpress.org"]
 
 ---
 

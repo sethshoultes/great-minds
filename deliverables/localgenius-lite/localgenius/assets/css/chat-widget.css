@@ -1,0 +1,457 @@
+/**
+ * LocalGenius Chat Widget Styles
+ *
+ * One beautiful widget design. Zero customization.
+ * Decision 7: Ship perfect, not configurable.
+ * Decision 8: No AI/robot branding anywhere.
+ *
+ * @package LocalGenius
+ */
+
+/* Reset and base styles */
+.localgenius-widget *,
+.localgenius-widget *::before,
+.localgenius-widget *::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+/* Widget container - fixed bottom right */
+.localgenius-widget {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	z-index: 999999;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 14px;
+	line-height: 1.5;
+	color: #1e1e1e;
+}
+
+/* Chat bubble button */
+.localgenius-bubble {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	background: #2271b1;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 4px 12px rgba(34, 113, 177, 0.4);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.localgenius-bubble:hover {
+	transform: scale(1.05);
+	box-shadow: 0 6px 16px rgba(34, 113, 177, 0.5);
+}
+
+.localgenius-bubble:focus {
+	outline: 2px solid #fff;
+	outline-offset: 2px;
+}
+
+.localgenius-bubble svg {
+	width: 26px;
+	height: 26px;
+	color: #fff;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.localgenius-bubble-close {
+	display: none;
+}
+
+.localgenius-widget.is-open .localgenius-bubble-open {
+	display: none;
+}
+
+.localgenius-widget.is-open .localgenius-bubble-close {
+	display: block;
+}
+
+/* Chat window */
+.localgenius-window {
+	position: absolute;
+	bottom: 72px;
+	right: 0;
+	width: 350px;
+	max-height: 450px;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(20px);
+	transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
+.localgenius-widget.is-open .localgenius-window {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+
+/* Chat header */
+.localgenius-header {
+	padding: 16px 20px;
+	background: #2271b1;
+	color: #fff;
+}
+
+.localgenius-header-title {
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 2px;
+}
+
+.localgenius-header-subtitle {
+	font-size: 13px;
+	opacity: 0.9;
+}
+
+/* Messages container */
+.localgenius-messages {
+	flex: 1;
+	overflow-y: auto;
+	padding: 16px;
+	min-height: 200px;
+	max-height: 280px;
+	background: #f8f9fa;
+}
+
+/* Individual message */
+.localgenius-message {
+	margin-bottom: 12px;
+	max-width: 85%;
+	animation: localgenius-fadeIn 0.2s ease;
+}
+
+@keyframes localgenius-fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.localgenius-message-bot {
+	margin-right: auto;
+}
+
+.localgenius-message-user {
+	margin-left: auto;
+}
+
+.localgenius-message-content {
+	padding: 10px 14px;
+	border-radius: 16px;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.localgenius-message-bot .localgenius-message-content {
+	background: #fff;
+	border: 1px solid #e2e4e7;
+	border-radius: 16px 16px 16px 4px;
+}
+
+.localgenius-message-user .localgenius-message-content {
+	background: #2271b1;
+	color: #fff;
+	border-radius: 16px 16px 4px 16px;
+}
+
+/* Typing indicator */
+.localgenius-typing {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 12px 14px;
+	background: #fff;
+	border: 1px solid #e2e4e7;
+	border-radius: 16px 16px 16px 4px;
+	max-width: 60px;
+}
+
+.localgenius-typing-dot {
+	width: 6px;
+	height: 6px;
+	background: #8e9aa6;
+	border-radius: 50%;
+	animation: localgenius-typing 1s ease-in-out infinite;
+}
+
+.localgenius-typing-dot:nth-child(2) {
+	animation-delay: 0.15s;
+}
+
+.localgenius-typing-dot:nth-child(3) {
+	animation-delay: 0.3s;
+}
+
+@keyframes localgenius-typing {
+	0%, 100% {
+		opacity: 0.4;
+		transform: scale(0.8);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+/* GDPR consent */
+.localgenius-consent {
+	padding: 16px;
+	background: #fff;
+	border-top: 1px solid #e2e4e7;
+}
+
+.localgenius-consent-checkbox {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	cursor: pointer;
+}
+
+.localgenius-consent-checkbox input {
+	margin-top: 3px;
+	flex-shrink: 0;
+}
+
+.localgenius-consent-text {
+	font-size: 12px;
+	color: #646970;
+	line-height: 1.4;
+}
+
+.localgenius-consent-text a {
+	color: #2271b1;
+	text-decoration: none;
+}
+
+.localgenius-consent-text a:hover {
+	text-decoration: underline;
+}
+
+/* Input area */
+.localgenius-input-area {
+	padding: 12px 16px;
+	background: #fff;
+	border-top: 1px solid #e2e4e7;
+}
+
+.localgenius-input-area.is-disabled {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.localgenius-input-wrapper {
+	display: flex;
+	gap: 8px;
+	align-items: flex-end;
+}
+
+.localgenius-input {
+	flex: 1;
+	padding: 10px 14px;
+	border: 1px solid #dcdde1;
+	border-radius: 20px;
+	font-size: 14px;
+	font-family: inherit;
+	line-height: 1.4;
+	resize: none;
+	min-height: 40px;
+	max-height: 100px;
+}
+
+.localgenius-input:focus {
+	outline: none;
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+}
+
+.localgenius-input::placeholder {
+	color: #8e9aa6;
+}
+
+.localgenius-send {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	background: #2271b1;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	flex-shrink: 0;
+	transition: background 0.2s ease;
+}
+
+.localgenius-send:hover {
+	background: #135e96;
+}
+
+.localgenius-send:focus {
+	outline: 2px solid #2271b1;
+	outline-offset: 2px;
+}
+
+.localgenius-send:disabled {
+	background: #dcdde1;
+	cursor: not-allowed;
+}
+
+.localgenius-send svg {
+	width: 18px;
+	height: 18px;
+	color: #fff;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* Footer / Powered by */
+.localgenius-footer {
+	padding: 8px 16px;
+	text-align: center;
+	background: #f8f9fa;
+	border-top: 1px solid #e2e4e7;
+}
+
+.localgenius-powered {
+	font-size: 10px;
+	color: #8e9aa6;
+	text-decoration: none;
+}
+
+.localgenius-powered:hover {
+	color: #646970;
+}
+
+/* Rate limit warning */
+.localgenius-rate-limit {
+	padding: 8px 12px;
+	margin: 0 16px 12px;
+	background: #fcf0f1;
+	border: 1px solid #e8c3c4;
+	border-radius: 8px;
+	font-size: 12px;
+	color: #8a1f1f;
+	text-align: center;
+}
+
+/* Welcome message */
+.localgenius-welcome {
+	text-align: center;
+	padding: 24px 16px;
+	color: #646970;
+}
+
+.localgenius-welcome-icon {
+	width: 48px;
+	height: 48px;
+	margin: 0 auto 12px;
+	background: #e8f0fe;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.localgenius-welcome-icon svg {
+	width: 24px;
+	height: 24px;
+	color: #2271b1;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+}
+
+.localgenius-welcome-text {
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+/* Mobile responsive */
+@media screen and (max-width: 500px) {
+	.localgenius-widget {
+		bottom: 0;
+		right: 0;
+		left: 0;
+	}
+
+	.localgenius-bubble {
+		position: fixed;
+		bottom: 16px;
+		right: 16px;
+	}
+
+	.localgenius-window {
+		position: fixed;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		width: 100%;
+		max-height: 80vh;
+		border-radius: 16px 16px 0 0;
+	}
+
+	.localgenius-widget.is-open .localgenius-bubble {
+		bottom: auto;
+		top: 16px;
+		right: 16px;
+		width: 40px;
+		height: 40px;
+		z-index: 1000000;
+	}
+
+	.localgenius-widget.is-open .localgenius-bubble svg {
+		width: 20px;
+		height: 20px;
+	}
+
+	.localgenius-messages {
+		max-height: calc(80vh - 200px);
+	}
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+	.localgenius-window,
+	.localgenius-message,
+	.localgenius-bubble,
+	.localgenius-typing-dot {
+		animation: none;
+		transition: none;
+	}
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+	.localgenius-bubble,
+	.localgenius-send {
+		border: 2px solid currentColor;
+	}
+
+	.localgenius-message-content {
+		border: 1px solid currentColor;
+	}
+}

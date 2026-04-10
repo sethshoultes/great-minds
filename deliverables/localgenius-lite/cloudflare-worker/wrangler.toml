@@ -1,0 +1,37 @@
+# LocalGenius Lite Cloudflare Worker Configuration
+# Single LLM path - Llama 3.1 8B via Workers AI (Decision 2)
+
+name = "localgenius-lite"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# Workers AI binding for Llama 3.1 8B
+[ai]
+binding = "AI"
+
+# KV namespace for caching (Decision 6: Cache before LLM)
+[[kv_namespaces]]
+binding = "CACHE"
+id = "LOCALGENIUS_CACHE_ID"
+preview_id = "LOCALGENIUS_CACHE_PREVIEW_ID"
+
+# Environment variables
+[vars]
+MONTHLY_QUESTION_LIMIT = "100"
+CACHE_TTL_SECONDS = "86400"
+
+# Production environment
+[env.production]
+name = "localgenius-lite"
+
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "LOCALGENIUS_CACHE_PROD_ID"
+
+# Staging environment
+[env.staging]
+name = "localgenius-lite-staging"
+
+[[env.staging.kv_namespaces]]
+binding = "CACHE"
+id = "LOCALGENIUS_CACHE_STAGING_ID"

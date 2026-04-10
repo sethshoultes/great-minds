@@ -1,201 +1,454 @@
 # LocalGenius Lite — Retention Roadmap
 
-**Author:** Shonda Rhimes (Retention & Engagement Strategist)
+**Author:** Shonda Rhimes (Board Member)
 **Product:** LocalGenius Lite
-**Focus:** What Keeps Users Coming Back + v1.1 Feature Priorities
+**Version:** v1.1 Feature Specification
+**Theme:** "What Keeps Them Coming Back"
+
+---
+
+## The Problem Statement
+
+> "This product is a 'set it and forget it' tool, which sounds like a feature but is actually a retention death sentence."
+
+LocalGenius Lite currently has:
+- A clean cold open (installation)
+- No act two (engagement)
+- No cliffhanger (reason to return)
+- No season arc (transformation story)
+
+**Result:** Users install, forget, hit rate limits they didn't know existed, and churn without becoming advocates.
 
 ---
 
 ## The Retention Philosophy
 
-> "The key to longevity is to keep doing what you're doing, but do it better and do it more."
+Every returning user needs three things:
 
-LocalGenius Lite isn't just a widget. It's a relationship between a small business owner and their customers, mediated by technology. Our retention strategy must honor both sides of that relationship.
+1. **A reason to check** — Something happened that they need to see
+2. **A reward for checking** — Value they get from engaging
+3. **A cliffhanger for next time** — Anticipation for what's coming
 
-**The Core Insight:** Small business owners don't churn from tools — they churn from tools that become invisible. If LocalGenius fades into "that thing I installed once," we lose. If it becomes "the thing that shows me what my customers really want," we win forever.
-
----
-
-## What Keeps Users Coming Back
-
-### Retention Hook #1: The Daily Win Notification
-
-**The Problem:** A plugin that works silently is a plugin that gets forgotten.
-
-**The Solution:** Surface value *every single day*.
-
-**Implementation:**
-- Weekly email digest: "LocalGenius answered 23 questions for you this week"
-- Include the #1 most-asked question
-- Include one insight: "Customers asked about your hours 12 times after 8 PM — consider adding extended hours?"
-- Gentle upgrade nudge only if approaching rate limit
-
-**Why It Works:** The business owner wakes up to evidence that the widget is working. They didn't have to do anything. The tool is their silent partner.
-
-**Retention Impact:** High. This transforms passive utility into active relationship.
+Currently, LocalGenius provides none of these. V1.1 fixes that.
 
 ---
 
-### Retention Hook #2: The "Unanswered Questions" Queue
+## V1.1 Retention Features
 
-**The Problem:** Generic FAQ templates miss the specific questions YOUR customers ask.
+### Feature 1: First Question Celebration
 
-**The Solution:** Show business owners what their customers actually want to know — and let them fill the gaps.
+**The Beat:** The user's widget answers its first real customer question. This is the "aha moment" — proof the product works.
 
-**Implementation:**
-- Dashboard section: "Questions LocalGenius couldn't fully answer"
-- One-click "Add to my FAQ" with suggested answer
-- Track improvement: "Your custom answers helped 47 customers this month"
+**Current State:** User has no idea this happened unless they manually check the dashboard.
 
-**Why It Works:** Every unanswered question is an invitation to engage. The business owner becomes a co-creator of their AI's intelligence. This is investment. Investment prevents churn.
+**V1.1 Implementation:**
 
-**Retention Impact:** Critical. This is the #1 feature Jensen flagged — and he's right. It's also the stickiest engagement loop.
+1. **Admin Dashboard Notice**
+   ```
+   [Star Icon] Your widget just answered its first question!
 
----
+   A visitor asked: "What are your hours?"
+   LocalGenius responded with your business hours automatically.
 
-### Retention Hook #3: The Competitive Whisper
+   [See Your Dashboard] [Dismiss]
+   ```
 
-**The Problem:** Business owners don't know what they don't know.
+2. **Email Notification** (if email captured)
+   ```
+   Subject: Your LocalGenius widget is working!
 
-**The Solution:** Show them what their customers care about that they're not addressing.
+   Hey [Name],
 
-**Implementation:**
-- "Customers asked about [topic] 34 times, but your site doesn't mention it"
-- "Other [business type] owners in [city] added [feature] — see how it's working for them"
-- Benchmark: "You're answering 89% of questions automatically — top 20% of dental practices"
+   Your chat widget just answered its first customer question.
 
-**Why It Works:** Humans are competitive. Small business owners especially. Give them a scoreboard, and they'll keep playing.
+   Someone visited your site and asked: "What are your hours?"
 
-**Retention Impact:** Medium-high. Drives engagement and creates aspirational behavior.
+   LocalGenius handled it instantly — no phone call, no waiting.
 
----
+   [See what else customers are asking →]
+   ```
 
-### Retention Hook #4: The Customer Story
-
-**The Problem:** "47 questions answered" is a statistic. Statistics don't create loyalty.
-
-**The Solution:** Turn data into narrative.
-
-**Implementation:**
-- Monthly "Customer Story" email:
-  - "Last Tuesday at 11:47 PM, someone asked if you do emergency root canals"
-  - "LocalGenius told them yes and gave them your number"
-  - "They called the next morning. That's the kind of moment that builds a practice."
-- Anonymized but specific. Real but respectful.
-
-**Why It Works:** This is Oprah's insight made tactical. People remember stories. "You helped someone at midnight" is memorable. "47 questions answered" is not.
-
-**Retention Impact:** High for emotional investment. Lower frequency, higher impact.
+**Success Metric:** 80% of users who receive first-question notification return to dashboard within 7 days.
 
 ---
 
-### Retention Hook #5: The Upgrade Cliff (Gentle Version)
+### Feature 2: Weekly Performance Digest
 
-**The Problem:** Rate limits feel punitive if they surprise you.
+**The Beat:** A weekly email that creates curiosity and demonstrates ongoing value.
 
-**The Solution:** Make the limit feel like an achievement, not a punishment.
+**Trigger:** Every Monday at 9am local time (if user has received at least 3 questions that week).
 
-**Implementation:**
-- At 75 questions: "Your chat widget is popular! You've helped 75 customers this month."
-- At 90 questions: "10 questions left this month. Your customers clearly value this — want unlimited?"
-- At 100 questions: "You maxed out! That's amazing engagement. Here's what unlimited looks like..."
-- Never fully cut off: degrade gracefully with longer response times or simplified answers
-
-**Why It Works:** The narrative shifts from "you hit a wall" to "you're successful enough to upgrade."
-
-**Retention Impact:** Critical for conversion. This is where free users become paid users.
-
----
-
-### Retention Hook #6: The Seasonal Prompt
-
-**The Problem:** Business needs change throughout the year. Static FAQs don't.
-
-**The Solution:** Proactive, time-aware suggestions.
-
-**Implementation:**
-- December: "Holiday hours question coming — want to add a holiday schedule FAQ?"
-- Tax season (for accountants): "Clients will ask about extensions — here's a template"
-- Summer (for HVAC): "AC questions spike 300% in June — update your emergency FAQ?"
-
-**Why It Works:** This shows the tool is *thinking* on behalf of the business owner. It's not just reactive — it's anticipatory.
-
-**Retention Impact:** Medium. Drives periodic re-engagement and prevents "set and forget" decay.
-
----
-
-## v1.1 Feature Priorities (Retention-First)
-
-### Tier 1: Ship Within 30 Days
-
-| Feature | Retention Impact | Complexity | Notes |
-|---------|------------------|------------|-------|
-| **Weekly email digest** | High | Low | Template + cron job |
-| **Unanswered questions queue** | Critical | Medium | Requires logging + UI |
-| **Soft rate limit messaging** | High | Low | Copy changes + UI |
-| **Basic analytics dashboard** | High | Medium | Questions asked, by day, by type |
-
-### Tier 2: Ship Within 60 Days
-
-| Feature | Retention Impact | Complexity | Notes |
-|---------|------------------|------------|-------|
-| **Lead capture (optional email)** | High (revenue) | Medium | Before or after chat flow |
-| **Custom FAQ editor** | High | Medium | Let owners add their own Q&A |
-| **Competitive insights** | Medium-High | High | Requires aggregate data |
-| **Monthly "customer story" email** | High | Low | Narrative template |
-
-### Tier 3: Ship Within 90 Days
-
-| Feature | Retention Impact | Complexity | Notes |
-|---------|------------------|------------|-------|
-| **Seasonal prompts** | Medium | Medium | Time-based suggestion engine |
-| **Multi-language support** | High (new markets) | High | Translation + UI |
-| **CRM integration (Zapier)** | Medium | Medium | Webhook + partner work |
-| **White-label for agencies** | Medium (revenue) | High | Branding removal + bulk licensing |
-
----
-
-## The Retention Funnel (Visual)
+**Email Content:**
 
 ```
-INSTALL (Day 0)
-    |
-    v
-FIRST VALUE (Day 1) — Widget answers first question
-    |
-    v
-HABIT FORMATION (Week 1-2) — Weekly digest arrives, owner sees value
-    |
-    v
-INVESTMENT (Week 3-4) — Owner adds custom FAQ from unanswered questions
-    |
-    v
-COMPETITION (Month 2) — Owner sees competitive insights, wants to improve
-    |
-    v
-UPGRADE CONSIDERATION (Month 2-3) — Approaching rate limit, clear value
-    |
-    v
-PAID CONVERSION or ADVOCATE — Either pays or tells other business owners
-```
+Subject: Your customers asked 23 questions this week
 
-**Key Retention Windows:**
-- **Day 1-7:** Must deliver visible value (email digest, widget working)
-- **Day 7-30:** Must create investment (custom FAQs, dashboard engagement)
-- **Day 30-90:** Must create habit (regular insights, competitive positioning)
+Hi [Business Name],
+
+Here's what happened on your website this week:
+
+QUESTIONS ANSWERED: 23
+TOP QUESTION: "What are your hours?" (asked 8 times)
+BUSIEST DAY: Thursday
+BUSIEST TIME: 9pm
 
 ---
 
-## Retention Metrics to Track
+[Icon] INSIGHT OF THE WEEK
+Customers asked about "parking" 4 times. You might want to
+add parking info to your homepage or FAQ.
 
-| Metric | Target | Warning Sign |
-|--------|--------|--------------|
-| **Day 7 retention** | >70% still active | <50% = onboarding failure |
-| **Day 30 retention** | >50% still active | <30% = value prop unclear |
-| **Weekly email open rate** | >40% | <20% = content not valuable |
-| **Custom FAQ additions** | >20% of users | <10% = engagement loop broken |
-| **Rate limit approach rate** | >30% | <10% = not enough usage |
-| **Free-to-paid conversion** | >5% | <2% = upgrade value unclear |
+---
+
+[Icon] COULDN'T ANSWER (2 questions)
+• "Do you offer gift cards?"
+• "Can I book online?"
+
+[Add answers to these questions →]
+
+---
+
+Your widget has now helped 127 customers total.
+That's roughly 4 hours of phone calls you didn't have to take.
+
+[View Full Dashboard →]
+
+---
+Powered by LocalGenius
+[Unsubscribe] [Email Settings]
+```
+
+**Key Elements:**
+- One "cliffhanger" insight to create curiosity
+- Unanswered questions create actionable follow-up
+- Time-saved calculation creates emotional value
+- Single CTA to drive dashboard engagement
+
+**Success Metric:** 25% email open rate, 10% click-through to dashboard.
+
+---
+
+### Feature 3: Unanswered Question Alerts
+
+**The Beat:** When the AI can't answer a question, that's not a failure — it's an opportunity. Surface it.
+
+**Current State:** Unanswered questions are logged silently. User never knows.
+
+**V1.1 Implementation:**
+
+1. **Admin Dashboard Card** (persistent until addressed)
+   ```
+   [Alert Icon] 3 questions we couldn't answer
+
+   Your customers asked questions we don't have answers for:
+
+   • "Do you offer financing?" (asked 2x)
+   • "Are you open on holidays?"
+   • "Do you do house calls?"
+
+   [Add Custom Answers] [Dismiss All]
+   ```
+
+2. **In-Dashboard Quick Add**
+   ```
+   ADD ANSWER
+
+   Question: "Do you offer financing?"
+
+   Your Answer: [Text field]
+
+   Tone Preview: "Yep! We offer financing through CareCredit.
+   Give us a call to learn more!"
+
+   [Save Answer] [Skip]
+   ```
+
+3. **Weekly Digest Integration** (see Feature 2)
+
+**The Flywheel:**
+1. Customer asks question AI can't answer
+2. Owner gets notified
+3. Owner adds custom answer
+4. AI learns that answer
+5. Next customer gets helped
+6. Owner feels the product improving
+
+**Success Metric:** 30% of surfaced unanswered questions receive custom answers within 14 days.
+
+---
+
+### Feature 4: Milestone Celebrations
+
+**The Beat:** Progress creates narrative. Milestones create moments of reflection.
+
+**Milestones:**
+- First question answered
+- 10 questions answered
+- 50 questions answered
+- 100 questions answered
+- 500 questions answered
+- 1,000 questions answered
+
+**Implementation:**
+
+1. **Dashboard Achievement Card**
+   ```
+   [Trophy Icon] MILESTONE REACHED
+
+   Your widget has now answered 100 questions!
+
+   That's roughly 3 hours of phone calls you didn't take.
+
+   Your most helpful answer: "What are your hours?"
+   (answered 34 times)
+
+   [Share This Achievement] [Dismiss]
+   ```
+
+2. **Optional Social Share**
+   ```
+   My AI chat widget just answered its 100th customer question!
+   LocalGenius has saved me hours of repetitive phone calls.
+
+   [Share to Twitter] [Share to LinkedIn] [Copy Text]
+   ```
+
+3. **Email Notification** (for major milestones: 100, 500, 1000)
+
+**Success Metric:** 15% of milestone notifications result in social shares or referrals.
+
+---
+
+### Feature 5: Usage Warning System
+
+**The Beat:** Don't let rate limits feel like punishment. Make them feel like success.
+
+**Current State:** User hits 100 questions, sees "limit reached" message to customers, feels frustrated.
+
+**V1.1 Implementation:**
+
+1. **80% Warning (80 questions used)**
+   ```
+   DASHBOARD NOTICE:
+
+   [Info Icon] You've used 80 of your 100 free questions this month!
+
+   That's great — your customers are engaging with your widget.
+
+   At this pace, you might hit your limit in 4 days.
+
+   [Upgrade to Unlimited] [Remind Me Later]
+   ```
+
+2. **100% Reached (with context)**
+   ```
+   DASHBOARD NOTICE:
+
+   [Check Icon] You reached your free limit — that's a good sign!
+
+   100 questions means 100 customers who got instant help.
+
+   Your widget will reset on [Date]. In the meantime:
+
+   • Customers see a friendly "call us" message
+   • No bad experience — just a redirect
+
+   [Upgrade for Unlimited Questions]
+   ```
+
+3. **Email at 80%**
+   ```
+   Subject: Your chat widget is popular!
+
+   You've used 80 of your 100 free questions this month.
+
+   That means 80 customers got instant answers without
+   calling or emailing. Nice work!
+
+   If you want unlimited questions (plus custom branding
+   and priority support), upgrade anytime:
+
+   [Upgrade to LocalGenius Pro →]
+
+   Not ready? No problem — your free tier resets on [Date].
+   ```
+
+**Success Metric:** 20% of users who receive 80% warning convert within 30 days.
+
+---
+
+### Feature 6: Monthly Insights Report
+
+**The Beat:** Transform raw data into actionable business intelligence.
+
+**Trigger:** First of each month (if user has 10+ questions in previous month).
+
+**Email Content:**
+
+```
+Subject: What your customers wanted in March
+
+Hi [Business Name],
+
+Here's your March customer insight report:
+
+---
+
+QUESTIONS ANSWERED: 89
+COMPARED TO FEBRUARY: +34%
+
+---
+
+TOP 5 QUESTIONS:
+1. What are your hours? (23x)
+2. Where are you located? (18x)
+3. Do you take walk-ins? (12x)
+4. How much is [service]? (9x)
+5. Do you take [insurance]? (7x)
+
+---
+
+[Icon] EMERGING TREND
+"Do you offer online booking?" was asked 6 times —
+up from 0 last month. Customers might want this option.
+
+---
+
+[Icon] PEAK HOURS
+Your busiest chat times:
+• Weekdays: 8-9pm (after work browsers)
+• Weekends: 10-11am (weekend planners)
+
+---
+
+[Icon] WHAT WE COULDN'T ANSWER
+5 questions needed your input:
+• "What's your cancellation policy?"
+• "Do you have parking?"
+• [See all →]
+
+---
+
+TOTAL QUESTIONS SINCE INSTALL: 312
+ESTIMATED TIME SAVED: 10+ hours
+
+[View Full Analytics →]
+
+```
+
+**Success Metric:** 40% email open rate, monthly report readers have 50% lower churn.
+
+---
+
+## Emotional Cliffhangers (The Secret Sauce)
+
+Beyond the core features, these micro-interactions create curiosity:
+
+### 1. The Competitive Whisper
+> "Someone asked if you're better than [competitor name]. Interesting!"
+
+### 2. The Demand Signal
+> "3 customers asked about wheelchair accessibility this month. Food for thought."
+
+### 3. The Timing Insight
+> "Your busiest chat hour is 9pm on Thursdays. Your customers are night owls!"
+
+### 4. The Urgency Creator
+> "Someone asked if you're open Thanksgiving. You might want to update your hours."
+
+### 5. The Story Moment
+> "Last Tuesday at 11:47 PM, someone asked if you do emergency root canals. LocalGenius told them yes and gave them your number. That's the kind of moment that builds a practice."
+
+---
+
+## V1.1 Technical Requirements
+
+### Email Infrastructure
+
+| Component | Requirement |
+|-----------|-------------|
+| Email capture | Prompt for email at first setup (optional) |
+| Email service | Transactional email via SendGrid/Postmark |
+| Preference center | Frequency controls, digest vs instant alerts |
+| Unsubscribe | One-click, GDPR compliant |
+
+### Data Tracking Additions
+
+| Metric | Storage | Purpose |
+|--------|---------|---------|
+| First question timestamp | wp_options | Trigger celebration |
+| Questions per day | wp_options array | Weekly/monthly reports |
+| Unanswered questions | Separate array | Surfacing for custom answers |
+| Peak hours | Aggregated | Insight generation |
+| Custom answers count | wp_options | Flywheel tracking |
+
+### Admin Dashboard Updates
+
+| Component | Description |
+|-----------|-------------|
+| Achievement cards | Dismissable milestone notifications |
+| Unanswered queue | List with quick-add interface |
+| Usage progress bar | Visual 0-100 with 80% warning |
+| Insight widget | "This week at a glance" summary |
+
+---
+
+## The Content Flywheel (Full Implementation)
+
+**V1.0 (Current):**
+```
+User installs → AI uses template FAQs → Customers ask questions → [END]
+```
+
+**V1.1 (With Retention):**
+```
+User installs
+    → AI uses template FAQs
+    → Customers ask questions
+    → New patterns emerge
+    → System surfaces unanswered questions (Feature 3)
+    → User adds custom answers (Feature 3)
+    → AI gets smarter
+    → Better answers
+    → More engagement
+    → Weekly report shows progress (Feature 2)
+    → User feels ownership
+    → User tells others (Feature 4)
+    → [REPEAT]
+```
+
+---
+
+## Success Metrics Summary
+
+| Metric | Current | V1.1 Target |
+|--------|---------|-------------|
+| 7-day return rate | Unknown (likely <20%) | 50% |
+| 30-day active rate | Unknown (likely <30%) | 60% |
+| Weekly email open rate | N/A | 25% |
+| Unanswered questions addressed | 0% | 30% |
+| Milestone share rate | N/A | 15% |
+| Free-to-paid conversion | Unknown | 5% |
+| Monthly churn | Unknown (likely 15%+) | 8% |
+
+---
+
+## Implementation Priority
+
+### Sprint 1 (Week 1-2)
+1. First Question Celebration (admin notice)
+2. Usage Warning at 80%
+3. Basic email capture in settings
+
+### Sprint 2 (Week 3-4)
+1. Weekly Performance Digest email
+2. Unanswered Question surfacing (admin)
+3. Quick-add interface for custom answers
+
+### Sprint 3 (Week 5-6)
+1. Milestone celebration system
+2. Monthly Insights Report
+3. Email preference center
 
 ---
 
@@ -233,40 +486,26 @@ PAID CONVERSION or ADVOCATE — Either pays or tells other business owners
 
 ---
 
-## The Emotional Core
+## Closing Thought
 
-> "Make them care. Make them feel. Make them come back."
+> "Every character needs a reason to come back for episode two."
 
-LocalGenius Lite isn't a chat widget. It's a promise:
+Rosa the salon owner installed LocalGenius because it promised to save her time. But she'll *keep* LocalGenius because:
 
-*"I'm here for your customers when you can't be."*
+- It tells her when something important happens
+- It shows her what her customers actually want
+- It celebrates her success
+- It makes her feel like a business owner who has her act together
 
-Every retention feature should reinforce that promise:
-- The weekly digest says: "I was here. I helped."
-- The unanswered questions say: "I'm learning. Help me help you."
-- The customer story says: "I made a difference. You made a difference."
-
-Retention isn't about features. It's about feelings. Build features that create feelings.
+The product works. Now it's time to make it *matter*.
 
 ---
 
-## v1.1 Retention MVP
-
-If we could only ship THREE things for retention:
-
-1. **Weekly email digest** — Proof of value, delivered to inbox
-2. **Unanswered questions queue** — Investment loop, co-creation
-3. **Soft rate limit experience** — Upgrade path that feels like achievement
-
-Ship these three, and retention follows. Everything else is optimization.
+*— Shonda Rhimes*
+*Great Minds Agency Board Member*
 
 ---
 
-*"The only limit to our realization of tomorrow will be our doubts of today."*
-— Franklin D. Roosevelt (but Shonda would approve)
-
----
-
-**Document Status:** Retention Roadmap v1.0
-**Next Review:** 30 days post-launch
-**Owner:** Product Team
+**Document Status:** Approved for V1.1 Development
+**Next Review:** 60-day retention metrics
+**Success Criteria:** Monthly churn <10%, weekly email open >20%
