@@ -1,7 +1,12 @@
 # Agents Assemble — Exercises
 
-Hands-on exercises for workshop attendees. Work through these at your own pace.
-Each builds on the last — by the end you'll have an autonomous agent running.
+By the end of Exercise 3, you'll have an agent working through a task list while you watch.
+By the end of Exercise 4, you'll have one fixing its own bugs without being asked twice.
+By the end of the Bonus, you'll have two agents running in parallel — one building, one monitoring.
+
+That's not a demo. That's a workflow. Let's build it.
+
+> **Ralph Wiggum Guide:** https://awesomeclaude.ai/ralph-wiggum
 
 ---
 
@@ -13,31 +18,19 @@ Install the plugins:
 npx plugins add sethshoultes/great-minds-plugin
 ```
 
-> **Pro tip:** You don't have to create any of these files by hand. Claude Code can do it for you. Instead of opening an editor and typing out `TODO.md`, just tell Claude: *"Create a TODO.md with three tasks"* — and it will. Need a test file? *"Write a math.js with a few intentional bugs and a test file that catches them."* Claude can create files, run bash commands, install packages, and set up entire project structures. These exercises show the file contents so you know what's happening — but in practice, just ask Claude to make it.
+> **Pro tip:** You don't have to create any of these files by hand. Claude Code can do it for you. Just say: *"Create a TODO.md with three tasks"* — and it will. Need a test file? *"Write a math.js with a few intentional bugs and a test file that catches them."* Claude can create files, run bash commands, scaffold entire project structures. These exercises show the file contents so you know what's happening — but in practice, just ask Claude to make it.
 
 ---
 
-## Exercise 1: Your First Loop (2 min)
+## Exercise 1: Build a Custom Command (4 min)
 
-Start a simple loop to see how `/loop` works:
-```
-/loop 1m tell me a fun fact about the current time
-```
+Create your first slash command — one markdown file becomes one reusable tool.
 
-Watch it run once. Then tell Claude "end the loop" to stop it.
-
-**What you learned:** `/loop` repeats any task on a timer. You control when it stops.
-
----
-
-## Exercise 2: Build a Custom Command (4 min)
-
-Create your first slash command:
 ```bash
 mkdir -p ~/.claude/commands
 ```
 
-Create the file `~/.claude/commands/explain.md`:
+Create `~/.claude/commands/explain.md`:
 ```markdown
 ---
 name: explain
@@ -48,65 +41,70 @@ Read the README and package.json (or equivalent).
 Give me a 3-sentence summary of what this project does.
 ```
 
-Now run it:
+Run it in any project:
 ```
 /explain
 ```
 
-**What you learned:** One markdown file = one custom command. No config, no plugins.
+One markdown file = one command. No config, no plugins.
 
 ---
 
-## Exercise 3: Give Your Agent a Brain (3 min)
+## Exercise 2: Give Your Agent a Brain (4 min)
 
-Create a `CLAUDE.md` in any project directory:
-```markdown
-# CLAUDE.md
-
-You are a senior code reviewer. You care about:
-- Security vulnerabilities
-- Test coverage
-- Clear variable names
-
-When asked to review, check these three things first.
-```
-
-Now ask Claude:
+First, ask Claude to review something *without* a CLAUDE.md:
 ```
 Review the last commit.
 ```
 
-Watch how the CLAUDE.md shapes its behavior. It checks security first, then coverage, then naming — exactly what you told it to care about.
+Note the response. Now create a `CLAUDE.md` in your project directory:
+```markdown
+# CLAUDE.md
 
-**What you learned:** CLAUDE.md defines your agent's identity and priorities. It's the most important file in any autonomous setup.
+You are Margaret Hamilton. You care about:
+- Error handling and edge cases
+- What happens when things go wrong
+- Testing before shipping — always
+
+When reviewing, ask: "What happens when this breaks at 3am?"
+```
+
+Ask again:
+```
+Review the last commit.
+```
+
+Twelve lines of markdown just changed how an AI reasons about your codebase. It checked for edge cases first because you told it to care about edge cases. That's not configuration — that's personality. CLAUDE.md is the smallest file in your repo and the one that does the most work.
 
 ---
 
-## Exercise 4: Ralph Wiggum — The Persistent Builder (5 min)
+## Exercise 3: Ralph Wiggum — The Persistent Builder (4 min)
 
-This is the main event. Create a `TODO.md`:
+Create a `TODO.md`:
 ```markdown
 - [ ] Create a file called hello.txt that says "Hello from Ralph"
 - [ ] Create a file called goodbye.txt that says "Goodbye from Ralph"
-- [ ] Create a file called count.txt with the numbers 1 through 10, one per line
+- [ ] Create a file called count.txt with the numbers 1 through 5, one per line
 ```
 
-Start the Ralph loop:
+Now tell Ralph what to do, what done looks like, and when to stop:
 ```
-/ralph-loop:ralph-loop "Read TODO.md. Pick one unchecked task. Do it. Mark it [x] in TODO.md. When all tasks are checked, say ALL TASKS COMPLETE." --completion-promise "ALL TASKS COMPLETE" --max-iterations 10
+/ralph-loop:ralph-loop "Read TODO.md. Pick one unchecked task. Do it. Mark it [x] in TODO.md. When all tasks are checked, say ALL TASKS COMPLETE."
+  --completion-promise "ALL TASKS COMPLETE"
+  --max-iterations 10
 ```
 
-Watch it work through the list. Each iteration it picks one task, does it, checks it off, and loops back. When all three are done, it says "ALL TASKS COMPLETE" and stops.
+Watch it work through the list — one task, check it off, back for the next. When all three are done, it stops itself.
 
-**To stop early:** `/ralph-loop:cancel-ralph`
+To stop early: `/ralph-loop:cancel-ralph`
 
-**What you learned:** The Ralph Wiggum loop is persistent iteration. It doesn't stop until the work is done or you tell it to. This is the building block for overnight autonomous builds.
+You just watched an agent work through a list without being asked twice. It picked the task, did it, marked it done, and came back for the next one. That's not a chatbot. That's a colleague. And it will do this at 3am while you're asleep — which is the whole point.
 
 ---
 
-## Exercise 5: Ralph Wiggum — Fix Until It Passes (5 min)
+## Exercise 4: Ralph Wiggum — Fix Until It Passes (the main event)
 
-This one shows Ralph's real power — iterating on failures until they're fixed.
+This is the one. This is what everything else was building toward.
 
 Create a file called `math.js`:
 ```javascript
@@ -121,68 +119,49 @@ function multiply(a, b) {
 module.exports = { add, multiply };
 ```
 
-Create a test file `math.test.js`:
+Create `math.test.js`:
 ```javascript
 const { add, multiply } = require('./math');
 
-console.assert(add(2, 3) === 5, 'add(2, 3) should be 5, got ' + add(2, 3));
-console.assert(add(-1, 1) === 0, 'add(-1, 1) should be 0, got ' + add(-1, 1));
-console.assert(multiply(3, 4) === 12, 'multiply(3, 4) should be 12, got ' + multiply(3, 4));
-console.assert(multiply(0, 5) === 0, 'multiply(0, 5) should be 0, got ' + multiply(0, 5));
+console.assert(add(2, 3) === 5, 'FAIL: add(2, 3) should be 5, got ' + add(2, 3));
+console.assert(add(-1, 1) === 0, 'FAIL: add(-1, 1) should be 0, got ' + add(-1, 1));
+console.assert(multiply(3, 4) === 12, 'FAIL: multiply(3, 4) should be 12, got ' + multiply(3, 4));
+console.assert(multiply(0, 5) === 0, 'FAIL: multiply(0, 5) should be 0, got ' + multiply(0, 5));
 
 console.log('ALL TESTS PASSED');
 ```
 
 Now let Ralph fix it:
 ```
-/ralph-loop:ralph-loop "Run node math.test.js. If any assertions fail, read math.js, find the bug, fix it, and run the tests again. When all tests pass, say ALL TESTS PASSED." --completion-promise "ALL TESTS PASSED" --max-iterations 5
+/ralph-loop:ralph-loop "Run node math.test.js. If any assertions fail, read math.js, find the bug, fix it, and run the tests again."
+  --completion-promise "ALL TESTS PASSED"
+  --max-iterations 5
 ```
 
-Ralph will run the tests, see the failures, fix `add`, run again, see `multiply` still fails, fix it, run again — all tests pass. Done.
+Watch what happens. Ralph runs the tests, sees failures, reads the code, fixes `add`, runs again. Still failing — `multiply` is broken. Fixes that too. Runs again. All tests pass. Stops.
 
-**What you learned:** Ralph is perfect for tasks with built-in verification. Tests, linters, type checkers — anything where "done" is measurable.
+You gave it broken code and a way to measure success. It did the rest. No instructions on *how* to fix it. No hand-holding. Just: here's the work, here's what done looks like, go.
+
+That is the whole idea. Every loop, every hook, every CLAUDE.md — it all exists to get you to this moment. An agent that finds the problem, fixes it, verifies the fix, and moves on. You didn't debug anything. You defined success and walked away.
 
 ---
 
-## Exercise 6: Schedule It (2 min)
+## Bonus: Two Agents, One Goal
 
-Set up a cloud-hosted task that runs without your laptop:
-```
-/schedule daily at 9am Read the git log from the last 24 hours and write a summary to STANDUP.md
-```
+For the ambitious. This is what a real team looks like.
 
-This runs on Anthropic's cloud. Your machine can be off. It clones your repo, does the work, and commits.
-
-**What you learned:** `/schedule` is the night shift. Ralph works while you're at your desk. `/schedule` works while you sleep.
-
----
-
-## Exercise 7: Great Minds Debate (3 min)
-
-Install the Great Minds plugin (if you haven't already):
-```
-npx plugins add sethshoultes/great-minds-plugin
-```
-
-Run a debate:
-```
-/agency-debate "Should we build a mobile app or web app first?"
-```
-
-Watch Steve Jobs and Elon Musk argue about it. Steve will push for user experience and design. Elon will push for speed and first principles. Rick Rubin distills it to the essence.
-
-**What you learned:** Multi-agent debate produces better decisions than a single agent thinking alone. Different perspectives, different priorities, better output.
-
----
-
-## Bonus: Combine Everything
-
-For the ambitious — combine what you've learned:
-
-1. Write a `CLAUDE.md` that defines your agent as a full-stack developer
-2. Write a `TODO.md` with 5 tasks that build a simple web page
-3. Start a Ralph loop to work through the list
-4. While Ralph builds, run `/loop 2m check if TODO.md has any unchecked tasks and tell me the status`
+1. Write a `CLAUDE.md` that defines your agent as a senior full-stack developer
+2. Write a `TODO.md` with 5 tasks that together build a simple web page
+3. Start Ralph working through the list:
+   ```
+   /ralph-loop:ralph-loop "Read TODO.md. Pick one unchecked task. Build it. Mark it [x] when done."
+     --completion-promise "ALL TASKS COMPLETE"
+     --max-iterations 10
+   ```
+4. While Ralph builds, open a second Claude Code window and run:
+   ```
+   /loop 2m check TODO.md and report how many tasks are complete vs remaining
+   ```
 
 Now you have two agents: one building, one monitoring. That's the beginning of a team.
 
@@ -190,48 +169,43 @@ Now you have two agents: one building, one monitoring. That's the beginning of a
 
 ## Going Deeper: `claude -p` (Headless Mode)
 
-Everything in this workshop — `/loop`, Ralph Wiggum, `/schedule` — is built on top of one command: `claude -p`. This is Claude Code's **headless mode**. It runs in your regular terminal, not inside the Claude Code chat UI.
+Everything in this workshop — `/loop`, Ralph Wiggum, `/schedule` — is built on top of one command: `claude -p`. This is Claude Code's headless mode. It runs in your regular terminal (not inside Claude Code), no chat window, no interactive session.
 
-Open Terminal (or iTerm, whatever you use), `cd` into your project, and run:
 ```bash
 claude -p "Add a second line to hello.txt that says 'Modified by Claude'" \
   --max-turns 3 \
   --max-budget-usd 0.50
 ```
 
-That's it. No chat window. No interactive session. Claude reads the prompt, does the work, and exits.
-
 **The flags you should know:**
 
-| Flag | What it does | Example |
-|------|-------------|---------|
-| `-p "..."` | Run a prompt non-interactively (headless) | `claude -p "fix all lint errors"` |
-| `--allowedTools "Read,Write,Edit,Bash"` | Control what Claude can touch | Leave out `Bash` if you don't want it running commands |
-| `--max-turns 10` | Cap how many tool calls Claude gets | Prevents runaway sessions |
-| `--max-budget-usd 1.00` | Spending cap — stops if it would exceed this | Good safety net for overnight runs |
-| `--output-format json` | Structured output for scripts and pipelines | Pipe into `jq` for automation |
-| `--continue` | Resume the last conversation | Pick up where you left off |
+| Flag | What it does |
+|------|-------------|
+| `-p "..."` | Run a prompt non-interactively |
+| `--allowedTools "Read,Write,Edit,Bash"` | Control what Claude can touch |
+| `--max-turns 10` | Cap how many tool calls Claude gets |
+| `--max-budget-usd 1.00` | Spending cap — stops if it would exceed this |
+| `--output-format json` | Structured output for pipelines |
+| `--continue` | Resume the last conversation |
 
-**When to use `claude -p` vs the other tools:**
+**When to use what:**
 
-- **Inside Claude Code chat?** Use `/loop`, `/ralph-loop`, or just talk to Claude
-- **From your terminal, one-shot?** Use `claude -p`
-- **In a cron job or CI/CD pipeline?** Use `claude -p`
-- **In a bash script?** Use `claude -p`
-- **Overnight, laptop closed?** Use `/schedule`
+- **Inside Claude Code chat** → `/loop`, `/ralph-loop`, just talk to Claude
+- **From your terminal, one-shot** → `claude -p`
+- **In a cron job or CI/CD** → `claude -p`
+- **Overnight, laptop closed** → `/schedule`
 
 `claude -p` is the building block. Everything else is a convenience layer on top of it.
 
 ---
 
-## Quick Reference
+## What's Next
 
-| Command | What it does | How to stop |
-|---------|-------------|-------------|
-| `/loop 5m <task>` | Repeat a task on a timer | "end the loop" or Ctrl+C |
-| `/ralph-loop:ralph-loop "<task>" --completion-promise "DONE" --max-iterations 10` | Persistent iteration until done | `/ralph-loop:cancel-ralph` |
-| `/schedule daily at 9am <task>` | Cloud task, runs without your laptop | Manage at claude.ai/code/scheduled |
-| `/explain` (custom) | Run your custom command | N/A (one-shot) |
+Take these home. Try them on real projects.
+
+- **`/schedule`** — cloud tasks that run without your laptop: `/schedule daily at 2am Read TODO.md and complete all unchecked tasks`
+- **Great Minds Plugin** — full 14-persona agent team: `npx plugins add sethshoultes/great-minds-plugin` → `/agency-debate "your question"`
+- **Build your own team** — Open Claude Code and say: *"Build me a three-agent pipeline. Strategist, developer, QA. Parallel. Loop until QA passes."* One sentence. Claude writes the whole thing.
 
 ---
 
