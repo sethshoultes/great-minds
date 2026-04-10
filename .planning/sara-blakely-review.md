@@ -1,27 +1,28 @@
-# Sara Blakely Gut-Check: LocalGenius Lite
+# Sara Blakely Gut-Check: LocalGenius Playground
 
 ## Would a real customer pay for this?
 
-**Yes, but only if that first answer is instant.** Maria doesn't care about your Cloudflare Worker architecture. She cares that when someone asks "are you open Sundays?" at 11pm, they get an answer. The obsession with "what are your hours?" being perfect is the right obsession. Don't lose it.
+**Yes, but only if they GET IT in 10 seconds.** Maria from Maria's Kitchen doesn't care about "canned responses" or "vanilla JS." She cares: "Will this thing answer 'what are your hours?' at 2am so I don't lose the customer?" The demo SHOWS this happening. That's smart. But "Playground" sounds like a toy, not a solution. Small business owners want serious tools that make them money.
 
 ## What's confusing? What would make someone bounce?
 
-1. **"Select your business type" is friction.** Why am I choosing? You have a homepage scanner—use it to auto-detect.
-2. **100 questions/month feels arbitrary.** Maria won't track this. She'll see "sorry, call us" one day and think it's broken. Make the limit invisible or make the upgrade obvious.
-3. **No proof it's working.** Maria installs it, forgets it, uninstalls at Day 30 because she never SAW it answer anything. Add ONE number to the admin: "Questions answered: 47." That's the whole product.
+- **"Make This Real" is vague.** Real how? Cost? Time? Effort? Maria's thinking "what's the catch?"
+- **View-only chat with no input field.** She WILL try to type. When she can't, she'll feel tricked.
+- **Three business types but not HERS.** If Maria's a florist, she bounces. Add: "Works for ANY business."
+- **No price anywhere.** "Free" should be above the fold, not buried.
 
 ## 30-Second Elevator Pitch
 
-"Your website answers customer questions while you sleep. Install the plugin, tell us your hours, done. No chatbot setup. No monthly fees. When someone asks 'are you open?' at midnight, they get the answer—and you get the sale."
+> "You know how customers hit your website at midnight asking 'what are your hours?' and leave because nobody answers? LocalGenius is an AI that lives on your site and answers instantly—24/7. Free WordPress plugin. Install in 30 seconds. No tech skills. Stop losing customers while you sleep."
 
-## What would I test first with $0 marketing budget?
+## What would I test first with $0 budget?
 
-**Facebook groups for local business owners.** Find 10 restaurant owners. Say: "I built this, it's free, I want feedback." Watch them install it. See where they get stuck. Those 10 installs will teach you more than 10,000 lines of planning.
+Post in 3 local Facebook business groups: "What question do your website visitors ask that you're TIRED of answering?" DM the frustrated ones the demo link. If they click "Make This Real" without you pushing—you've got product-market fit. Track that one metric.
 
 ## What's the retention hook?
 
-**Weak.** Once it works, Maria forgets it exists. That's fine for v1. But for v1.1: "You answered 47 questions this month while closed." Make her feel smart for keeping it installed.
+**Missing from the demo.** The Playground shows a moment. It doesn't show ongoing value. Maria needs to see: "You answered 47 questions this week while you slept." That's the hook. Without it, this is a novelty she forgets.
 
 ---
 
-**Bottom line:** This solves a real problem. But you're building for engineers, not Maria. Kill the dropdown. Auto-detect everything. Add one visible counter. The best product is the one she doesn't have to think about.
+**Bottom line:** Good bones. Stop admiring your engineering and start showing Maria the MONEY she's losing. The demo shows WHAT it does. It needs to scream WHY she's an idiot for not having it.

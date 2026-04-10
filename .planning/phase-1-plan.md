@@ -1,37 +1,64 @@
-# Phase 1 Plan — LocalGenius Lite WordPress Plugin
+# Phase 1 Plan — LocalGenius Playground
 
-**Generated**: 2025-04-09
+**Generated**: 2026-04-10
 **Requirements**: `.planning/REQUIREMENTS.md`
-**Decisions**: `rounds/localgenius-lite/decisions.md`
-**Total Tasks**: 16
+**Decisions**: `rounds/localgenius-interactive-demo/decisions.md`
+**Total Tasks**: 12
 **Waves**: 4
-**Timeline**: 8 hours focused session (per decisions.md estimate)
-**Project Slug**: `localgenius-lite`
+**Timeline**: 4-6 hours focused session (per decisions.md estimate)
+**Project Slug**: `localgenius-interactive-demo`
 
 ---
 
 ## Executive Summary
 
-LocalGenius Lite is a zero-configuration AI chat widget for small business WordPress sites. This plan completes the v1 implementation by building the missing components identified by the Codebase Scout.
+LocalGenius Playground is a static demo page that showcases the LocalGenius chat widget in action. Visitors see a simulated business website with a pre-populated chat conversation already in progress, demonstrating the "future state" where their business website automatically answers customer questions.
 
-**What Already Exists** (from `/Users/sethshoultes/Local Sites/great-minds/deliverables/localgenius-lite/localgenius/`):
-- Core plugin scaffold (localgenius.php - 166 lines)
-- REST API handler (class-api-handler.php - 226 lines)
-- Homepage scanner (class-scanner.php - 186 lines)
-- FAQ template loader (class-faq-templates.php - 122 lines)
-- Widget registration (class-widget.php - 66 lines)
-- Uninstall handler (uninstall.php - 34 lines)
-- 8 of 10 FAQ templates (dentist, fitness, lawyer, mechanic, plumber, realtor, restaurant, salon)
+**Key Constraints (Locked Decisions):**
+- Product name: "Playground" (not "Interactive Demo")
+- 3 business types only: Dentist, Restaurant, Plumber
+- Canned/mocked responses, NOT live AI
+- Single HTML file with embedded CSS + vanilla JS
+- Zero backend, zero API calls
+- Total page weight <100KB
+- "Make This Real" CTA → WordPress.org plugin
 
-**What Must Be Built**:
-- Admin settings page (class-admin.php + settings-page.php + admin.css)
-- Chat widget frontend (chat-widget.js + chat-widget.css)
-- Cloudflare Worker backend (worker.js + cache.js + prompts.js + wrangler.toml)
-- 2 missing FAQ templates (retail.json, general.json)
-- WordPress.org readme.txt
+**North Star** (from essence.md):
+> "Oh my god, this actually works."
+> The first 10 seconds. No friction. Already alive.
 
-**The One Thing That Must Be Perfect** (from decisions.md):
-> "The first answer. If the widget can't nail 'what are your hours?' instantly, nothing else matters."
+---
+
+## What Already Exists
+
+**Planning Documents** (in `rounds/localgenius-interactive-demo/`):
+- `decisions.md` — 8 locked decisions + MVP spec + risk register
+- `essence.md` — Brand north star
+- Round transcripts (Steve/Elon debate)
+
+**Reference Patterns** (from LocalGenius Lite):
+- `deliverables/localgenius-lite/localgenius/assets/js/chat-widget.js` — Widget logic (~320 lines vanilla JS)
+- `deliverables/localgenius-lite/localgenius/assets/css/chat-widget.css` — Widget styling (~458 lines)
+- `deliverables/localgenius-lite/localgenius/templates/faq/*.json` — FAQ templates for all 3 business types
+
+**Deliverables Directory**: `deliverables/localgenius-interactive-demo/` — Empty, ready to build
+
+---
+
+## What Must Be Built
+
+| File | Description | Size Target |
+|------|-------------|-------------|
+| `index.html` | Single-file application (all CSS/JS embedded) | <100KB total |
+| `README.md` | Deployment instructions | — |
+
+**Optional (if not using base64 images):**
+```
+assets/
+├── dentist-storefront.jpg    (~25KB)
+├── restaurant-storefront.jpg (~25KB)
+└── plumber-storefront.jpg    (~25KB)
+```
 
 ---
 
@@ -39,78 +66,83 @@ LocalGenius Lite is a zero-configuration AI chat widget for small business WordP
 
 | Requirement | Task(s) | Wave |
 |-------------|---------|------|
-| REQ-002, REQ-003: Business Type + Location | phase-1-task-1 | 1 |
-| REQ-004, REQ-031, REQ-032: Admin Settings Page | phase-1-task-1 | 1 |
-| REQ-023: Missing FAQ Templates | phase-1-task-2 | 1 |
-| REQ-026, REQ-027: Chat Widget Frontend | phase-1-task-3 | 2 |
-| REQ-009, REQ-029, REQ-030, REQ-035: Widget UX | phase-1-task-3 | 2 |
-| REQ-014, REQ-015: Cloudflare Worker + Workers AI | phase-1-task-4 | 2 |
-| REQ-016, REQ-017: Caching Layer | phase-1-task-5 | 2 |
-| REQ-018: System Prompts | phase-1-task-6 | 2 |
-| REQ-019, REQ-020, REQ-021: Worker Rate Limiting | phase-1-task-7 | 2 |
-| REQ-047, REQ-048: WordPress.org Documentation | phase-1-task-8 | 3 |
-| REQ-011: SSL Verification Fix | phase-1-task-9 | 3 |
-| REQ-036-046: Testing & Validation | phase-1-task-10 through phase-1-task-14 | 4 |
-| SKILL.md Step 7: Sara Blakely Review | phase-1-task-15 | 4 |
+| REQ-001: Product Named "Playground" | phase-1-task-1 | 1 |
+| REQ-002-003: Business Type Selector | phase-1-task-2 | 1 |
+| REQ-004-006: Pre-Populated Chat | phase-1-task-3 | 2 |
+| REQ-007-008: Storefront Visual + Mobile | phase-1-task-4 | 2 |
+| REQ-009-011: "Make This Real" CTA | phase-1-task-5 | 2 |
+| REQ-015-032: Canned Responses (15 total) | phase-1-task-1 | 1 |
+| REQ-033-041: Technical Constraints | phase-1-task-6 | 3 |
+| REQ-043-046: Performance Targets | phase-1-task-7 | 3 |
+| REQ-012, REQ-031-032: Modern Design + Natural Copy | phase-1-task-8 | 3 |
+| REQ-048-050: Scope Compliance | phase-1-task-9 | 4 |
 
 ---
 
 ## Wave Execution Order
 
-### Wave 1 (Parallel — Foundation & Content)
+### Wave 1 (Parallel — Content & Design Foundation)
 
-These tasks complete the WordPress plugin admin interface and missing FAQ templates.
+These tasks prepare the content and design assets before coding.
 
 ```xml
 <task-plan id="phase-1-task-1" wave="1">
-  <title>Build Admin Settings Page</title>
-  <requirement>REQ-002, REQ-003, REQ-004, REQ-031, REQ-032: Minimal admin settings with business type, location, preview</requirement>
-  <description>Create the single minimal admin settings page per Decision 13. Users select business type from dropdown, enter location, and see widget preview. No extra options.</description>
+  <title>Write Canned Responses (15 Q&As)</title>
+  <requirement>REQ-015-032: 5 canned responses per business type, natural and specific</requirement>
+  <description>Write 15 canned responses (5 each for Dentist, Restaurant, Plumber) that sound natural, include specific details, and match the warm voice of the existing FAQ templates. These responses will be shown in the pre-populated chat.</description>
 
   <context>
-    <file path="deliverables/localgenius-lite/localgenius/localgenius.php" reason="Main plugin file with existing hooks and constants" />
-    <file path="deliverables/localgenius-lite/localgenius/includes/class-faq-templates.php" reason="BUSINESS_TYPES constant for dropdown options" />
-    <file path="rounds/localgenius-lite/decisions.md" reason="Decision 13: One minimal settings screen" />
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Specifies exact questions for each business type" />
+    <file path="deliverables/localgenius-lite/localgenius/templates/faq/dentist.json" reason="Voice and format reference" />
+    <file path="deliverables/localgenius-lite/localgenius/templates/faq/restaurant.json" reason="Voice and format reference" />
+    <file path="deliverables/localgenius-lite/localgenius/templates/faq/plumber.json" reason="Voice and format reference" />
   </context>
 
   <steps>
-    <step order="1">Create `admin/class-admin.php` with LocalGenius_Admin class:
-      - Hook into `admin_menu` to add settings page under Settings
-      - Hook into `admin_init` to register settings
-      - Save to wp_options: localgenius_business_type, localgenius_location, localgenius_additional_info</step>
-    <step order="2">Create `admin/views/settings-page.php` with minimal UI:
-      - Business type dropdown (10 types from BUSINESS_TYPES constant)
-      - Location text field (placeholder: "Austin, TX")
-      - "Anything else we should know?" textarea (optional)
-      - Save button with nonce verification
-      - Widget preview iframe showing frontend widget</step>
-    <step order="3">Create `admin/css/admin.css` with clean WordPress-native styling:
-      - Use WordPress admin color palette
-      - Minimal, professional layout
-      - Preview area styled as device frame</step>
-    <step order="4">Update localgenius.php to load admin class on admin_init</step>
-    <step order="5">Add settings link on plugins page (plugin_action_links filter)</step>
+    <step order="1">Write 5 Dentist responses per decisions.md:
+      1. "Do you take insurance?" → Specific insurance names (Delta Dental, Cigna, Aetna), warm tone
+      2. "What are your hours?" → Realistic hours (Mon-Fri 8am-5pm, Sat 9am-1pm)
+      3. "Do you do emergency appointments?" → Same-day availability + phone number
+      4. "How much is a cleaning?" → Price range + insurance mention
+      5. "Are you accepting new patients?" → Welcoming tone + next steps</step>
+    <step order="2">Write 5 Restaurant responses per decisions.md:
+      1. "Are you open right now?" → Current status + full hours
+      2. "Do you take reservations?" → Booking process + phone/OpenTable
+      3. "Do you have vegetarian options?" → Specific menu items
+      4. "Is there parking?" → Parking lot + street parking details
+      5. "Do you do catering?" → Services + contact info</step>
+    <step order="3">Write 5 Plumber responses per decisions.md:
+      1. "Do you do emergency calls?" → 24/7 availability + response time
+      2. "How much to fix a leaky faucet?" → Price range + "free estimate"
+      3. "Are you licensed?" → License number + insurance mention
+      4. "How soon can you come?" → Same-day/next-day + scheduling
+      5. "Do you give free estimates?" → Yes + process</step>
+    <step order="4">Review all responses for:
+      - Specific details (not generic placeholders)
+      - Warm, conversational tone
+      - Realistic information
+      - 1-2 sentence length (brevity = confidence)</step>
+    <step order="5">Create JSON object for embedding in HTML</step>
   </steps>
 
   <verification>
-    <check type="manual">Settings page loads at /wp-admin/options-general.php?page=localgenius</check>
-    <check type="manual">All 10 business types appear in dropdown</check>
-    <check type="manual">Values persist after save</check>
-    <check type="bash">test -f deliverables/localgenius-lite/localgenius/admin/class-admin.php</check>
+    <check type="manual">Each response contains specific details (insurance names, hours, prices)</check>
+    <check type="manual">Responses sound natural, not robotic</check>
+    <check type="manual">All 15 responses complete</check>
   </verification>
 
   <dependencies>
-    <!-- Wave 1: No dependencies - foundation task -->
+    <!-- Wave 1: No dependencies - content task -->
   </dependencies>
 
-  <commit-message>feat(admin): add minimal settings page with business type selector
+  <commit-message>content(playground): add 15 canned responses for demo
 
-- Add class-admin.php with settings registration
-- Add settings-page.php with dropdown, location, preview
-- Add admin.css with WordPress-native styling
-- Wire up to main plugin file
+- Write 5 Q&As each for Dentist, Restaurant, Plumber
+- Include specific details (insurance names, hours, prices)
+- Use warm, conversational tone matching FAQ templates
+- Prepare JSON format for HTML embedding
 
-Refs: Decision 13 (minimal settings screen)
+Refs: decisions.md Canned Response Requirements
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 </task-plan>
@@ -118,61 +150,58 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 
 ```xml
 <task-plan id="phase-1-task-2" wave="1">
-  <title>Create Missing FAQ Templates</title>
-  <requirement>REQ-022, REQ-023, REQ-025: Complete 10 business type templates</requirement>
-  <description>Create retail.json and general.json FAQ templates. Each must have 15 Q&As in warm, conversational voice matching existing template format.</description>
+  <title>Create Design System &amp; Wireframe</title>
+  <requirement>REQ-002-003, REQ-012: Business type selector, modern visual design</requirement>
+  <description>Define the visual design system (colors, typography, spacing) and create a wireframe showing the landing page layout with business type selector, storefront area, chat widget, and CTA.</description>
 
   <context>
-    <file path="deliverables/localgenius-lite/localgenius/templates/faq/restaurant.json" reason="Template format reference" />
-    <file path="deliverables/localgenius-lite/localgenius/includes/class-faq-templates.php" reason="BUSINESS_TYPES constant includes retail, general" />
-    <file path="rounds/localgenius-lite/decisions.md" reason="Decision 12: Warm voice, never robotic" />
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="MVP feature set and visual treatment decision" />
+    <file path="deliverables/localgenius-lite/localgenius/assets/css/chat-widget.css" reason="Existing color palette and widget styling" />
   </context>
 
   <steps>
-    <step order="1">Create `templates/faq/retail.json` with 15 Q&As for Retail Store:
-      - Store hours and holiday schedule
-      - Return/exchange policy
-      - Payment methods accepted
-      - Parking availability
-      - Online ordering/pickup
-      - Gift cards
-      - Loyalty/rewards programs
-      - Sales/promotions
-      - Special orders
-      - Delivery options
-      Use warm voice: "Yep, we're open Sundays too!" not "We are open on Sundays."</step>
-    <step order="2">Create `templates/faq/general.json` with 15 universal Q&As:
-      - Business hours
-      - Contact information
-      - Location/directions
-      - Appointment scheduling
-      - Payment methods
-      - Cancellation policy
-      - Emergency contact
-      - Accessibility
-      - Parking
-      - Holiday schedule
-      This is fallback for unlisted business types.</step>
-    <step order="3">Validate JSON syntax for both files</step>
-    <step order="4">Verify templates load via class-faq-templates.php get_faqs() method</step>
+    <step order="1">Define color palette (from existing widget CSS):
+      - Primary: #2271b1 (WordPress admin blue)
+      - Background: #f8f9fa, #fff
+      - Text: #1e1e1e (primary), #646970 (secondary)
+      - Borders: #e2e4e7
+      - Accent: #0073aa (links)</step>
+    <step order="2">Define typography:
+      - Font stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, sans-serif
+      - Heading: 32px/40px bold
+      - Body: 16px/24px regular
+      - Chat: 14px/20px</step>
+    <step order="3">Design layout structure:
+      - Header: "LocalGenius Playground" + tagline
+      - Business type selector: 3 cards (Dentist, Restaurant, Plumber)
+      - Main area: Storefront screenshot (left) + chat widget (right/overlay)
+      - CTA section: "Make This Real" button centered below</step>
+    <step order="4">Define mobile layout:
+      - Stack vertically
+      - Chat widget as bottom sheet or inline
+      - Touch-friendly buttons (44px min)</step>
+    <step order="5">Document design decisions for implementation</step>
   </steps>
 
   <verification>
-    <check type="bash">test -f deliverables/localgenius-lite/localgenius/templates/faq/retail.json &amp;&amp; echo "retail.json exists"</check>
-    <check type="bash">test -f deliverables/localgenius-lite/localgenius/templates/faq/general.json &amp;&amp; echo "general.json exists"</check>
-    <check type="bash">python3 -c "import json; json.load(open('deliverables/localgenius-lite/localgenius/templates/faq/retail.json'))" &amp;&amp; echo "retail.json valid"</check>
-    <check type="bash">python3 -c "import json; json.load(open('deliverables/localgenius-lite/localgenius/templates/faq/general.json'))" &amp;&amp; echo "general.json valid"</check>
+    <check type="manual">Color palette defined and documented</check>
+    <check type="manual">Typography scale defined</check>
+    <check type="manual">Desktop and mobile layouts wireframed</check>
+    <check type="manual">Design looks modern (not "2015")</check>
   </verification>
 
   <dependencies>
-    <!-- Wave 1: No dependencies - content task -->
+    <!-- Wave 1: No dependencies - design task -->
   </dependencies>
 
-  <commit-message>content(faq): add retail and general business FAQ templates
+  <commit-message>design(playground): create design system and wireframe
 
-- Add retail.json with 15 Q&As for retail stores
-- Add general.json as universal fallback template
-- Both use warm, conversational voice per Decision 12
+- Define color palette matching LocalGenius Lite
+- Set typography scale for modern appearance
+- Wireframe desktop and mobile layouts
+- Document spacing and component patterns
+
+Refs: Decision 3 (3 business types), Risk Register (dated design)
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 </task-plan>
@@ -182,77 +211,76 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 
 ### Wave 2 (Parallel — Core Implementation)
 
-These tasks build the chat widget frontend and Cloudflare Worker backend in parallel.
+Build the HTML structure, chat widget, and storefront components.
 
 ```xml
 <task-plan id="phase-1-task-3" wave="2">
-  <title>Build Chat Widget Frontend</title>
-  <requirement>REQ-026, REQ-027, REQ-009, REQ-028, REQ-029, REQ-030, REQ-035: Vanilla JS widget with GDPR consent</requirement>
-  <description>Create the beautiful, single-design chat widget in vanilla JavaScript. Fixed bottom-right, no customization, no AI branding, includes GDPR consent checkbox and "Powered by" link.</description>
+  <title>Build Chat Widget with Pre-Populated Conversation</title>
+  <requirement>REQ-004-006: Pre-populated chat on load, view-only for v1</requirement>
+  <description>Create the chat widget component in vanilla JS that displays a pre-populated conversation on page load. The widget shows the "future state" - a customer question and brilliant AI response already visible.</description>
 
   <context>
-    <file path="deliverables/localgenius-lite/localgenius/includes/class-widget.php" reason="Widget registration and config output" />
-    <file path="deliverables/localgenius-lite/localgenius/includes/class-api-handler.php" reason="REST endpoint to call" />
-    <file path="rounds/localgenius-lite/decisions.md" reason="Decision 7 (one beautiful widget), Decision 8 (no AI branding), Decision 11 (Powered by link)" />
+    <file path="deliverables/localgenius-lite/localgenius/assets/js/chat-widget.js" reason="Widget logic patterns to adapt" />
+    <file path="deliverables/localgenius-lite/localgenius/assets/css/chat-widget.css" reason="Widget styling to adapt" />
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Decision 6: Pre-populated chat" />
   </context>
 
   <steps>
-    <step order="1">Create `assets/css/chat-widget.css`:
+    <step order="1">Create widget HTML structure:
+      - Chat bubble button (toggles open/closed)
+      - Chat window container
+      - Header with business name
+      - Messages container
+      - Footer with "Powered by LocalGenius" link
+      - NO input field (view-only per decisions.md)</step>
+    <step order="2">Create widget CSS:
       - Fixed position bottom-right (20px margin)
-      - Chat bubble button (50px circle, subtle shadow)
-      - Chat window (350px wide, 450px tall max)
+      - 350px wide, 400px tall max
       - Message bubbles (user right, bot left)
-      - Input field with send button
-      - GDPR consent checkbox styling
-      - "Powered by LocalGenius" footer link (subtle, 10px text)
-      - 200ms fade-up animation for window
-      - Mobile responsive (full width on &lt;500px screens)
-      - No AI/robot imagery</step>
-    <step order="2">Create `assets/js/chat-widget.js` (~200 lines, &lt;8kb):
-      - Self-contained IIFE with no global pollution
-      - Config from localGeniusConfig (wp_localize_script)
-      - Toggle chat window on bubble click
-      - GDPR consent checkbox before first message
-      - Send question via fetch to /wp-json/localgenius/v1/chat
-      - Display response with typing indicator
-      - Rate limit display ("X questions remaining")
-      - Error handling with warm fallback messages
-      - Keyboard: Enter to submit, Escape to close
-      - ARIA labels on all interactive elements
-      - No jQuery dependency</step>
-    <step order="3">Update class-widget.php get_widget_config() to include:
-      - REST API URL
-      - Nonce for authentication
-      - Business name for personalization
-      - Phone number for fallback messages
-      - Rate limit remaining count
-      - "Powered by" link URL</step>
-    <step order="4">Test widget loads without jQuery on clean WordPress install</step>
-    <step order="5">Verify no "AI", "chatbot", or robot icons in UI (Decision 8 compliance)</step>
+      - Subtle shadow and border-radius
+      - Mobile: bottom sheet style or smaller</step>
+    <step order="3">Create widget JavaScript:
+      - IIFE pattern (no global pollution)
+      - Toggle open/close on bubble click
+      - Load pre-populated messages from config
+      - Render messages with proper styling
+      - Add typing indicator for delayed message reveal
+      - Keyboard: Escape to close
+      - Click outside to close</step>
+    <step order="4">Implement pre-populated state:
+      - On page load, widget shows 1-2 exchanges
+      - First: Customer question (e.g., "Do you take insurance?")
+      - Second: AI response (warm, specific answer)
+      - Third: Optional second question to show depth</step>
+    <step order="5">Add animation:
+      - Messages slide in with 200ms delay
+      - Typing indicator (3 dots) for realism
+      - Smooth scroll to latest message</step>
   </steps>
 
   <verification>
-    <check type="bash">wc -c deliverables/localgenius-lite/localgenius/assets/js/chat-widget.js | awk '{print ($1 &lt; 8192 ? "PASS: &lt;8kb" : "FAIL: &gt;8kb")}'</check>
-    <check type="bash">! grep -iE "AI|chatbot|robot" deliverables/localgenius-lite/localgenius/assets/js/chat-widget.js &amp;&amp; echo "NO AI BRANDING PASS"</check>
-    <check type="bash">grep -q "aria-label" deliverables/localgenius-lite/localgenius/assets/js/chat-widget.js &amp;&amp; echo "ARIA LABELS PASS"</check>
-    <check type="manual">Widget appears bottom-right; responsive on mobile</check>
-    <check type="manual">GDPR checkbox blocks first message until checked</check>
+    <check type="manual">Widget appears bottom-right on desktop</check>
+    <check type="manual">Pre-populated conversation visible on load</check>
+    <check type="manual">No input field visible (view-only)</check>
+    <check type="manual">Escape key closes widget</check>
+    <check type="manual">Click outside closes widget</check>
+    <check type="bash">! grep -iE "input|textarea" deliverables/localgenius-interactive-demo/index.html 2>/dev/null | grep -v "business-type" &amp;&amp; echo "NO INPUT FIELD PASS" || echo "CHECK INPUT FIELD"</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Admin must save business type for widget config" />
+    <depends-on task-id="phase-1-task-1" reason="Canned responses needed for pre-populated content" />
+    <depends-on task-id="phase-1-task-2" reason="Design system needed for styling" />
   </dependencies>
 
-  <commit-message>feat(widget): add beautiful chat widget frontend
+  <commit-message>feat(playground): add pre-populated chat widget
 
-- Add chat-widget.css with fixed bottom-right position
-- Add chat-widget.js in vanilla JS (&lt;8kb, ~200 lines)
-- Implement GDPR consent checkbox
-- Add "Powered by LocalGenius" subtle footer link
-- Add ARIA labels for accessibility
-- No jQuery dependency; no AI branding
+- Create view-only chat widget in vanilla JS
+- Display pre-populated conversation on load
+- Implement toggle, keyboard, click-outside handlers
+- Add typing indicator animation for realism
+- Style with existing LocalGenius color palette
 
-Refs: Decision 7, 8, 11
+Refs: Decision 6 (pre-populated chat)
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 </task-plan>
@@ -260,65 +288,60 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 
 ```xml
 <task-plan id="phase-1-task-4" wave="2">
-  <title>Create Cloudflare Worker Entry Point</title>
-  <requirement>REQ-014, REQ-015: Worker with Llama 3.1 8B via Workers AI</requirement>
-  <description>Create the main Cloudflare Worker that handles /api/chat requests and calls Llama 3.1 8B via Workers AI. Single LLM path only per Decision 2.</description>
+  <title>Build Storefront Visual Component</title>
+  <requirement>REQ-007-008: Simulated storefront, mobile responsiveness</requirement>
+  <description>Create the storefront area showing a simulated business website screenshot with the chat widget overlaid. Implement business type switching that changes both the storefront and chat content.</description>
 
   <context>
-    <file path="rounds/localgenius-lite/decisions.md" reason="Decision 2: Single LLM path - Llama 3.1 8B only via Cloudflare Workers AI" />
-    <file path="engineering/tech-stack.md" reason="AI provider patterns reference (note: tech-stack references Anthropic Claude for LocalGenius SaaS, but Lite uses Llama per decisions.md)" />
-    <file path="engineering/infrastructure.md" reason="Infrastructure patterns reference" />
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Decision: Static screenshot with overlay (Option A)" />
   </context>
 
   <steps>
-    <step order="1">Create `cloudflare-worker/wrangler.toml`:
-      - Name: localgenius-lite
-      - Main: worker.js
-      - Compatibility date: 2024-01-01
-      - Bind KV namespace: CACHE (for question caching)
-      - Bind AI: Workers AI (for Llama access)</step>
-    <step order="2">Create `cloudflare-worker/worker.js`:
-      - Export default fetch handler
-      - Route POST /api/chat to handleChat()
-      - Parse JSON body: question, businessType, location, siteId, businessName, phone, faqContext
-      - Import cache.js for caching logic
-      - Import prompts.js for system prompts
-      - Call Workers AI with @cf/meta/llama-3.1-8b-instruct
-      - Return JSON: { answer, source: 'llm'|'cached', timestamp }
-      - Error handling with graceful fallback</step>
-    <step order="3">Implement handleChat function:
-      - Check cache first (import from cache.js)
-      - If cache hit, return cached response with source: 'cached'
-      - If cache miss, call Llama 3.1 8B
-      - Build system prompt from prompts.js based on businessType
-      - Include faqContext in prompt
-      - Parse and validate LLM response
-      - Store in cache before returning
-      - Timeout: 3 seconds max, fallback on timeout</step>
-    <step order="4">Add CORS headers for WordPress REST API calls</step>
-    <step order="5">Test Worker locally with wrangler dev</step>
+    <step order="1">Create storefront container:
+      - Full-width section with max-width constraint
+      - Browser chrome frame (optional, adds realism)
+      - Storefront image area
+      - Chat widget overlay position</step>
+    <step order="2">Prepare storefront images (3 options):
+      - Option A: Use CSS-only placeholder (fastest, smallest)
+      - Option B: Create simple HTML mockup for each business
+      - Option C: Use optimized screenshots (if available)
+      For v1, use Option A or B to stay under 100KB</step>
+    <step order="3">Implement business type switching:
+      - Click Dentist → show dentist storefront + dentist chat
+      - Click Restaurant → show restaurant storefront + restaurant chat
+      - Click Plumber → show plumber storefront + plumber chat
+      - Smooth transition between types</step>
+    <step order="4">Style for mobile:
+      - Stack storefront above chat on mobile
+      - Or show chat as bottom sheet overlay
+      - Ensure storefront is readable at 375px width</step>
+    <step order="5">Add business details to storefront:
+      - Business name (varies by type)
+      - Phone number
+      - Address (generic but realistic)
+      - Logo placeholder</step>
   </steps>
 
   <verification>
-    <check type="bash">test -f deliverables/localgenius-lite/cloudflare-worker/worker.js &amp;&amp; echo "worker.js exists"</check>
-    <check type="bash">test -f deliverables/localgenius-lite/cloudflare-worker/wrangler.toml &amp;&amp; echo "wrangler.toml exists"</check>
-    <check type="bash">grep -q "@cf/meta/llama-3.1-8b-instruct" deliverables/localgenius-lite/cloudflare-worker/worker.js &amp;&amp; echo "LLAMA MODEL PASS"</check>
-    <check type="bash">! grep -iE "claude|anthropic|openai|gpt" deliverables/localgenius-lite/cloudflare-worker/worker.js &amp;&amp; echo "NO HYBRID AI PASS"</check>
+    <check type="manual">Each business type shows distinct storefront</check>
+    <check type="manual">Chat content changes with business type</check>
+    <check type="manual">Storefront readable on mobile (375px)</check>
+    <check type="manual">Transition between types is smooth</check>
   </verification>
 
   <dependencies>
-    <!-- Wave 2: No dependencies within wave - can run parallel -->
+    <depends-on task-id="phase-1-task-2" reason="Design system for colors and layout" />
   </dependencies>
 
-  <commit-message>feat(worker): create Cloudflare Worker with Llama 3.1 8B
+  <commit-message>feat(playground): add storefront visual with business switching
 
-- Add worker.js with /api/chat endpoint
-- Configure wrangler.toml with Workers AI binding
-- Use @cf/meta/llama-3.1-8b-instruct (single LLM path)
-- Add CORS headers for WordPress REST API
-- Implement 3-second timeout with graceful fallback
+- Create storefront container with browser frame
+- Implement CSS-only business mockups (under 100KB)
+- Add business type switching logic
+- Style responsive layout for mobile
 
-Refs: Decision 2 (single LLM, no hybrid)
+Refs: Decision: Static screenshot with overlay
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 </task-plan>
@@ -326,165 +349,60 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 
 ```xml
 <task-plan id="phase-1-task-5" wave="2">
-  <title>Implement Question Caching Layer</title>
-  <requirement>REQ-016, REQ-017: Hash-based caching with 24h TTL, 80% hit rate target</requirement>
-  <description>Create cache.js with question normalization and KV-based caching. Cache before LLM per Decision 6.</description>
+  <title>Implement "Make This Real" CTA</title>
+  <requirement>REQ-009-011: CTA button linking to WordPress.org, no friction</requirement>
+  <description>Add the primary call-to-action button "Make This Real" that links directly to the WordPress.org plugin page. No signup, no email capture, no gates.</description>
 
   <context>
-    <file path="rounds/localgenius-lite/decisions.md" reason="Decision 6: Cache before LLM - always; 24h TTL" />
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Decision 7: CTA copy and destination" />
   </context>
 
   <steps>
-    <step order="1">Create `cloudflare-worker/cache.js`:
-      - Export normalizeQuestion(question): lowercase, strip punctuation, collapse whitespace
-      - Export hashQuestion(normalized): SHA-256 hash for cache key
-      - Export getCached(env, siteId, questionHash): check KV for cached response
-      - Export setCached(env, siteId, questionHash, response): store with 24h TTL
-      - Build cache key: `${siteId}:${questionHash}`</step>
-    <step order="2">Implement question normalization:
-      - Convert to lowercase
-      - Remove punctuation except apostrophes
-      - Collapse multiple spaces to single
-      - Trim whitespace
-      - Map common variations: "hours?" → "what are your hours"</step>
-    <step order="3">Implement canonical question mapping:
-      - Hours variations: "when open", "hours?", "what time", "are you open"
-      - Location variations: "where", "address", "directions", "how to find"
-      - Contact variations: "phone", "call", "contact", "reach"
-      - Parking variations: "parking", "where to park"</step>
-    <step order="4">KV storage with 24h TTL (86400 seconds)</step>
-    <step order="5">Add cache hit/miss logging for metrics</step>
+    <step order="1">Create CTA section:
+      - Centered below storefront area
+      - Clear visual hierarchy
+      - Whitespace above and below</step>
+    <step order="2">Style CTA button:
+      - Primary color (#2271b1) background
+      - White text, bold
+      - Large size (16px font, 16px padding)
+      - Border-radius for modern look
+      - Hover state (darker shade)
+      - Focus state for accessibility</step>
+    <step order="3">Add button text and link:
+      - Text: "Make This Real"
+      - href: https://wordpress.org/plugins/localgenius-lite/
+      - target="_blank" (opens in new tab)
+      - rel="noopener" (security)</step>
+    <step order="4">Add tracking parameter:
+      - Append ?utm_source=playground&amp;utm_medium=demo&amp;utm_campaign=cta
+      - For minimal analytics per decisions.md</step>
+    <step order="5">Add supporting text:
+      - Below button: "Free WordPress plugin. Install in 30 seconds."
+      - Reinforces zero friction message</step>
   </steps>
 
   <verification>
-    <check type="bash">test -f deliverables/localgenius-lite/cloudflare-worker/cache.js &amp;&amp; echo "cache.js exists"</check>
-    <check type="bash">grep -q "86400" deliverables/localgenius-lite/cloudflare-worker/cache.js &amp;&amp; echo "24H TTL PASS"</check>
-    <check type="bash">grep -q "normalizeQuestion" deliverables/localgenius-lite/cloudflare-worker/cache.js &amp;&amp; echo "NORMALIZE FN PASS"</check>
+    <check type="manual">Button text is exactly "Make This Real"</check>
+    <check type="manual">Button links to WordPress.org plugin page</check>
+    <check type="manual">Link opens in new tab</check>
+    <check type="manual">UTM parameters present in URL</check>
+    <check type="bash">grep -q "Make This Real" deliverables/localgenius-interactive-demo/index.html &amp;&amp; echo "CTA TEXT PASS"</check>
+    <check type="bash">grep -q "wordpress.org/plugins" deliverables/localgenius-interactive-demo/index.html &amp;&amp; echo "WP.ORG LINK PASS"</check>
   </verification>
 
   <dependencies>
-    <!-- Wave 2: No dependencies within wave -->
+    <depends-on task-id="phase-1-task-2" reason="Design system for button styling" />
   </dependencies>
 
-  <commit-message>feat(worker): add question caching layer with 24h TTL
+  <commit-message>feat(playground): add "Make This Real" CTA button
 
-- Add cache.js with question normalization
-- Implement hash-based cache keys per site
-- Set 24-hour TTL per Decision 6
-- Map canonical question variations
-- Add cache hit/miss logging
+- Create centered CTA section below storefront
+- Style button with primary color and hover state
+- Link to WordPress.org plugin with UTM tracking
+- Add supporting copy reinforcing zero friction
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-6" wave="2">
-  <title>Create System Prompts by Business Type</title>
-  <requirement>REQ-018: Warm, human tone prompts per business type</requirement>
-  <description>Create prompts.js with system prompts for each business type. Voice must be warm, conversational, never robotic per Decision 12.</description>
-
-  <context>
-    <file path="rounds/localgenius-lite/decisions.md" reason="Decision 12: Human, warm, never robotic voice" />
-    <file path="deliverables/localgenius-lite/localgenius/templates/faq/" reason="FAQ templates inform prompt context" />
-  </context>
-
-  <steps>
-    <step order="1">Create `cloudflare-worker/prompts.js`:
-      - Export getSystemPrompt(businessType, businessName, phone, location, faqContext)
-      - Base prompt template with voice guidelines
-      - Per-business-type variations (10 types)</step>
-    <step order="2">Implement base system prompt:
-      - "You are the helpful voice of [businessName], a [businessType] in [location]."
-      - "Answer questions about the business using ONLY the FAQ context provided."
-      - "If you don't know the answer from the FAQ, say 'I'd recommend calling us directly at [phone] for that.'"
-      - "Use warm, friendly language. You're the business owner on their best day."
-      - "Never use corporate language. Never mention AI or that you're a chatbot."</step>
-    <step order="3">Add professional-neutral variant for sensitive industries:
-      - lawyer: More formal but still warm
-      - Add medical/funeral home variants if needed (professional-neutral)</step>
-    <step order="4">Add example responses per business type:
-      - Restaurant: "Yep! We're here 9-5 on Saturdays."
-      - Lawyer: "We'd be glad to discuss that. Our office hours are 9-5 weekdays."</step>
-    <step order="5">Test prompts don't contain "AI", "chatbot", "robot" language</step>
-  </steps>
-
-  <verification>
-    <check type="bash">test -f deliverables/localgenius-lite/cloudflare-worker/prompts.js &amp;&amp; echo "prompts.js exists"</check>
-    <check type="bash">grep -q "getSystemPrompt" deliverables/localgenius-lite/cloudflare-worker/prompts.js &amp;&amp; echo "EXPORT FN PASS"</check>
-    <check type="bash">! grep -iE "\bAI\b|chatbot|robot" deliverables/localgenius-lite/cloudflare-worker/prompts.js &amp;&amp; echo "NO AI LANGUAGE PASS"</check>
-    <check type="bash">grep -q "warm\|friendly\|helpful" deliverables/localgenius-lite/cloudflare-worker/prompts.js &amp;&amp; echo "WARM VOICE PASS"</check>
-  </verification>
-
-  <dependencies>
-    <!-- Wave 2: No dependencies within wave -->
-  </dependencies>
-
-  <commit-message>feat(worker): add warm system prompts per business type
-
-- Add prompts.js with getSystemPrompt() function
-- Implement warm, human voice guidelines
-- Add professional-neutral variant for lawyers
-- Include FAQ context injection
-- No AI/chatbot/robot language anywhere
-
-Refs: Decision 12
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-7" wave="2">
-  <title>Implement Worker Rate Limiting</title>
-  <requirement>REQ-019, REQ-020, REQ-021: 3s timeout, IP throttling, per-site cap</requirement>
-  <description>Add rate limiting at Worker level: 3-second timeout with graceful fallback, IP-based throttling, and per-site monthly cap enforcement.</description>
-
-  <context>
-    <file path="rounds/localgenius-lite/decisions.md" reason="Section 5 Risk Mitigation: Rate limiting requirements" />
-    <file path="deliverables/localgenius-lite/cloudflare-worker/worker.js" reason="Main worker to add rate limiting" />
-  </context>
-
-  <steps>
-    <step order="1">Add rate limiting utilities to worker.js:
-      - getRateLimitKey(siteId, month): `ratelimit:${siteId}:${month}`
-      - checkRateLimit(env, siteId): return { allowed, remaining, limit }
-      - incrementRateLimit(env, siteId): increment counter with 32-day TTL</step>
-    <step order="2">Implement per-site monthly cap:
-      - Default limit: 100 questions/month
-      - Store count in KV: `ratelimit:${siteId}:2025-04` → counter
-      - Return 429 with warm message when exceeded
-      - Message: "We've reached our monthly limit. Please call us at [phone] or check back next month!"</step>
-    <step order="3">Implement IP-based throttling:
-      - Max 1 request per 2 seconds per IP
-      - Store in KV: `ip:${clientIP}` → timestamp
-      - Return 429 with brief message if exceeded</step>
-    <step order="4">Implement 3-second timeout:
-      - Wrap Workers AI call in Promise.race with 3000ms timeout
-      - On timeout: return fallback message with phone number
-      - Fallback message: "I'd recommend calling us directly at [phone] for this one."</step>
-    <step order="5">Add rate limit headers to response:
-      - X-RateLimit-Remaining: count
-      - X-RateLimit-Limit: 100</step>
-  </steps>
-
-  <verification>
-    <check type="bash">grep -q "429" deliverables/localgenius-lite/cloudflare-worker/worker.js &amp;&amp; echo "RATE LIMIT 429 PASS"</check>
-    <check type="bash">grep -q "3000\|3 \* 1000" deliverables/localgenius-lite/cloudflare-worker/worker.js &amp;&amp; echo "3S TIMEOUT PASS"</check>
-    <check type="bash">grep -q "X-RateLimit" deliverables/localgenius-lite/cloudflare-worker/worker.js &amp;&amp; echo "HEADERS PASS"</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-4" reason="Worker base must exist" />
-  </dependencies>
-
-  <commit-message>feat(worker): add rate limiting with 3s timeout
-
-- Implement per-site monthly cap (100 questions/month)
-- Add IP-based throttling (1 req/2s per IP)
-- Add 3-second timeout with graceful phone fallback
-- Include X-RateLimit headers in response
-- Warm, human error messages
+Refs: Decision 7 (CTA copy and destination)
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 </task-plan>
@@ -492,115 +410,211 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 
 ---
 
-### Wave 3 (Sequential — Documentation & Fixes)
+### Wave 3 (Sequential — Integration & Optimization)
 
-These tasks complete documentation and fix known issues.
+Assemble all components into single HTML file and optimize.
+
+```xml
+<task-plan id="phase-1-task-6" wave="3">
+  <title>Assemble Single HTML File</title>
+  <requirement>REQ-033-041: Single HTML, vanilla JS, zero backend, static files</requirement>
+  <description>Combine all components (landing page, business selector, storefront, chat widget, CTA) into a single HTML file with embedded CSS and JavaScript.</description>
+
+  <context>
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Technical constraints: single file, embedded CSS" />
+  </context>
+
+  <steps>
+    <step order="1">Create HTML structure:
+      ```html
+      &lt;!DOCTYPE html&gt;
+      &lt;html lang="en"&gt;
+      &lt;head&gt;
+        &lt;meta charset="UTF-8"&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+        &lt;title&gt;LocalGenius Playground — See It In Action&lt;/title&gt;
+        &lt;style&gt;/* All CSS embedded here */&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;!-- Header --&gt;
+        &lt;!-- Business Type Selector --&gt;
+        &lt;!-- Storefront + Chat Widget --&gt;
+        &lt;!-- CTA Section --&gt;
+        &lt;!-- Footer --&gt;
+        &lt;script&gt;/* All JS embedded here */&lt;/script&gt;
+      &lt;/body&gt;
+      &lt;/html&gt;
+      ```</step>
+    <step order="2">Embed all CSS:
+      - Design system styles (colors, typography)
+      - Layout styles (header, selector, storefront, CTA)
+      - Chat widget styles
+      - Responsive media queries</step>
+    <step order="3">Embed all JavaScript:
+      - Business type switching logic
+      - Chat widget class/module
+      - Pre-populated conversation data
+      - Event handlers</step>
+    <step order="4">Embed canned responses as JSON:
+      ```javascript
+      const RESPONSES = {
+        dentist: [...],
+        restaurant: [...],
+        plumber: [...]
+      };
+      ```</step>
+    <step order="5">Add meta tags:
+      - og:title, og:description for social sharing
+      - favicon reference (can be data URI)</step>
+    <step order="6">Test complete file loads independently</step>
+  </steps>
+
+  <verification>
+    <check type="bash">test -f deliverables/localgenius-interactive-demo/index.html &amp;&amp; echo "INDEX.HTML EXISTS"</check>
+    <check type="bash">grep -q "&lt;style&gt;" deliverables/localgenius-interactive-demo/index.html &amp;&amp; echo "EMBEDDED CSS PASS"</check>
+    <check type="bash">grep -q "&lt;script&gt;" deliverables/localgenius-interactive-demo/index.html &amp;&amp; echo "EMBEDDED JS PASS"</check>
+    <check type="bash">! grep -q "fetch(" deliverables/localgenius-interactive-demo/index.html &amp;&amp; echo "NO API CALLS PASS"</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-3" reason="Chat widget must be complete" />
+    <depends-on task-id="phase-1-task-4" reason="Storefront must be complete" />
+    <depends-on task-id="phase-1-task-5" reason="CTA must be complete" />
+  </dependencies>
+
+  <commit-message>feat(playground): assemble single HTML file application
+
+- Combine all components into index.html
+- Embed all CSS and JavaScript inline
+- Include canned responses as JSON object
+- Add meta tags for social sharing
+- Zero external dependencies
+
+Refs: Technical constraints (single file, zero backend)
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-7" wave="3">
+  <title>Optimize for Performance Targets</title>
+  <requirement>REQ-043-046: &lt;100KB, first paint &lt;1s, interactive &lt;1.5s</requirement>
+  <description>Optimize the assembled HTML file to meet performance targets: under 100KB total, first paint under 1 second, time to interactive under 1.5 seconds.</description>
+
+  <context>
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Decision 5: Performance targets" />
+  </context>
+
+  <steps>
+    <step order="1">Measure current file size:
+      ```bash
+      wc -c deliverables/localgenius-interactive-demo/index.html
+      ```</step>
+    <step order="2">Minify CSS (manual or tool):
+      - Remove comments
+      - Remove unnecessary whitespace
+      - Combine selectors where possible</step>
+    <step order="3">Minify JavaScript:
+      - Remove comments
+      - Shorten variable names (if not affecting readability)
+      - Remove console.log statements</step>
+    <step order="4">Optimize images (if any):
+      - Compress to quality 60-70%
+      - Resize to display dimensions
+      - Consider base64 for small images
+      - OR use CSS-only approach (no images)</step>
+    <step order="5">Verify performance:
+      - Test in Chrome DevTools (Network tab)
+      - Run Lighthouse performance audit
+      - Confirm First Contentful Paint &lt;1s
+      - Confirm Time to Interactive &lt;1.5s</step>
+    <step order="6">If over budget, prioritize cuts:
+      - Remove decorative elements
+      - Simplify storefront mockups
+      - Reduce animation complexity</step>
+  </steps>
+
+  <verification>
+    <check type="bash">wc -c deliverables/localgenius-interactive-demo/index.html | awk '{print ($1 &lt; 102400 ? "PASS: &lt;100KB (" $1 " bytes)" : "FAIL: &gt;100KB (" $1 " bytes)")}'</check>
+    <check type="manual">Lighthouse First Contentful Paint &lt;1s</check>
+    <check type="manual">Lighthouse Time to Interactive &lt;1.5s</check>
+    <check type="manual">No loading spinners visible during load</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-6" reason="Complete HTML file must exist" />
+  </dependencies>
+
+  <commit-message>perf(playground): optimize to meet &lt;100KB target
+
+- Minify embedded CSS and JavaScript
+- Optimize or remove images as needed
+- Verify first paint &lt;1s, TTI &lt;1.5s
+- Document final file size
+
+Refs: Decision 5 (performance targets)
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
+</task-plan>
+```
 
 ```xml
 <task-plan id="phase-1-task-8" wave="3">
-  <title>Create WordPress.org readme.txt</title>
-  <requirement>REQ-047, REQ-048: SEO-optimized readme with external API documentation</requirement>
-  <description>Create readme.txt following WordPress.org format. Optimize for search keywords and clearly document Cloudflare Workers AI dependency.</description>
+  <title>Polish Design &amp; Copy</title>
+  <requirement>REQ-012, REQ-031-032: Modern design, natural responses</requirement>
+  <description>Final design review to ensure modern aesthetic and copy review to ensure responses sound natural. Address "looks dated" risk from Risk Register.</description>
 
   <context>
-    <file path="rounds/localgenius-lite/decisions.md" reason="Decision 10: Distribution strategy keywords" />
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Risk Register: Page looks dated" />
   </context>
 
   <steps>
-    <step order="1">Create `readme.txt` with WordPress.org format:
-      - Plugin name, contributors, tags
-      - Requires at least: 6.0
-      - Tested up to: 6.5
-      - Requires PHP: 8.0
-      - Stable tag: 1.0.0
-      - License: GPLv2 or later</step>
-    <step order="2">Write SEO-optimized description (per Decision 10):
-      - Primary keywords: "FAQ plugin", "customer chat", "automatic FAQ", "chat widget small business"
-      - Avoid: "AI chatbot" (per Decision 8 - no AI branding)
-      - Focus on benefit: "Answer customer questions 24/7"</step>
-    <step order="3">Document external API dependency:
-      - Section: "External Services"
-      - Explain: "This plugin sends questions to LocalGenius servers for processing"
-      - Privacy: "Questions are used only to generate answers; no personal data is stored"
-      - Link to privacy policy</step>
-    <step order="4">Add installation instructions:
-      - Upload and activate
-      - Go to Settings → LocalGenius
-      - Select business type
-      - Widget appears on frontend automatically</step>
-    <step order="5">Add FAQ section with common questions</step>
-    <step order="6">Add changelog for v1.0.0</step>
+    <step order="1">Design review checklist:
+      - [ ] Modern typography (system fonts, proper scale)
+      - [ ] Consistent spacing (8px grid)
+      - [ ] Subtle shadows (no harsh drop shadows)
+      - [ ] Border-radius on interactive elements
+      - [ ] Smooth micro-interactions (hover, focus)
+      - [ ] No clashing colors or dated gradients</step>
+    <step order="2">Copy review checklist:
+      - [ ] All responses use warm, conversational tone
+      - [ ] Specific details included (not generic)
+      - [ ] Business names sound authentic
+      - [ ] Phone numbers are realistic format
+      - [ ] No robotic phrasing</step>
+    <step order="3">Accessibility check:
+      - [ ] Color contrast meets WCAG AA
+      - [ ] Focus states visible
+      - [ ] Keyboard navigation works</step>
+    <step order="4">Cross-browser check:
+      - [ ] Chrome: renders correctly
+      - [ ] Safari: renders correctly
+      - [ ] Firefox: renders correctly
+      - [ ] Mobile Safari: renders correctly
+      - [ ] Mobile Chrome: renders correctly</step>
+    <step order="5">Apply any final polish fixes</step>
   </steps>
 
   <verification>
-    <check type="bash">test -f deliverables/localgenius-lite/localgenius/readme.txt &amp;&amp; echo "readme.txt exists"</check>
-    <check type="bash">grep -q "External Services\|external" deliverables/localgenius-lite/localgenius/readme.txt &amp;&amp; echo "EXTERNAL API DOC PASS"</check>
-    <check type="bash">grep -q "GPLv2" deliverables/localgenius-lite/localgenius/readme.txt &amp;&amp; echo "LICENSE PASS"</check>
-    <check type="bash">! grep -iE "\bAI\b|chatbot" deliverables/localgenius-lite/localgenius/readme.txt &amp;&amp; echo "NO AI BRANDING PASS"</check>
+    <check type="manual">Design looks modern (would not be mistaken for "2015")</check>
+    <check type="manual">Responses sound like real business communication</check>
+    <check type="manual">Works on Chrome, Safari, Firefox</check>
+    <check type="manual">Works on mobile (iOS, Android)</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Admin features must be documented" />
-    <depends-on task-id="phase-1-task-3" reason="Widget features must be documented" />
+    <depends-on task-id="phase-1-task-6" reason="Complete HTML file must exist for review" />
   </dependencies>
 
-  <commit-message>docs: add WordPress.org readme.txt with SEO keywords
+  <commit-message>style(playground): polish design and copy for launch
 
-- Follow WordPress.org readme format
-- Optimize for FAQ/chat/small business keywords
-- Document external Cloudflare Workers AI dependency
-- Add installation and FAQ sections
-- No AI branding per Decision 8
+- Review and refine visual design
+- Verify warm, natural response copy
+- Test cross-browser compatibility
+- Ensure accessibility basics
 
-Refs: Decision 10 (distribution strategy)
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-9" wave="3">
-  <title>Fix SSL Verification in Scanner</title>
-  <requirement>REQ-011: Enable SSL verify in production, document local dev workaround</requirement>
-  <description>Fix the known SSL verification issue in class-scanner.php. Enable SSL verify for production; add constant override for local development.</description>
-
-  <context>
-    <file path="deliverables/localgenius-lite/localgenius/includes/class-scanner.php" reason="Contains 'sslverify' => false" />
-    <file path="rounds/localgenius-lite/decisions.md" reason="Section 4, Open Question 5: SSL verification" />
-  </context>
-
-  <steps>
-    <step order="1">Update class-scanner.php fetch_homepage():
-      - Change `'sslverify' => false` to `'sslverify' => true` by default
-      - Add constant check: `defined('LOCALGENIUS_DISABLE_SSL_VERIFY') &amp;&amp; LOCALGENIUS_DISABLE_SSL_VERIFY`
-      - If constant is true (local dev), disable SSL verify</step>
-    <step order="2">Add graceful error handling for SSL failures:
-      - Catch SSL errors in extraction
-      - Return empty data instead of failing
-      - Log error for debugging</step>
-    <step order="3">Update localgenius.php with documentation comment:
-      - Explain LOCALGENIUS_DISABLE_SSL_VERIFY constant
-      - Show example for wp-config.php</step>
-    <step order="4">Test on HTTPS site to verify extraction works with SSL verify enabled</step>
-  </steps>
-
-  <verification>
-    <check type="bash">grep -q "'sslverify' => true" deliverables/localgenius-lite/localgenius/includes/class-scanner.php &amp;&amp; echo "SSL VERIFY ENABLED PASS"</check>
-    <check type="bash">grep -q "LOCALGENIUS_DISABLE_SSL_VERIFY" deliverables/localgenius-lite/localgenius/includes/class-scanner.php &amp;&amp; echo "DEV OVERRIDE PASS"</check>
-  </verification>
-
-  <dependencies>
-    <!-- Wave 3: No dependencies - fix task -->
-  </dependencies>
-
-  <commit-message>fix(scanner): enable SSL verification in production
-
-- Change sslverify default to true
-- Add LOCALGENIUS_DISABLE_SSL_VERIFY constant for local dev
-- Add graceful error handling for SSL failures
-- Document override in localgenius.php
-
-Refs: Open Question 5
+Refs: Risk Register (dated design concern)
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 </task-plan>
@@ -608,51 +622,111 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 
 ---
 
-### Wave 4 (Sequential — Validation)
+### Wave 4 (Sequential — Validation & Deployment)
 
-Final verification tasks to ensure quality.
+Final validation and deployment to Cloudflare Pages.
 
 ```xml
-<task-plan id="phase-1-task-10" wave="4">
-  <title>Validate FAQ Templates</title>
-  <requirement>REQ-036: All 10 templates load correctly with valid JSON</requirement>
-  <description>Run validation checks on all 10 FAQ templates to ensure they parse correctly and contain required fields.</description>
+<task-plan id="phase-1-task-9" wave="4">
+  <title>Validate Scope Compliance</title>
+  <requirement>REQ-048-050: Scope completeness, exclusions enforced, exit criteria</requirement>
+  <description>Verify the implementation includes all MVP features and excludes all out-of-scope features per decisions.md.</description>
 
   <context>
-    <file path="deliverables/localgenius-lite/localgenius/templates/faq/" reason="All FAQ template files" />
-    <file path="deliverables/localgenius-lite/localgenius/includes/class-faq-templates.php" reason="Template loading logic" />
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Build Phase Authorization: scope definition" />
   </context>
 
   <steps>
-    <step order="1">Verify all 10 template files exist:
-      - dentist.json, fitness.json, lawyer.json, mechanic.json
-      - plumber.json, realtor.json, restaurant.json, salon.json
-      - retail.json, general.json</step>
-    <step order="2">Validate JSON syntax for each file</step>
-    <step order="3">Verify each template has required fields:
-      - business_type (string)
-      - display_name (string)
-      - faqs (array of 12-15 Q&As)
-      - Each FAQ has question and answer strings</step>
-    <step order="4">Verify warm voice in answers (spot check)</step>
-    <step order="5">Test class-faq-templates.php get_faqs() returns correct template for each type</step>
+    <step order="1">Verify MVP features present:
+      - [ ] Single HTML file (not multiple files)
+      - [ ] 3 business types (Dentist, Restaurant, Plumber)
+      - [ ] Pre-populated chat with completed exchange
+      - [ ] "Make This Real" CTA linking to WordPress.org
+      - [ ] Page weight &lt;100KB</step>
+    <step order="2">Verify out-of-scope features ABSENT:
+      - [ ] No live AI (all responses are canned)
+      - [ ] No user input handling (view-only chat)
+      - [ ] No email capture
+      - [ ] No analytics dashboards
+      - [ ] No A/B testing
+      - [ ] No additional business types beyond 3
+      - [ ] No backend infrastructure</step>
+    <step order="3">Verify no scope creep:
+      - [ ] No features not in decisions.md
+      - [ ] No "quick additions" that weren't planned</step>
+    <step order="4">Document compliance status</step>
   </steps>
 
   <verification>
-    <check type="bash">ls deliverables/localgenius-lite/localgenius/templates/faq/*.json | wc -l | awk '{print ($1 == 10 ? "10 TEMPLATES PASS" : "TEMPLATE COUNT FAIL: " $1)}'</check>
-    <check type="bash">for f in deliverables/localgenius-lite/localgenius/templates/faq/*.json; do python3 -c "import json; json.load(open('$f'))" || echo "FAIL: $f"; done</check>
+    <check type="bash">! grep -iE "email|subscribe|signup" deliverables/localgenius-interactive-demo/index.html &amp;&amp; echo "NO EMAIL CAPTURE PASS"</check>
+    <check type="bash">! grep -iE "analytics|gtag|ga\(" deliverables/localgenius-interactive-demo/index.html &amp;&amp; echo "NO ANALYTICS PASS"</check>
+    <check type="bash">grep -c "business-type" deliverables/localgenius-interactive-demo/index.html | awk '{print ($1 == 3 ? "3 BUSINESS TYPES PASS" : "CHECK BUSINESS TYPES: " $1)}'</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-2" reason="Missing templates must be created first" />
+    <depends-on task-id="phase-1-task-7" reason="Final optimized file must exist" />
+    <depends-on task-id="phase-1-task-8" reason="Polished file must be complete" />
   </dependencies>
 
-  <commit-message>test(faq): validate all 10 FAQ templates
+  <commit-message>test(playground): validate scope compliance
 
-- Verify all template files exist
-- Validate JSON syntax
-- Check required fields present
-- Spot-check warm voice in answers
+- Verify all MVP features implemented
+- Confirm out-of-scope features absent
+- Document compliance with decisions.md
+- Ready for deployment
+
+Refs: Build Phase Authorization
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-10" wave="4">
+  <title>Test WordPress.org Link</title>
+  <requirement>REQ-010: CTA links to WordPress.org plugin page</requirement>
+  <description>Verify the "Make This Real" button successfully navigates to the LocalGenius Lite plugin page on WordPress.org.</description>
+
+  <context>
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Risk Register: WordPress.org link breaks" />
+  </context>
+
+  <steps>
+    <step order="1">Extract CTA link from HTML:
+      ```bash
+      grep -o 'href="https://wordpress.org/plugins/[^"]*"' index.html
+      ```</step>
+    <step order="2">Test link manually:
+      - Open link in browser
+      - Verify it loads the correct plugin page
+      - Verify plugin exists and is active</step>
+    <step order="3">If plugin not yet published:
+      - Document this as a known issue
+      - Use placeholder URL with tracking
+      - Plan to update before marketing launch</step>
+    <step order="4">Verify UTM parameters present:
+      - utm_source=playground
+      - utm_medium=demo
+      - utm_campaign=cta</step>
+  </steps>
+
+  <verification>
+    <check type="bash">grep -q "wordpress.org/plugins" deliverables/localgenius-interactive-demo/index.html &amp;&amp; echo "WP.ORG LINK PRESENT"</check>
+    <check type="manual">Link opens WordPress.org plugin page successfully</check>
+    <check type="manual">UTM parameters included in URL</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-9" reason="Scope validation must pass first" />
+  </dependencies>
+
+  <commit-message>test(playground): verify WordPress.org CTA link
+
+- Test CTA button link
+- Verify plugin page exists
+- Confirm UTM tracking parameters
+
+Refs: Risk Register (link breaks)
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 </task-plan>
@@ -660,44 +734,69 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 
 ```xml
 <task-plan id="phase-1-task-11" wave="4">
-  <title>Validate No AI Branding</title>
-  <requirement>REQ-028: Zero "AI", "chatbot", "robot" mentions in UI</requirement>
-  <description>Run comprehensive grep checks to ensure no AI branding exists anywhere in user-facing code.</description>
+  <title>Create README and Deploy</title>
+  <requirement>REQ-042: Deployment instructions documented</requirement>
+  <description>Create README.md with deployment instructions and deploy to Cloudflare Pages.</description>
 
   <context>
-    <file path="rounds/localgenius-lite/decisions.md" reason="Decision 8: No AI anywhere in UI" />
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Deployment: Cloudflare Pages" />
   </context>
 
   <steps>
-    <step order="1">Grep all PHP files for AI branding:
-      - Search: \bAI\b, chatbot, robot, artificial intelligence
-      - Exclude: comments, developer docs</step>
-    <step order="2">Grep all JS files for AI branding</step>
-    <step order="3">Grep all CSS files for class names containing AI/bot</step>
-    <step order="4">Check admin settings page text</step>
-    <step order="5">Check widget UI text and labels</step>
-    <step order="6">Check readme.txt description</step>
-    <step order="7">Document any findings and fix</step>
+    <step order="1">Create README.md:
+      ```markdown
+      # LocalGenius Playground
+
+      Static demo page for LocalGenius chat widget.
+
+      ## Deployment
+
+      ### Cloudflare Pages
+
+      1. Create new Pages project
+      2. Connect to GitHub repo or upload directly
+      3. Set build command: (none - static files)
+      4. Set output directory: /
+      5. Deploy
+
+      ### Custom Domain
+
+      Configure DNS to point to Cloudflare Pages:
+      - playground.localgenius.ai → Pages project
+
+      ## Files
+
+      - `index.html` - Single-file application
+      ```</step>
+    <step order="2">Deploy to Cloudflare Pages:
+      - Create new Pages project
+      - Upload deliverables/localgenius-interactive-demo/
+      - Configure custom domain if ready</step>
+    <step order="3">Test deployed site:
+      - Verify all features work
+      - Test on mobile
+      - Verify CTA link works</step>
+    <step order="4">Document live URL</step>
   </steps>
 
   <verification>
-    <check type="bash">! grep -riE "\bAI\b|chatbot|robot" deliverables/localgenius-lite/localgenius/assets/ &amp;&amp; echo "ASSETS NO AI PASS"</check>
-    <check type="bash">! grep -riE "\bAI\b|chatbot" deliverables/localgenius-lite/localgenius/admin/ &amp;&amp; echo "ADMIN NO AI PASS"</check>
-    <check type="bash">! grep -iE "\bAI\b|chatbot" deliverables/localgenius-lite/localgenius/readme.txt &amp;&amp; echo "README NO AI PASS"</check>
+    <check type="bash">test -f deliverables/localgenius-interactive-demo/README.md &amp;&amp; echo "README EXISTS"</check>
+    <check type="manual">Site accessible at Cloudflare Pages URL</check>
+    <check type="manual">All features work on deployed site</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-3" reason="Widget must be complete" />
-    <depends-on task-id="phase-1-task-8" reason="Readme must be complete" />
+    <depends-on task-id="phase-1-task-10" reason="CTA link must be verified before deploy" />
   </dependencies>
 
-  <commit-message>test(compliance): verify zero AI branding in UI
+  <commit-message>docs(playground): add README and deploy to Cloudflare Pages
 
-- Grep check all PHP/JS/CSS for AI/chatbot/robot
-- Verify admin page text
-- Verify widget UI text
-- Verify readme.txt description
-- Decision 8 compliance confirmed
+- Create README.md with deployment instructions
+- Deploy to Cloudflare Pages
+- Document live URL
+- Ready for homepage link
+
+Refs: Deployment target
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 </task-plan>
@@ -705,196 +804,30 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 
 ```xml
 <task-plan id="phase-1-task-12" wave="4">
-  <title>WordPress Plugin Checker Validation</title>
-  <requirement>REQ-046: Plugin meets WordPress.org standards</requirement>
-  <description>Run WordPress.org plugin checker and fix any reported issues before submission.</description>
-
-  <context>
-    <file path="deliverables/localgenius-lite/localgenius/" reason="Complete plugin directory" />
-  </context>
-
-  <steps>
-    <step order="1">Run security checks:
-      - No eval() usage
-      - No unescaped outputs (esc_html, esc_attr, esc_url used)
-      - No deprecated WordPress functions
-      - Proper nonce verification on forms</step>
-    <step order="2">Run code quality checks:
-      - All functions prefixed with localgenius_
-      - All classes prefixed with LocalGenius_
-      - No unprefixed globals</step>
-    <step order="3">Run file structure checks:
-      - readme.txt exists and follows format
-      - Main plugin file has required headers
-      - License is GPL v2 or later</step>
-    <step order="4">Fix any issues found</step>
-    <step order="5">Document readiness status</step>
-  </steps>
-
-  <verification>
-    <check type="bash">! grep -r "eval(" deliverables/localgenius-lite/localgenius/*.php &amp;&amp; echo "NO EVAL PASS"</check>
-    <check type="bash">grep -q "License: GPLv2" deliverables/localgenius-lite/localgenius/localgenius.php &amp;&amp; echo "LICENSE HEADER PASS"</check>
-    <check type="bash">grep -q "Text Domain: localgenius" deliverables/localgenius-lite/localgenius/localgenius.php &amp;&amp; echo "TEXT DOMAIN PASS"</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-8" reason="Readme must exist" />
-    <depends-on task-id="phase-1-task-1" reason="Admin code must be complete" />
-  </dependencies>
-
-  <commit-message>test(compliance): validate WordPress.org submission readiness
-
-- Check for eval() and unescaped outputs
-- Verify function/class prefixing
-- Validate readme.txt format
-- Confirm GPL v2 license
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-13" wave="4">
-  <title>End-to-End Flow Testing</title>
-  <requirement>REQ-044: Test all failure modes with warm messages</requirement>
-  <description>Test the complete flow from widget interaction through Worker response, including all error states.</description>
-
-  <context>
-    <file path="deliverables/localgenius-lite/localgenius/" reason="Complete plugin" />
-    <file path="deliverables/localgenius-lite/cloudflare-worker/" reason="Complete Worker" />
-  </context>
-
-  <steps>
-    <step order="1">Test happy path:
-      - User clicks widget bubble
-      - GDPR checkbox appears
-      - User checks consent, types "what are your hours?"
-      - Response appears with correct business type template</step>
-    <step order="2">Test cache hit:
-      - Same question asked twice
-      - Second response faster (cached)</step>
-    <step order="3">Test rate limit:
-      - Simulate 100+ questions from same site
-      - 101st question shows warm limit message</step>
-    <step order="4">Test timeout fallback:
-      - Simulate slow LLM response (&gt;3s)
-      - User sees phone number fallback</step>
-    <step order="5">Test Worker down:
-      - Simulate Worker unreachable
-      - User sees warm error message with phone</step>
-    <step order="6">Document all test results</step>
-  </steps>
-
-  <verification>
-    <check type="manual">Happy path: question → answer in &lt;2s</check>
-    <check type="manual">Cache hit: second question &lt;100ms</check>
-    <check type="manual">Rate limit: warm message at limit</check>
-    <check type="manual">Timeout: phone fallback message</check>
-    <check type="manual">Worker down: warm error message</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-3" reason="Widget must be complete" />
-    <depends-on task-id="phase-1-task-4" reason="Worker must be complete" />
-    <depends-on task-id="phase-1-task-7" reason="Rate limiting must be complete" />
-  </dependencies>
-
-  <commit-message>test(e2e): validate complete widget-to-worker flow
-
-- Test happy path with question/answer
-- Test cache hit performance
-- Test rate limit messaging
-- Test timeout fallback
-- Test Worker down graceful error
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-14" wave="4">
-  <title>File Inventory & Completion Check</title>
-  <requirement>All components complete per decisions.md Section 3</requirement>
-  <description>Final inventory check to ensure all required files exist and are complete.</description>
-
-  <context>
-    <file path="rounds/localgenius-lite/decisions.md" reason="Section 3: File Structure specification" />
-  </context>
-
-  <steps>
-    <step order="1">Verify WordPress plugin files exist:
-      - localgenius.php
-      - uninstall.php
-      - readme.txt
-      - admin/class-admin.php
-      - admin/views/settings-page.php
-      - admin/css/admin.css
-      - includes/class-widget.php
-      - includes/class-scanner.php
-      - includes/class-faq-templates.php
-      - includes/class-api-handler.php
-      - assets/js/chat-widget.js
-      - assets/css/chat-widget.css
-      - templates/faq/*.json (10 files)</step>
-    <step order="2">Verify Cloudflare Worker files exist:
-      - worker.js
-      - cache.js
-      - prompts.js
-      - wrangler.toml</step>
-    <step order="3">Check file sizes are reasonable:
-      - chat-widget.js &lt; 8kb
-      - Total plugin size &lt; 500kb</step>
-    <step order="4">Create final completion report</step>
-  </steps>
-
-  <verification>
-    <check type="bash">ls deliverables/localgenius-lite/localgenius/*.php | wc -l | awk '{print ($1 >= 2 ? "PHP FILES PASS" : "PHP FILES FAIL")}'</check>
-    <check type="bash">ls deliverables/localgenius-lite/cloudflare-worker/*.js | wc -l | awk '{print ($1 >= 3 ? "WORKER FILES PASS" : "WORKER FILES FAIL")}'</check>
-    <check type="bash">ls deliverables/localgenius-lite/localgenius/templates/faq/*.json | wc -l | awk '{print ($1 == 10 ? "FAQ TEMPLATES PASS" : "FAQ TEMPLATES FAIL")}'</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Admin files" />
-    <depends-on task-id="phase-1-task-2" reason="FAQ templates" />
-    <depends-on task-id="phase-1-task-3" reason="Widget files" />
-    <depends-on task-id="phase-1-task-4" reason="Worker files" />
-  </dependencies>
-
-  <commit-message>docs(planning): complete file inventory and readiness check
-
-- Verify all plugin files exist
-- Verify all Worker files exist
-- Verify all 10 FAQ templates
-- Confirm file sizes within spec
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-15" wave="4">
   <title>Sara Blakely Customer Gut-Check</title>
   <requirement>SKILL.md Step 7: Sara Blakely customer-value review</requirement>
-  <description>Spawn Sara Blakely persona to gut-check the plugin from a small business owner's perspective. Does this solve Maria's problem?</description>
+  <description>Spawn Sara Blakely persona to gut-check the Playground from a small business owner's perspective. Does this make them say "shut up and take my money"?</description>
 
   <context>
     <file path=".planning/phase-1-plan.md" reason="This plan document" />
-    <file path="rounds/localgenius-lite/decisions.md" reason="Original decisions and essence" />
+    <file path="rounds/localgenius-interactive-demo/decisions.md" reason="Original decisions and essence" />
+    <file path="rounds/localgenius-interactive-demo/essence.md" reason="North star: belief before explanation" />
   </context>
 
   <steps>
-    <step order="1">Review all deliverables from Maria's perspective:
+    <step order="1">Review the deployed Playground from Maria's perspective:
       - Maria owns Maria's Kitchen in Austin
       - She's not tech-savvy (uses WordPress theme, needs zero-config)
       - She wants her website to answer "what are your hours?" while she sleeps</step>
     <step order="2">Answer honestly:
-      - Would Maria actually use this?
+      - Would Maria actually click "Make This Real"?
       - What would make her say "shut up and take my money"?
-      - What feels like engineering vanity vs. customer value?</step>
+      - What feels like engineering vanity vs. customer value?
+      - Does she understand what she's seeing in 10 seconds?</step>
     <step order="3">Identify gaps in the customer journey:
-      - Activation: Is it truly zero-config?
-      - First experience: Does the first answer work?
-      - Ongoing value: Will she keep it installed?</step>
+      - First impression: Does it feel trustworthy?
+      - Value clarity: Is it obvious what this does?
+      - Call to action: Is "Make This Real" compelling?</step>
     <step order="4">Write findings to .planning/sara-blakely-review.md</step>
   </steps>
 
@@ -903,15 +836,15 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-14" reason="All content must be complete for review" />
+    <depends-on task-id="phase-1-task-11" reason="Deployed site must exist for review" />
   </dependencies>
 
   <commit-message>review(customer): Sara Blakely gut-check complete
 
-- Reviewed from Maria's small business perspective
+- Reviewed from small business owner perspective
 - Assessed customer value vs engineering vanity
-- Identified activation and first-experience gaps
-- Documented findings for v1.1 consideration
+- Identified first-impression and CTA clarity
+- Documented findings for iteration
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 </task-plan>
@@ -925,68 +858,74 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 
 ### Critical Risks (Mitigated in Plan)
 
-| Risk | Mitigation Task |
-|------|----------------|
-| LLM Hallucination | phase-1-task-6 (system prompts ground truth to FAQ) |
-| 1-Star Reviews | phase-1-task-3 (graceful errors), phase-1-task-13 (E2E testing) |
-| Widget Looks Spammy | phase-1-task-3 (Steve Jobs design standard) |
-| Worker Timeout | phase-1-task-7 (3s timeout with phone fallback) |
-| Rate Limit Abuse | phase-1-task-7 (IP throttling + per-site cap) |
-| WordPress.org Rejection | phase-1-task-12 (plugin checker validation) |
+| Risk | Likelihood | Impact | Mitigation Task |
+|------|------------|--------|-----------------|
+| RISK-001: Scope creep | HIGH | HIGH | phase-1-task-9 (scope validation) |
+| RISK-002: Canned responses sound fake | MEDIUM | HIGH | phase-1-task-1 (specific details) |
+| RISK-003: Visual design dated | LOW | HIGH | phase-1-task-8 (design polish) |
+| RISK-004: Chat interactivity mismatch | MEDIUM | MEDIUM | phase-1-task-3 (view-only design) |
+| RISK-005: WordPress.org link breaks | LOW | HIGH | phase-1-task-10 (link verification) |
+| RISK-006: Mobile responsiveness | MEDIUM | MEDIUM | phase-1-task-4, phase-1-task-8 |
+| RISK-007: Image size bloats | MEDIUM | MEDIUM | phase-1-task-7 (optimization) |
 
-### Technical Debt (Document for v1.1)
+### Mitigation Strategies
 
-- Hardcoded Worker endpoint (RISK-003): Plan Worker endpoint config for scale
-- WCAG 2.1 AA full audit: Basic ARIA in v1, formal audit in v1.1
+1. **Scope Creep**: Lock decisions.md as contract; validate before deploy
+2. **Fake Responses**: Include specific details (insurance names, hours, prices)
+3. **Dated Design**: Use LocalGenius Lite color palette; modern typography
+4. **Interactivity Confusion**: No input field visible; frame as "see how it works"
+5. **Broken Link**: Test before deploy; document backup plan
+6. **Mobile Issues**: Test on real devices; responsive CSS from start
+7. **Size Bloat**: CSS-only storefronts; no large images
 
 ---
 
 ## Success Criteria
 
-**Technical Criteria** (from REQUIREMENTS.md):
-- [ ] All 16 files created and complete
-- [ ] Zero placeholder content
-- [ ] Widget activates in <30 seconds
-- [ ] 80% cache hit rate in testing
-- [ ] Plugin passes WordPress.org checker
-- [ ] No AI/chatbot branding anywhere
+**Technical Criteria** (from decisions.md):
+- [ ] Single HTML file with embedded CSS/JS
+- [ ] Total page weight <100KB
+- [ ] First paint <1s
+- [ ] Interactive <1.5s
+- [ ] Zero API calls / zero backend
+- [ ] 3 business types only
 
-**UX Criteria** (from decisions.md Essence):
-- [ ] First answer works: "What are your hours?" answered instantly
-- [ ] Widget looks beautiful, not spammy
-- [ ] Error messages feel warm and human
+**UX Criteria** (from essence.md):
+- [ ] Chat shows conversation already in progress
+- [ ] "Make This Real" CTA is prominent
+- [ ] No loading spinners
+- [ ] No empty states
+- [ ] Modern visual design (not "2015")
 
 **Business Criteria**:
-- [ ] Ready for WordPress.org submission
-- [ ] Agency bundle documentation ready
+- [ ] Demo is live on Cloudflare Pages
+- [ ] CTA links to WordPress.org plugin
+- [ ] Ready to link from homepage
 
 ---
 
 ## Execution Checklist
 
 ```
-[ ] Wave 1: Foundation (parallel)
-    [ ] phase-1-task-1: Admin settings page
-    [ ] phase-1-task-2: Missing FAQ templates (retail, general)
+[ ] Wave 1: Content & Design (parallel)
+    [ ] phase-1-task-1: Write 15 canned responses
+    [ ] phase-1-task-2: Create design system & wireframe
 
 [ ] Wave 2: Core Implementation (parallel)
-    [ ] phase-1-task-3: Chat widget frontend (JS + CSS)
-    [ ] phase-1-task-4: Cloudflare Worker entry point
-    [ ] phase-1-task-5: Caching layer
-    [ ] phase-1-task-6: System prompts
-    [ ] phase-1-task-7: Worker rate limiting
+    [ ] phase-1-task-3: Build chat widget with pre-populated conversation
+    [ ] phase-1-task-4: Build storefront visual component
+    [ ] phase-1-task-5: Implement "Make This Real" CTA
 
-[ ] Wave 3: Documentation & Fixes (sequential)
-    [ ] phase-1-task-8: WordPress.org readme.txt
-    [ ] phase-1-task-9: SSL verification fix
+[ ] Wave 3: Integration & Optimization (sequential)
+    [ ] phase-1-task-6: Assemble single HTML file
+    [ ] phase-1-task-7: Optimize for performance targets
+    [ ] phase-1-task-8: Polish design & copy
 
-[ ] Wave 4: Validation (sequential)
-    [ ] phase-1-task-10: FAQ template validation
-    [ ] phase-1-task-11: No AI branding validation
-    [ ] phase-1-task-12: WordPress plugin checker
-    [ ] phase-1-task-13: End-to-end flow testing
-    [ ] phase-1-task-14: File inventory check
-    [ ] phase-1-task-15: Sara Blakely customer review
+[ ] Wave 4: Validation & Deployment (sequential)
+    [ ] phase-1-task-9: Validate scope compliance
+    [ ] phase-1-task-10: Test WordPress.org link
+    [ ] phase-1-task-11: Create README and deploy
+    [ ] phase-1-task-12: Sara Blakely customer gut-check
 ```
 
 ---
@@ -995,18 +934,8 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 
 | File | Path | Purpose |
 |------|------|---------|
-| class-admin.php | `admin/class-admin.php` | Admin settings registration |
-| settings-page.php | `admin/views/settings-page.php` | Settings page HTML |
-| admin.css | `admin/css/admin.css` | Admin styling |
-| chat-widget.js | `assets/js/chat-widget.js` | Frontend widget (~200 lines) |
-| chat-widget.css | `assets/css/chat-widget.css` | Widget styling |
-| retail.json | `templates/faq/retail.json` | Retail business FAQ |
-| general.json | `templates/faq/general.json` | Generic fallback FAQ |
-| worker.js | `cloudflare-worker/worker.js` | Main Worker |
-| cache.js | `cloudflare-worker/cache.js` | Caching layer |
-| prompts.js | `cloudflare-worker/prompts.js` | System prompts |
-| wrangler.toml | `cloudflare-worker/wrangler.toml` | Worker config |
-| readme.txt | `readme.txt` | WordPress.org description |
+| index.html | `deliverables/localgenius-interactive-demo/index.html` | Single-file application |
+| README.md | `deliverables/localgenius-interactive-demo/README.md` | Deployment instructions |
 | sara-blakely-review.md | `.planning/sara-blakely-review.md` | Customer gut-check |
 
 ---
@@ -1014,61 +943,69 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com></commit-message>
 ## Document Trail
 
 - **Requirements**: `.planning/REQUIREMENTS.md`
-- **Decisions**: `rounds/localgenius-lite/decisions.md`
+- **Decisions**: `rounds/localgenius-interactive-demo/decisions.md`
+- **Essence**: `rounds/localgenius-interactive-demo/essence.md`
 - **Project Rules**: `CLAUDE.md`
-- **Existing Code**: `deliverables/localgenius-lite/localgenius/`
+- **Reference Code**: `deliverables/localgenius-lite/localgenius/assets/`
 
 ---
 
-## Technical Reference: Verified Cloudflare Workers AI API
+## Technical Reference: Patterns from LocalGenius Lite
 
-Per Cloudflare Workers AI documentation (as of 2026):
-
-### Workers AI Binding
-
-```toml
-# wrangler.toml
-[ai]
-binding = "AI"
+### Chat Widget Color Palette (from chat-widget.css)
+```css
+:root {
+  --lg-primary: #2271b1;
+  --lg-primary-hover: #135e96;
+  --lg-bg: #fff;
+  --lg-bg-light: #f8f9fa;
+  --lg-text: #1e1e1e;
+  --lg-text-secondary: #646970;
+  --lg-border: #e2e4e7;
+}
 ```
 
-### Llama 3.1 8B Call Pattern
-
+### Chat Widget Structure (from chat-widget.js)
 ```javascript
-// worker.js
-const response = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-  messages: [
-    { role: 'system', content: systemPrompt },
-    { role: 'user', content: userQuestion }
-  ],
-  max_tokens: 256,
-  temperature: 0.7
-});
+// IIFE pattern - no global pollution
+(function() {
+  const config = window.localGeniusConfig || {};
 
-// Response: { response: "answer text" }
+  // Create DOM elements
+  const widget = document.createElement('div');
+  widget.innerHTML = `
+    <div class="lg-chat-bubble">...</div>
+    <div class="lg-chat-window">
+      <div class="lg-chat-header">...</div>
+      <div class="lg-chat-messages">...</div>
+    </div>
+  `;
+
+  // Event handlers
+  // Toggle, keyboard, click-outside
+})();
 ```
 
-### KV Cache Pattern
-
-```javascript
-// cache.js
-const cached = await env.CACHE.get(cacheKey, { type: 'json' });
-await env.CACHE.put(cacheKey, JSON.stringify(response), {
-  expirationTtl: 86400 // 24 hours
-});
+### FAQ Data Format (reference)
+```json
+{
+  "business_type": "dentist",
+  "display_name": "Dental Practice",
+  "faqs": [
+    { "question": "...", "answer": "..." }
+  ]
+}
 ```
-
-**Source**: https://developers.cloudflare.com/workers-ai/models/llama-3.1-8b-instruct/
 
 ---
 
 **Plan Status**: READY FOR EXECUTION
-**Estimated Duration**: 8 hours focused session
-**Parallel Tasks**: Wave 1 (2 tasks), Wave 2 (5 tasks)
-**Sequential Blocks**: Wave 3 (2 tasks), Wave 4 (6 tasks)
+**Estimated Duration**: 4-6 hours focused session
+**Parallel Tasks**: Wave 1 (2 tasks), Wave 2 (3 tasks)
+**Sequential Blocks**: Wave 3 (3 tasks), Wave 4 (4 tasks)
 
 ---
 
 *Plan generated by Great Minds Agency — Phase Planning Agent (GSD-Style)*
 *Cross-referenced against: CLAUDE.md (project rules), decisions.md (locked decisions), SKILL.md (planning methodology)*
-*Existing code inventory from Codebase Scout analysis*
+*Reference patterns from LocalGenius Lite codebase*

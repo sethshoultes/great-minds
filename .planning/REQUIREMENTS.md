@@ -1,523 +1,430 @@
-# REQUIREMENTS — LocalGenius Lite WordPress Plugin
+# REQUIREMENTS — LocalGenius Playground
 
-**Project Slug:** localgenius-lite
-**Generated:** 2025-04-09
+**Project Slug:** localgenius-interactive-demo
+**Generated:** 2026-04-10
 **Source Documents:**
-- `rounds/localgenius-lite/decisions.md` (15 locked decisions + board conditions)
-- `engineering/tech-stack.md` (technical architecture reference)
-- `engineering/infrastructure.md` (infrastructure patterns reference)
+- `rounds/localgenius-interactive-demo/decisions.md` (8 locked decisions + MVP spec)
+- `rounds/localgenius-interactive-demo/essence.md` (brand north star)
 
 ---
 
 ## Executive Summary
 
-- **Total Requirements:** 85 (categorized below)
-- **Must-Have (v1):** 60
-- **Should-Have (v1.1):** 15
-- **Cut/Deferred:** 10
-- **Hard Blockers:** 5 (REQ-001, REQ-019, REQ-028, REQ-035, REQ-050)
+- **Total Requirements:** 50 (categorized below)
+- **Must-Have (v1):** 45
+- **Should-Have (v1.1):** 5
+- **Hard Blockers:** 5 (REQ-004, REQ-033, REQ-043, REQ-048, REQ-049)
 
 ---
 
-## EXISTING IMPLEMENTATION STATUS
+## 1. UI/UX REQUIREMENTS
 
-Based on Codebase Scout analysis, the following already exists at `/Users/sethshoultes/Local Sites/great-minds/deliverables/localgenius-lite/localgenius/`:
-
-| File | Status | Notes |
-|------|--------|-------|
-| `localgenius.php` | Complete | Main plugin file, hooks, asset enqueuing (166 lines) |
-| `includes/class-widget.php` | Complete | Widget display logic (66 lines) |
-| `includes/class-api-handler.php` | Complete | REST API endpoint, worker proxy (226 lines) |
-| `includes/class-scanner.php` | Complete | Homepage data extraction (186 lines) |
-| `includes/class-faq-templates.php` | Complete | FAQ template loading (122 lines) |
-| `uninstall.php` | Complete | Clean uninstall (34 lines) |
-| `templates/faq/*.json` | 8 of 10 | Missing: retail.json, general.json |
-| `admin/class-admin.php` | **MISSING** | Admin settings page |
-| `admin/views/settings-page.php` | **MISSING** | Settings page view |
-| `admin/css/admin.css` | **MISSING** | Admin styling |
-| `assets/js/chat-widget.js` | **MISSING** | Frontend widget JavaScript |
-| `assets/css/chat-widget.css` | **MISSING** | Widget styling |
-| `cloudflare-worker/*` | **MISSING** | Entire Worker backend |
-| `readme.txt` | **MISSING** | WordPress.org plugin description |
-
----
-
-## 1. WORDPRESS PLUGIN REQUIREMENTS
-
-### REQ-001: Plugin Activation & Bootstrap (HARD BLOCKER)
-- **Source:** Section 2, MVP Item 1
+### REQ-001: Product Named "Playground"
+- **Source:** Decision 1 - Product Naming
 - **Priority:** Must-Have
-- **Description:** Plugin activates in <30 seconds, initializes options, triggers homepage scan
-- **Verification:** Plugin installs from .zip, activates without errors, homepage data extracted
-- **Status:** COMPLETE (localgenius.php, class-scanner.php exist)
+- **Description:** The product shall be named "Playground" (not "Interactive Demo" or "Try It")
+- **Verification:** Product name appears on landing page, browser title, and all marketing materials
+- **Status:** PENDING
 
-### REQ-002: Business Type Selector Dropdown
-- **Source:** Decision 3, Section 2, MVP Item 2
+### REQ-002: Business Type Selector on Landing Page
+- **Source:** MVP Feature Set - Core Experience #1
 - **Priority:** Must-Have
-- **Description:** Dropdown with 10 business types: dentist, plumber, restaurant, salon, mechanic, lawyer, realtor, fitness, retail, general
-- **Verification:** All 10 types selectable; value saves to wp_options
-- **Status:** PENDING (admin page needed)
+- **Description:** Landing page must display selector for 3 business types: Dentist, Restaurant, Plumber
+- **Verification:** User can see and interact with 3 distinct business type options on load
+- **Status:** PENDING
 
-### REQ-003: Location Input Field
-- **Source:** Section 2, MVP Item 3
+### REQ-003: Business Type Selection Changes View
+- **Source:** MVP Feature Set - Core Experience #2
 - **Priority:** Must-Have
-- **Description:** Single text field for city/region (e.g., "Austin, TX")
-- **Verification:** Value persists in wp_options
-- **Status:** PENDING (admin page needed)
+- **Description:** Selecting a business type displays simulated storefront and context-specific chat widget
+- **Verification:** Click Dentist → see dentist storefront; click Restaurant → see restaurant storefront, etc.
+- **Status:** PENDING
 
-### REQ-004: Admin Settings Page — Minimal UI
-- **Source:** Decision 13
+### REQ-004: Pre-Populated Chat on Load (HARD BLOCKER)
+- **Source:** Decision 6 - Pre-Populated Chat State
 - **Priority:** Must-Have
-- **Description:** Single settings screen with: business type dropdown + "Anything else we should know?" text field + widget preview
-- **Verification:** Settings page loads at /wp-admin/options-general.php?page=localgenius
-- **Status:** MISSING (class-admin.php, settings-page.php needed)
+- **Description:** Chat widget displays completed Q&A exchange immediately on page load (no empty states, no "How can I help you?" prompt)
+- **Verification:** Chat widget shows at least one customer question and AI response before user interaction
+- **Status:** PENDING
 
-### REQ-005: Homepage Data Extraction
-- **Source:** Decision 3, Section 2, MVP Item 9
+### REQ-005: Chat Widget Shows Completed Exchange
+- **Source:** MVP Feature Set - UX Requirements
 - **Priority:** Must-Have
-- **Description:** Extract business name, phone from homepage schema.org + <title> tag only
-- **Verification:** Correctly extracts on schema.org-enabled sites; graceful fallback when unavailable
-- **Status:** COMPLETE (class-scanner.php exists)
+- **Description:** Chat conversation displays as a completed exchange, demonstrating the "fully furnished home" concept
+- **Verification:** User sees realistic customer query and professional business response on load
+- **Status:** PENDING
 
-### REQ-006: WordPress REST API Endpoint
-- **Source:** Section 2, MVP Item 6
+### REQ-006: View-Only Chat for v1
+- **Source:** Open Questions #3 - Chat Widget Interactivity (Recommendation)
 - **Priority:** Must-Have
-- **Description:** `/wp-json/localgenius/v1/chat` endpoint proxies to Cloudflare Worker
-- **Verification:** POST with `question` param returns valid JSON response
-- **Status:** COMPLETE (class-api-handler.php exists)
+- **Description:** Chat widget is view-only for v1; users cannot type additional questions
+- **Verification:** Chat input field either disabled, hidden, or non-functional; no new messages can be added by user
+- **Status:** PENDING
 
-### REQ-007: Graceful Error States
-- **Source:** Section 2, MVP Item 12
+### REQ-007: Simulated Storefront Visual
+- **Source:** Open Questions #1 - Storefront Visual Treatment (Recommendation: Option A)
 - **Priority:** Must-Have
-- **Description:** Human, warm error messaging: "I'd recommend calling us directly at [phone] for this one"
-- **Verification:** Error responses use warm tone; phone number displayed when available
-- **Status:** PARTIAL (fallback exists, but need to verify messaging)
+- **Description:** Display simulated storefront as static screenshot with chat widget overlaid
+- **Verification:** Each business type displays unique storefront image with chat widget positioned on top
+- **Status:** PENDING
 
-### REQ-008: Basic Question Logging
-- **Source:** Section 2, MVP Item 10
+### REQ-008: Mobile Chat Positioning
+- **Source:** Open Questions #2 - Mobile Responsiveness (Recommendation)
 - **Priority:** Must-Have
-- **Description:** Store question counts in wp_options (no dashboard in v1)
-- **Verification:** `localgenius_question_count` increments on each question
-- **Status:** COMPLETE (logging implemented)
+- **Description:** Chat widget positioned at bottom-right on desktop and mobile
+- **Verification:** Chat widget appears consistently in bottom-right corner across device sizes
+- **Status:** PENDING
 
-### REQ-009: GDPR Consent Checkbox
-- **Source:** Section 2, MVP Item 11, Board Conditions
+### REQ-009: "Make This Real" CTA Button
+- **Source:** Decision 7 - Primary CTA Copy
 - **Priority:** Must-Have
-- **Description:** Checkbox: "By chatting, you agree to [Privacy Policy]" before first message
-- **Verification:** Widget shows consent checkbox; first message blocked until checked
-- **Status:** PENDING (widget implementation needed)
+- **Description:** Primary call-to-action button displays text "Make This Real" (not "Install Now")
+- **Verification:** CTA button text reads exactly "Make This Real"
+- **Status:** PENDING
 
-### REQ-010: Per-Site Rate Limiting
-- **Source:** Section 2, MVP Item 13
+### REQ-010: CTA Links to WordPress.org Plugin
+- **Source:** Decision 7 - Primary CTA Copy & MVP Feature Set #5
 - **Priority:** Must-Have
-- **Description:** 100 questions/month free tier; display remaining count clearly
-- **Verification:** Site cannot exceed 100/month; user sees "X questions remaining"
-- **Status:** PARTIAL (counter exists, limit enforcement needed in widget)
+- **Description:** "Make This Real" button links directly to WordPress.org plugin page with no intermediary steps
+- **Verification:** Clicking "Make This Real" navigates directly to WordPress.org plugin without signup or email capture
+- **Status:** PENDING
 
-### REQ-011: SSL Verification in Production
-- **Source:** Section 4, Open Question 5
+### REQ-011: No Friction Before Value
+- **Source:** Decision 8 - No Gates Before Value
 - **Priority:** Must-Have
-- **Description:** Enable SSL verify for homepage scanner in production
-- **Verification:** Production sites extract with SSL verify enabled; local dev documented
-- **Status:** NEEDS FIX (currently `sslverify => false`)
+- **Description:** Zero friction to viewing demo value; no email capture, signup forms, or gating mechanisms
+- **Verification:** User can view storefront and chat without entering email, creating account, or filling forms
+- **Status:** PENDING
 
-### REQ-012: Plugin Namespace Compliance
-- **Source:** Section 5, Risk Mitigation
-- **Priority:** Must-Have
-- **Description:** All functions prefixed with `localgenius_`
-- **Verification:** No unprefixed globals in codebase
-- **Status:** COMPLETE (namespace pattern followed)
-
-### REQ-013: No jQuery Dependency
-- **Source:** Section 5, Risk Mitigation
-- **Priority:** Must-Have
-- **Description:** Widget uses vanilla JavaScript only
-- **Verification:** Plugin loads without jQuery; works on jQuery-free sites
-- **Status:** VERIFIED IN DESIGN (implementation pending)
-
----
-
-## 2. CLOUDFLARE WORKER REQUIREMENTS
-
-### REQ-014: Cloudflare Worker Deployment
-- **Source:** Decision 2, Section 2, MVP Item 6
-- **Priority:** Must-Have
-- **Description:** Single Worker handling all `/api/chat` requests
-- **Verification:** Worker endpoint is live; responds to POST with valid JSON
-- **Status:** MISSING (cloudflare-worker/ directory empty)
-
-### REQ-015: Llama 3.1 8B via Workers AI
-- **Source:** Decision 2, Section 2, MVP Item 8
-- **Priority:** Must-Have
-- **Description:** Single LLM path only — Llama 3.1 8B via Cloudflare Workers AI (no Claude, no hybrid)
-- **Verification:** Worker calls Workers AI Llama endpoint; no fallback providers
-- **Status:** MISSING
-
-### REQ-016: Question Hash Caching
-- **Source:** Decision 6, Section 2, MVP Item 7
-- **Priority:** Must-Have
-- **Description:** Hash-normalize questions; cache before LLM; 80% hit rate target
-- **Verification:** Identical questions return cached response <100ms; cache miss triggers LLM
-- **Status:** MISSING
-
-### REQ-017: Cache TTL Management
-- **Source:** Decision 6
-- **Priority:** Must-Have
-- **Description:** 24-hour TTL for cached responses; simple expiry (no smart invalidation)
-- **Verification:** Cached responses expire after 24h; new responses generated
-- **Status:** MISSING
-
-### REQ-018: System Prompts by Business Type
-- **Source:** Decision 12, Section 3
-- **Priority:** Must-Have
-- **Description:** Maintain prompts.js with warm, human tone per business type
-- **Verification:** Prompts load correctly; responses reflect warm voice
-- **Status:** MISSING
-
-### REQ-019: Worker Timeout & Fallback (HARD BLOCKER)
-- **Source:** Section 5, Risk Mitigation
-- **Priority:** Must-Have
-- **Description:** 3-second timeout; graceful fallback to phone number message
-- **Verification:** >3s timeout returns fallback; user never sees error
-- **Status:** MISSING
-
-### REQ-020: IP-Based Throttling at Worker
-- **Source:** Section 5, Risk Mitigation
-- **Priority:** Must-Have
-- **Description:** IP-based rate limiting to prevent abuse
-- **Verification:** Rapid-fire from single IP gets throttled
-- **Status:** MISSING
-
-### REQ-021: Per-Site Daily Cap at Worker
-- **Source:** Section 5, Risk Mitigation
-- **Priority:** Must-Have
-- **Description:** Enforce per-site cap with hash deduplication
-- **Verification:** Site exceeding cap returns rate limit message
-- **Status:** MISSING
-
----
-
-## 3. CONTENT & TEMPLATE REQUIREMENTS
-
-### REQ-022: Pre-Generated FAQ Templates
-- **Source:** Decision 5, Section 2, MVP Item 4
-- **Priority:** Must-Have
-- **Description:** 10 business types × 15 Q&As each as JSON files
-- **Verification:** All 10 templates present; load on widget initialization
-- **Status:** PARTIAL (8 of 10 templates exist)
-
-### REQ-023: Missing FAQ Templates
-- **Source:** Section 3
-- **Priority:** Must-Have
-- **Description:** Create `retail.json` and `general.json` templates
-- **Verification:** Files exist with valid JSON; 15 Q&As each
-- **Status:** MISSING
-
-### REQ-024: FAQ Template JSON Format
-- **Source:** Section 3
-- **Priority:** Must-Have
-- **Description:** Consistent format: `{ business_type, display_name, faqs: [{ question, answer }] }`
-- **Verification:** All templates match schema; JSON parses correctly
-- **Status:** COMPLETE (existing templates follow format)
-
-### REQ-025: Warm Voice in Templates
-- **Source:** Decision 12
-- **Priority:** Must-Have
-- **Description:** Answers written in warm, conversational human voice; never robotic
-- **Verification:** Content review confirms warm tone; professional for sensitive industries
-- **Status:** VERIFIED (existing templates use warm voice)
-
----
-
-## 4. UX/UI REQUIREMENTS
-
-### REQ-026: Chat Widget HTML/CSS
-- **Source:** Decision 7, Section 2, MVP Item 5
-- **Priority:** Must-Have
-- **Description:** Single beautiful widget; bottom-right position; no customization
-- **Verification:** Widget renders correctly; responsive on mobile; matches design spec
-- **Status:** MISSING (chat-widget.css needed)
-
-### REQ-027: Chat Widget JavaScript
-- **Source:** Section 3
-- **Priority:** Must-Have
-- **Description:** Vanilla JS; <8kb; ~200 lines; handles send/receive/display
-- **Verification:** Widget works without jQuery; file <8kb; no console errors
-- **Status:** MISSING (chat-widget.js needed)
-
-### REQ-028: No AI Branding (HARD BLOCKER)
-- **Source:** Decision 8
-- **Priority:** Must-Have
-- **Description:** Remove all "AI", "chatbot", robot icons from UI; magic works silently
-- **Verification:** Zero "AI" text in widget or admin; no robot imagery
-- **Status:** VERIFIED IN DESIGN (implementation pending)
-
-### REQ-029: "Powered By" Link in Free Tier
-- **Source:** Decision 11
-- **Priority:** Must-Have
-- **Description:** Subtle "Powered by LocalGenius" link visible in free tier
-- **Verification:** Link displays in widget footer; leads to LocalGenius site
-- **Status:** PENDING (widget implementation needed)
-
-### REQ-030: Widget Position Fixed Bottom-Right
-- **Source:** Decision 7, Section 4
-- **Priority:** Must-Have
-- **Description:** Fixed bottom-right corner; no position customization in v1
-- **Verification:** Widget appears bottom-right on all tested sites
-- **Status:** PENDING (CSS implementation needed)
-
-### REQ-031: Admin UI Minimalism
-- **Source:** Decision 13
-- **Priority:** Must-Have
-- **Description:** Settings page contains only: dropdown + text field + preview
-- **Verification:** No extra fields, tabs, or options beyond spec
-- **Status:** PENDING (admin implementation needed)
-
-### REQ-032: Widget Preview in Admin
-- **Source:** Decision 13
-- **Priority:** Must-Have
-- **Description:** Live preview of widget in admin settings
-- **Verification:** Preview renders; updates when business type changes
-- **Status:** PENDING (admin implementation needed)
-
-### REQ-033: Error Message Humanization
-- **Source:** Section 4, Board Conditions
-- **Priority:** Must-Have
-- **Description:** All error messages use warm, human voice; no corporate language
-- **Verification:** User testing confirms warmth; Oprah's concern addressed
-- **Status:** PENDING (copy implementation needed)
-
-### REQ-034: Keyboard Navigation in Widget
-- **Source:** Section 5, Risk Mitigation
+### REQ-012: Modern Visual Design
+- **Source:** Risk Register - "Page looks dated"
 - **Priority:** Should-Have
-- **Description:** Tab navigation; Enter submits; Escape closes
-- **Verification:** Keyboard-only users can operate widget
-- **Status:** PENDING (v1.1 priority)
-
-### REQ-035: ARIA Labels (HARD BLOCKER for accessibility)
-- **Source:** Section 5, Risk Mitigation
-- **Priority:** Must-Have
-- **Description:** Basic ARIA labels for screen readers
-- **Verification:** ARIA labels on input, button, message elements
-- **Status:** PENDING (widget implementation needed)
-
----
-
-## 5. TESTING & VALIDATION REQUIREMENTS
-
-### REQ-036: FAQ Template Validation
-- **Source:** Section 2
-- **Priority:** Must-Have
-- **Description:** All 10 templates load correctly; valid JSON
-- **Verification:** Unit tests confirm parsing; integration tests load by type
+- **Description:** Page design uses modern typography, spacing, and subtle animations (not "2015" aesthetic)
+- **Verification:** Design review confirms contemporary visual treatment; no dated styling patterns
 - **Status:** PENDING
 
-### REQ-037: LLM Hallucination Testing
-- **Source:** Section 5, Risk Mitigation
+### REQ-013: No Loading Spinners
+- **Source:** Decision 5 - Performance Target & MVP Feature Set - UX Requirements
 - **Priority:** Must-Have
-- **Description:** Test Llama responses stay within FAQ scope; no invented facts
-- **Verification:** 50+ test cases per business type; 0 factual errors
+- **Description:** Page must not display loading spinners or loading states
+- **Verification:** No spinner elements visible during page load or interaction
 - **Status:** PENDING
 
-### REQ-038: Cache Hit Rate Measurement
-- **Source:** Decision 6
+### REQ-014: No Empty States
+- **Source:** MVP Feature Set - UX Requirements
 - **Priority:** Must-Have
-- **Description:** Track cache hits; target 80% hit rate
-- **Verification:** Worker logs cache hit/miss; metrics accessible
-- **Status:** PENDING
-
-### REQ-039: Latency Benchmarking
-- **Source:** Section 5
-- **Priority:** Must-Have
-- **Description:** End-to-end latency: cold start <600ms; cache hit <100ms
-- **Verification:** Performance tests confirm targets
-- **Status:** PENDING
-
-### REQ-040: Plugin Conflict Testing
-- **Source:** Section 5
-- **Priority:** Must-Have
-- **Description:** Test on 15+ WordPress themes/plugin combos
-- **Verification:** Widget renders without JS errors on all configs
-- **Status:** PENDING
-
-### REQ-041: Rate Limit Testing
-- **Source:** Section 2
-- **Priority:** Must-Have
-- **Description:** Verify 100/month threshold; clear limit message
-- **Verification:** 101st question shows limit message
-- **Status:** PENDING
-
-### REQ-042: SSL Verification Testing
-- **Source:** REQ-011
-- **Priority:** Must-Have
-- **Description:** Test extraction with valid/invalid SSL
-- **Verification:** Production sites work; invalid certs handled gracefully
-- **Status:** PENDING
-
-### REQ-043: GDPR Consent Flow Testing
-- **Source:** Section 2
-- **Priority:** Must-Have
-- **Description:** Consent checkbox blocks messages until checked
-- **Verification:** Unconsented state prevents submission
-- **Status:** PENDING
-
-### REQ-044: Error State Testing
-- **Source:** Section 2
-- **Priority:** Must-Have
-- **Description:** Test all failure modes: LLM down, timeout, rate limit
-- **Verification:** User sees warm message for each failure
-- **Status:** PENDING
-
-### REQ-045: Mobile Responsiveness Testing
-- **Source:** Section 3
-- **Priority:** Must-Have
-- **Description:** Widget responsive on iOS/Android; doesn't cover CTAs
-- **Verification:** Widget readable on mobile; doesn't obstruct page
-- **Status:** PENDING
-
-### REQ-046: WordPress.org Submission Readiness
-- **Source:** Board Conditions
-- **Priority:** Must-Have
-- **Description:** Plugin meets WordPress.org standards; external APIs documented
-- **Verification:** Plugin checker reports zero errors
+- **Description:** Chat widget and storefront must never display empty states; all content pre-populated
+- **Verification:** Page shows complete content immediately on load; no "loading..." or empty placeholders
 - **Status:** PENDING
 
 ---
 
-## 6. DOCUMENTATION REQUIREMENTS
+## 2. CONTENT REQUIREMENTS
 
-### REQ-047: readme.txt for WordPress.org
-- **Source:** Section 3
+### REQ-015: Five Canned Responses per Business Type
+- **Source:** MVP Feature Set - Core Experience #4
 - **Priority:** Must-Have
-- **Description:** SEO-optimized plugin description for WordPress.org
-- **Verification:** readme.txt follows WordPress.org format; keywords optimized
-- **Status:** MISSING
+- **Description:** Each of 3 business types requires exactly 5 canned, industry-specific responses
+- **Verification:** Dentist has 5 unique responses, Restaurant has 5, Plumber has 5
+- **Status:** PENDING
 
-### REQ-048: External API Documentation
-- **Source:** Section 5, WordPress.org compliance
+### REQ-016: Dentist Response — Insurance Plans
+- **Source:** Canned Response Requirements - Dentist #1
 - **Priority:** Must-Have
-- **Description:** Document Cloudflare Workers AI dependency clearly
-- **Verification:** readme.txt mentions external service; privacy implications noted
-- **Status:** MISSING
+- **Description:** Respond to "Do you take insurance?" with information about accepted plans
+- **Verification:** Chat contains realistic answer about insurance acceptance for dental practice
+- **Status:** PENDING
 
-### REQ-049: Troubleshooting Guide
-- **Source:** Section 5, Risk Mitigation
+### REQ-017: Dentist Response — Business Hours
+- **Source:** Canned Response Requirements - Dentist #2
+- **Priority:** Must-Have
+- **Description:** Respond to "What are your hours?" with specific business hours
+- **Verification:** Chat contains realistic business hours (e.g., "Monday-Friday 8am-5pm, Saturday 9am-1pm")
+- **Status:** PENDING
+
+### REQ-018: Dentist Response — Emergency Appointments
+- **Source:** Canned Response Requirements - Dentist #3
+- **Priority:** Must-Have
+- **Description:** Respond to "Do you do emergency appointments?" with same-day availability information
+- **Verification:** Chat describes same-day emergency availability or contact method for emergencies
+- **Status:** PENDING
+
+### REQ-019: Dentist Response — Cleaning Pricing
+- **Source:** Canned Response Requirements - Dentist #4
+- **Priority:** Must-Have
+- **Description:** Respond to "How much is a cleaning?" with pricing and insurance information
+- **Verification:** Chat provides realistic cleaning cost with insurance options
+- **Status:** PENDING
+
+### REQ-020: Dentist Response — New Patients
+- **Source:** Canned Response Requirements - Dentist #5
+- **Priority:** Must-Have
+- **Description:** Respond to "Are you accepting new patients?" with availability status
+- **Verification:** Chat confirms accepting new patients and describes enrollment process
+- **Status:** PENDING
+
+### REQ-021: Restaurant Response — Hours and Status
+- **Source:** Canned Response Requirements - Restaurant #1
+- **Priority:** Must-Have
+- **Description:** Respond to "Are you open right now?" with current hours and open/closed status
+- **Verification:** Chat provides hours and indicates whether currently open
+- **Status:** PENDING
+
+### REQ-022: Restaurant Response — Reservations
+- **Source:** Canned Response Requirements - Restaurant #2
+- **Priority:** Must-Have
+- **Description:** Respond to "Do you take reservations?" with booking process information
+- **Verification:** Chat describes reservation availability and booking method
+- **Status:** PENDING
+
+### REQ-023: Restaurant Response — Vegetarian Options
+- **Source:** Canned Response Requirements - Restaurant #3
+- **Priority:** Must-Have
+- **Description:** Respond to "Do you have vegetarian options?" with menu highlights
+- **Verification:** Chat describes available vegetarian options
+- **Status:** PENDING
+
+### REQ-024: Restaurant Response — Parking
+- **Source:** Canned Response Requirements - Restaurant #4
+- **Priority:** Must-Have
+- **Description:** Respond to "Is there parking?" with location and parking details
+- **Verification:** Chat provides parking information and location context
+- **Status:** PENDING
+
+### REQ-025: Restaurant Response — Catering
+- **Source:** Canned Response Requirements - Restaurant #5
+- **Priority:** Must-Have
+- **Description:** Respond to "Do you do catering?" with services offered
+- **Verification:** Chat describes catering services and booking process
+- **Status:** PENDING
+
+### REQ-026: Plumber Response — Emergency Calls
+- **Source:** Canned Response Requirements - Plumber #1
+- **Priority:** Must-Have
+- **Description:** Respond to "Do you do emergency calls?" with 24/7 availability information
+- **Verification:** Chat confirms 24/7 emergency service availability
+- **Status:** PENDING
+
+### REQ-027: Plumber Response — Leaky Faucet Pricing
+- **Source:** Canned Response Requirements - Plumber #2
+- **Priority:** Must-Have
+- **Description:** Respond to "How much to fix a leaky faucet?" with pricing approach
+- **Verification:** Chat provides realistic pricing information or pricing methodology
+- **Status:** PENDING
+
+### REQ-028: Plumber Response — Licensing
+- **Source:** Canned Response Requirements - Plumber #3
+- **Priority:** Must-Have
+- **Description:** Respond to "Are you licensed?" with credentials information
+- **Verification:** Chat confirms licensing and certifications
+- **Status:** PENDING
+
+### REQ-029: Plumber Response — Service Scheduling
+- **Source:** Canned Response Requirements - Plumber #4
+- **Priority:** Must-Have
+- **Description:** Respond to "How soon can you come?" with scheduling information
+- **Verification:** Chat provides typical service windows and scheduling process
+- **Status:** PENDING
+
+### REQ-030: Plumber Response — Free Estimates
+- **Source:** Canned Response Requirements - Plumber #5
+- **Priority:** Must-Have
+- **Description:** Respond to "Do you give free estimates?" with estimate process
+- **Verification:** Chat describes free estimate policy and scheduling
+- **Status:** PENDING
+
+### REQ-031: Responses Sound Natural
+- **Source:** Risk Register - "Canned responses feel fake"
+- **Priority:** Must-Have
+- **Description:** All canned responses must sound natural and professional, not robotic
+- **Verification:** User testing confirms responses read as authentic business communication
+- **Status:** PENDING
+
+### REQ-032: Responses Include Specific Details
+- **Source:** Risk Register - "Canned responses feel fake" (Mitigation)
+- **Priority:** Must-Have
+- **Description:** Responses include specific details (e.g., actual insurance names, realistic hours)
+- **Verification:** Responses reference specific plans, prices, or details (not generic placeholders)
+- **Status:** PENDING
+
+---
+
+## 3. TECHNICAL REQUIREMENTS
+
+### REQ-033: Single HTML File Architecture (HARD BLOCKER)
+- **Source:** Technical Constraints
+- **Priority:** Must-Have
+- **Description:** Application delivered as single HTML file with embedded CSS (no separate stylesheets)
+- **Verification:** Deployment consists of one index.html file with all styles embedded; no external CSS files
+- **Status:** PENDING
+
+### REQ-034: Vanilla JavaScript Only
+- **Source:** Technical Constraints
+- **Priority:** Must-Have
+- **Description:** Implementation uses vanilla JavaScript; no frameworks (React, Vue, etc.)
+- **Verification:** JavaScript code contains no framework imports or dependencies
+- **Status:** PENDING
+
+### REQ-035: Zero Backend/API Calls
+- **Source:** Decision 4 - Architecture & Technical Constraints
+- **Priority:** Must-Have
+- **Description:** Application contains no backend API calls, database queries, or server dependencies
+- **Verification:** Network inspection shows zero calls to external APIs; all data hardcoded in HTML
+- **Status:** PENDING
+
+### REQ-036: No Database
+- **Source:** Decision 4 - Architecture
+- **Priority:** Must-Have
+- **Description:** Application contains no database integration or persistent storage
+- **Verification:** No database connections, queries, or references in code
+- **Status:** PENDING
+
+### REQ-037: Static Files Only
+- **Source:** Decision 4 - Architecture
+- **Priority:** Must-Have
+- **Description:** Application deployed as static files with no server-side rendering
+- **Verification:** Deployment to Cloudflare Pages succeeds; no server code required
+- **Status:** PENDING
+
+### REQ-038: Cloudflare Pages Hosting
+- **Source:** Decision 4 & File Structure
+- **Priority:** Must-Have
+- **Description:** Application hosted on Cloudflare Pages platform
+- **Verification:** Live application accessible via Cloudflare Pages subdomain
+- **Status:** PENDING
+
+### REQ-039: Canned Responses Load in 50ms
+- **Source:** Decision 2 - AI Responses (Deterministic, loads in 50ms)
+- **Priority:** Must-Have
+- **Description:** Responses display within 50 milliseconds of user interaction
+- **Verification:** Performance measurement confirms response display latency <50ms
+- **Status:** PENDING
+
+### REQ-040: Deterministic Response Behavior
+- **Source:** Decision 2 - AI Responses (Deterministic)
+- **Priority:** Must-Have
+- **Description:** Chat responses are deterministic and reproducible (no randomization)
+- **Verification:** Same user question always produces identical response
+- **Status:** PENDING
+
+### REQ-041: Storefront Images Optimized
+- **Source:** File Structure - Alternative (true single-file)
+- **Priority:** Must-Have
+- **Description:** Storefront images embedded as base64, CSS-only, or optimized JPG to maintain size budget
+- **Verification:** Total page weight <100KB including all assets
+- **Status:** PENDING
+
+### REQ-042: Deployment Instructions Documented
+- **Source:** File Structure
 - **Priority:** Should-Have
-- **Description:** Document common issues, theme conflicts, workarounds
-- **Verification:** Guide exists; covers top 10 expected issues
-- **Status:** PENDING (v1.1)
+- **Description:** README.md provided with deployment instructions for Cloudflare Pages
+- **Verification:** README.md exists and contains clear deployment steps
+- **Status:** PENDING
 
 ---
 
-## 7. CUT FROM V1 (Deferred)
+## 4. PERFORMANCE REQUIREMENTS
 
-### REQ-050: No Claude Fallback (CUT)
-- **Source:** Decision 2
-- **Priority:** Cut — NEVER
-- **Description:** Single LLM path only; no hybrid AI
-- **Status:** ENFORCED
+### REQ-043: Sub-100KB Total Page Weight (HARD BLOCKER)
+- **Source:** Decision 5 - Performance Target & Technical Constraints
+- **Priority:** Must-Have
+- **Description:** Total page weight must not exceed 100 kilobytes
+- **Verification:** Network inspection confirms gzipped page size <100KB
+- **Status:** PENDING
 
-### REQ-051: No Full Site Scanning (v1.1)
-- **Source:** Decision 3
-- **Priority:** Cut — v1.1
-- **Description:** Homepage-only extraction in v1
-- **Status:** DEFERRED
+### REQ-044: First Paint Under 1 Second
+- **Source:** Decision 5 - Performance Target & MVP Feature Set - UX Requirements
+- **Priority:** Must-Have
+- **Description:** First paint must occur within 1 second
+- **Verification:** Performance measurement (Lighthouse, WebPageTest) confirms <1s first paint
+- **Status:** PENDING
 
-### REQ-052: No FAQ Auto-Generation (v1.1)
-- **Source:** Section 2
-- **Priority:** Cut — v1.1
-- **Description:** Use pre-written templates; auto-gen deferred
-- **Status:** DEFERRED
+### REQ-045: Interactive Under 1.5 Seconds
+- **Source:** Decision 5 - Performance Target & MVP Feature Set - UX Requirements
+- **Priority:** Must-Have
+- **Description:** Page must be interactive within 1.5 seconds
+- **Verification:** Performance measurement confirms <1.5s time to interactive (TTI)
+- **Status:** PENDING
 
-### REQ-053: No Analytics Dashboard (v1.1)
-- **Source:** Decision 15
-- **Priority:** Cut — v1.1 (90 days post-launch)
-- **Description:** Data collection only; no UI
-- **Status:** DEFERRED
+### REQ-046: Instant Loading Perception
+- **Source:** Decision 2 - AI Responses (deterministic) & MVP Feature Set - UX Requirements
+- **Priority:** Must-Have
+- **Description:** Content appears instantly on page load; no perceived loading time
+- **Verification:** User perceives content as immediately available; no flash of unstyled content
+- **Status:** PENDING
 
-### REQ-054: No Lead Capture (v1.1)
-- **Source:** Decision 9
-- **Priority:** Cut — v1.1 (60 days post-launch, Board mandate)
-- **Description:** No email collection in v1
-- **Status:** DEFERRED
-
-### REQ-055: No Multi-Language (v1.2)
-- **Source:** Decision 14
-- **Priority:** Cut — v1.2
-- **Description:** English only in v1
-- **Status:** DEFERRED
-
-### REQ-056: No Widget Customization (v2)
-- **Source:** Section 2
-- **Priority:** Cut — v2
-- **Description:** No color/font/position pickers
-- **Status:** DEFERRED
-
-### REQ-057: No Conversation History (v2)
-- **Source:** Section 2
-- **Priority:** Cut — v2
-- **Description:** Stateless chat; no memory
-- **Status:** DEFERRED
+### REQ-047: Minimal Analytics Tracking
+- **Source:** Open Questions #4 - Analytics (Recommendation)
+- **Priority:** Should-Have
+- **Description:** Track CTA clicks to WordPress.org using simple URL parameter (minimal analytics)
+- **Verification:** CTA button includes tracking parameter (e.g., utm_source=playground)
+- **Status:** PENDING
 
 ---
 
-## 8. OPEN QUESTIONS REQUIRING RESOLUTION
+## 5. SCOPE & ACCEPTANCE CRITERIA
 
-### OQ-001: Product Name Finalization
-- **Source:** Section 4, Open Question 1
-- **Decision Needed:** LocalGenius vs AskLocal vs Genie
-- **Recommendation:** Ship as "LocalGenius" (Elon's trademark concerns on "Genie")
-- **Deadline:** Before WordPress.org submission
+### REQ-048: Scope Completeness (HARD BLOCKER)
+- **Source:** Build Phase Authorization
+- **Priority:** Must-Have
+- **Description:** Implementation includes: 1 HTML file, 3 business types, pre-populated chat, "Make This Real" CTA, <100KB
+- **Verification:** Checklist completed: Single HTML? Yes. 3 types? Yes. Pre-populated chat? Yes. CTA? Yes. <100KB? Yes.
+- **Status:** PENDING
 
-### OQ-002: Free Tier Rate Limit Confirmation
-- **Source:** Section 4, Open Question 2
-- **Options:** 25/month vs 50/month vs 100/month
-- **Recommendation:** 100/month with aggressive caching
-- **Deadline:** Before build
+### REQ-049: Out of Scope Exclusions (HARD BLOCKER)
+- **Source:** Build Phase Authorization
+- **Priority:** Must-Have
+- **Description:** Explicitly out of scope: Live AI, user input handling, email capture, analytics dashboards, A/B testing, additional business types, backend infrastructure
+- **Verification:** Code review confirms none of these features are implemented
+- **Status:** PENDING
 
-### OQ-003: Error Message Copy
-- **Source:** Section 4, Open Question 3
-- **Decision Needed:** Final error message wording
-- **Current Proposal:** "I'd recommend calling us directly at [phone] for this one"
-- **Deadline:** Before widget implementation
-
-### OQ-004: Widget Position Toggle
-- **Source:** Section 4, Open Question 4
-- **Decision Needed:** Add 4-corner toggle?
-- **Recommendation:** Ship bottom-right only; add toggle post-launch if support demands
-- **Deadline:** Post-launch decision
+### REQ-050: Exit Criteria Met
+- **Source:** Build Phase Authorization
+- **Priority:** Must-Have
+- **Description:** Demo is live, linked from homepage, and directs visitors to WordPress.org plugin
+- **Verification:** Demo accessible from homepage link; CTA successfully navigates to plugin page
+- **Status:** PENDING
 
 ---
 
 ## REQUIREMENTS BY DELIVERABLE
 
-### Admin Interface (class-admin.php + settings-page.php)
-REQ-002, REQ-003, REQ-004, REQ-031, REQ-032
+### Landing Page (index.html)
+REQ-001, REQ-002, REQ-003, REQ-011, REQ-012, REQ-013, REQ-014
 
-### Chat Widget (chat-widget.js + chat-widget.css)
-REQ-009, REQ-010, REQ-026, REQ-027, REQ-028, REQ-029, REQ-030, REQ-033, REQ-034, REQ-035
+### Chat Widget
+REQ-004, REQ-005, REQ-006, REQ-008
 
-### Cloudflare Worker (worker.js + cache.js + prompts.js)
-REQ-014, REQ-015, REQ-016, REQ-017, REQ-018, REQ-019, REQ-020, REQ-021
+### Storefront Visual
+REQ-007, REQ-041
 
-### FAQ Templates (retail.json, general.json)
-REQ-022, REQ-023, REQ-024, REQ-025
+### CTA Section
+REQ-009, REQ-010, REQ-047
 
-### Documentation (readme.txt)
-REQ-047, REQ-048
+### Content (Canned Responses)
+REQ-015 through REQ-032
 
-### Testing
-REQ-036 through REQ-046
+### Technical Implementation
+REQ-033 through REQ-040
+
+### Performance
+REQ-043 through REQ-046
+
+### Deployment
+REQ-038, REQ-042
+
+### Scope Compliance
+REQ-048, REQ-049, REQ-050
 
 ---
 
 ## HARD BLOCKERS (Build Fails If Not Met)
 
-1. **REQ-001** — Plugin activation works without errors
-2. **REQ-019** — Worker timeout with graceful fallback
-3. **REQ-028** — No AI branding anywhere in UI
-4. **REQ-035** — Basic ARIA labels for accessibility
-5. **REQ-050** — No Claude/hybrid AI (single LLM path enforced)
+1. **REQ-004** — Pre-populated chat visible on load (core UX)
+2. **REQ-033** — Single HTML file architecture (deployment constraint)
+3. **REQ-043** — Page weight <100KB (performance constraint)
+4. **REQ-048** — All MVP features implemented
+5. **REQ-049** — No out-of-scope features (no scope creep)
 
 ---
 
@@ -525,29 +432,60 @@ REQ-036 through REQ-046
 
 | Risk | Mitigating Requirements |
 |------|------------------------|
-| LLM Hallucination | REQ-018 (system prompts), REQ-022 (FAQ templates as ground truth), REQ-037 (hallucination testing) |
-| Widget Conflicts | REQ-013 (no jQuery), REQ-040 (compatibility testing) |
-| Rate Limit Abuse | REQ-010, REQ-020, REQ-021, REQ-041 |
-| Worker Latency | REQ-016 (caching), REQ-019 (timeout), REQ-039 (benchmarking) |
-| WordPress.org Rejection | REQ-012 (namespace), REQ-046 (readiness), REQ-048 (API docs) |
-| 1-Star Reviews | REQ-007 (graceful errors), REQ-033 (human messages), REQ-040 (conflict testing) |
+| Canned responses feel fake | REQ-031 (natural tone), REQ-032 (specific details), REQ-016-030 (industry-specific content) |
+| Page looks dated | REQ-012 (modern design), design polish task in plan |
+| Scope creep | REQ-048 (completeness), REQ-049 (exclusions enforced) |
+| Performance issues | REQ-043 (size), REQ-044 (first paint), REQ-045 (TTI), REQ-041 (image optimization) |
+| WordPress.org link breaks | REQ-010 (link verification task in plan) |
 
 ---
 
 ## SUCCESS CRITERIA (From decisions.md)
 
-- [ ] All components implemented (admin, widget, worker, templates)
-- [ ] Zero placeholder content
-- [ ] Every command/API is real and functional
-- [ ] Widget activates in <30 seconds
-- [ ] 80% cache hit rate achieved in testing
-- [ ] Plugin passes WordPress.org checker
-- [ ] No "AI" or "chatbot" language in UI
-- [ ] Widget looks "beautiful, not spammy"
-- [ ] First answer works: "What are your hours?" answered instantly
+- [ ] Single HTML file, embedded CSS/JS
+- [ ] 3 business types only: Dentist, Restaurant, Plumber
+- [ ] Pre-populated chat with completed exchange
+- [ ] "Make This Real" CTA links to WordPress.org
+- [ ] Page weight <100KB
+- [ ] First paint <1s, interactive <1.5s
+- [ ] No loading spinners, no empty states
+- [ ] Zero backend, zero API calls
+- [ ] Demo is live on Cloudflare Pages
+
+---
+
+## TRACEABILITY MATRIX
+
+| Decision | Requirements |
+|----------|-------------|
+| Decision 1 (Product Naming) | REQ-001 |
+| Decision 2 (Canned Responses) | REQ-039, REQ-040, REQ-015-032 |
+| Decision 3 (3 Business Types) | REQ-002, REQ-003 |
+| Decision 4 (Zero Backend) | REQ-033-037 |
+| Decision 5 (Performance) | REQ-043-046 |
+| Decision 6 (Pre-Populated Chat) | REQ-004, REQ-005 |
+| Decision 7 (CTA Copy) | REQ-009, REQ-010 |
+| Decision 8 (No Gates) | REQ-011 |
+| MVP Feature Set | REQ-002, REQ-003, REQ-007, REQ-013, REQ-014, REQ-015 |
+| Open Questions (Resolved) | REQ-006, REQ-008, REQ-041, REQ-047 |
+| Risk Register | REQ-012, REQ-031, REQ-032 |
+| Build Phase Authorization | REQ-048, REQ-049, REQ-050 |
+
+---
+
+## SUMMARY STATISTICS
+
+| Category | Count | Must-Have | Should-Have |
+|----------|-------|-----------|-------------|
+| UI/UX Requirements | 14 | 13 | 1 |
+| Content Requirements | 18 | 18 | 0 |
+| Technical Requirements | 10 | 9 | 1 |
+| Performance Requirements | 5 | 4 | 1 |
+| Scope & Acceptance | 3 | 3 | 0 |
+| **TOTAL** | **50** | **47** | **3** |
 
 ---
 
 **Document Version:** 1.0
-**Last Updated:** 2025-04-09
-**Total Requirements:** 57 Must-Have, 15 Should-Have, 10 Cut, 3 Open Questions
+**Last Updated:** 2026-04-10
+**Project Slug:** localgenius-interactive-demo
