@@ -4,93 +4,131 @@
 ---
 
 **NARRATOR:**
-You know what I hate about AI tools?
+It's 11 PM on a Sunday. You've got this idea. It's been chewing at you for weeks. And tonight—finally—you're going to write it down.
 
-[SCREEN: A cursor blinking in an empty ChatGPT window]
-
-**NARRATOR:**
-The loneliness.
-
-You type a question. You get an answer. You type another question. You get another answer. It's like talking to a very smart person who has no opinions. Who won't push back. Who won't say, "Actually, you're thinking about this wrong."
-
-[SCREEN: A montage of generic AI responses — bullet points, hedging language, "Here are some considerations..."]
+[SCREEN: A founder at a kitchen table. Laptop open. Coffee going cold.]
 
 **NARRATOR:**
-I don't need a search engine with better grammar. I need someone to argue with me. Someone who cares about getting it *right*.
+You write three pages. Product requirements. Market opportunity. Why this matters. By 2 AM, you're done. You're proud of it. You send it to your co-founder, your advisor, your one friend who actually gives honest feedback.
 
-[SCREEN: The Great Minds interface appears — clean, minimal, a simple input field]
-
-**NARRATOR:**
-So we built Great Minds.
-
-[SCREEN: User types: "Should we build mobile-first or desktop-first?"]
+[SCREEN: Email sent. The message disappears into the void.]
 
 **NARRATOR:**
-Watch what happens when you ask a real question.
+And then you wait.
 
-[SCREEN: The interface splits. Two panels emerge. Names appear: STEVE JOBS. ELON MUSK.]
-
-**NARRATOR:**
-Steve Jobs takes the left. Elon Musk takes the right. And they don't give you a "balanced perspective." They stake positions. They believe things.
-
-[SCREEN: Steve's panel populates — "The answer is obvious. Mobile-first. Not because mobile has more users—though it does. Because constraints breed creativity."]
+[SCREEN: Calendar. Monday. Tuesday. A "quick sync" gets scheduled for Thursday.]
 
 **NARRATOR:**
-Steve argues that the constraint is the gift. Four inches of screen. Every pixel earns its place. You can't hide behind white space.
+Your co-founder thinks it should be mobile-first. Your advisor says desktop-first—that's where the money is. Your honest friend? She's got concerns about the business model you hadn't even considered.
 
-[SCREEN: Elon's panel populates — "Mobile-first is correct, but not for the reasons Steve gave."]
-
-**NARRATOR:**
-Elon agrees on the conclusion but attacks the reasoning. He's got data. Sixty-eight percent mobile traffic. But he sees a different problem—
-
-[SCREEN: Elon's text highlights: "the *creation* flow—typing a complex question—is still better on desktop."]
+[SCREEN: Slack threads multiplying. "Thoughts?" "Can we hop on a call?" "I have some pushback..."]
 
 **NARRATOR:**
-—the input physics. Great on mobile for reading. Terrible for writing.
+Two weeks later, you've had eleven meetings. You've defended the same decisions four times. And the thing that kept you up at 2 AM? It's buried under a pile of "what abouts" and "have you considereds."
 
-[SCREEN: The interface shows ROUND 2. Steve responds: "Elon is half-right, which means he's half-wrong."]
-
-**NARRATOR:**
-Now they're fighting. Steve pushes on voice input. Saved templates. He won't accept that mobile is "consumption-only." That's a failure of imagination, he says.
-
-[SCREEN: Elon fires back: "Voice input has a 23% error rate on technical queries. Steve wants to invent a new category. I want to ship a product that works."]
+[SCREEN: The original document, now covered in comment bubbles. Tracked changes everywhere.]
 
 **NARRATOR:**
-Elon goes to the numbers. Twenty-three percent error rate. He's not interested in inventing the future when the present has paying customers.
+Here's the thing nobody tells you about building products: the idea isn't the hard part. *Agreement* is the hard part.
 
-[SCREEN: The debate pauses. A third panel slides in: PHIL JACKSON — The Zen Master]
-
-**NARRATOR:**
-And then—here's the part I love—Phil Jackson enters the room.
-
-[SCREEN: Phil's decision appears: "LOCKED DECISION: Mobile-first responsive, with desktop-optimized composition flow."]
+[SCREEN: Fade to black. Beat.]
 
 **NARRATOR:**
-Phil doesn't pick a winner. He finds the synthesis. Mobile-first *and* desktop-optimized input. Steve's constraints *plus* Elon's pragmatism. The argument becomes the answer.
+What if you didn't have to wait?
 
-[SCREEN: The decision expands with implementation details: "Single responsive codebase. Mobile breakpoints get design attention first. Track drop-off metrics post-launch."]
-
-**NARRATOR:**
-You didn't get a list of pros and cons. You got a decision. Reasoned. Pressure-tested. Ready to build.
-
-[SCREEN: Pull back to show the full Great Minds interface — 14 agent avatars visible in a sidebar]
+[SCREEN: Great Minds interface fades in. Clean. Focused. A single text field.]
 
 **NARRATOR:**
-Fourteen minds. Steve Jobs, Elon Musk, Jensen Huang, Margaret Hamilton, Warren Buffett, Oprah Winfrey, Maya Angelou. Each one with a perspective. Each one with something to lose if they're wrong.
+This is Great Minds. You paste your product requirements—that same document you wrote at 2 AM—and press submit.
 
-[SCREEN: The tagline appears over the interface: "Ideas collide. You think."]
-
-**NARRATOR:**
-This isn't AI that answers questions.
-
-This is AI that argues about them.
-
-[SCREEN: Great Minds logo. URL. End card.]
+[SCREEN: User pastes a PRD. Clicks submit. The interface transforms.]
 
 **NARRATOR:**
-Great Minds. Where brilliant minds wrestle with hard problems.
+Except your idea doesn't go to an inbox. It goes to a room.
 
-So you don't have to wrestle alone.
+[SCREEN: The debate chamber appears. Two positions. STEVE JOBS on the left. ELON MUSK on the right.]
+
+**NARRATOR:**
+Steve Jobs reads your document. So does Elon Musk. And then—this is the part that matters—they argue about it.
+
+[SCREEN: Steve's opening appears, typing in real-time: "The answer is obvious. Mobile-first. Because constraints breed creativity. When you design for a 4-inch screen, every pixel has to earn its place."]
+
+**NARRATOR:**
+Steve goes first. Mobile-first, he says. Not because of traffic numbers—because limitations force better design. The constraint is the gift.
+
+[SCREEN: Elon's response appears: "Mobile-first is correct, but not for the reasons Steve gave. Here's the data..."]
+
+**NARRATOR:**
+Elon agrees on the destination but attacks the route. He's got numbers. Sixty-eight percent mobile traffic. But there's a problem Steve's missing—
+
+[SCREEN: Highlight on Elon's text: "The creation flow—typing a complex question—is still better on desktop. Tiny keyboards are cognitive friction."]
+
+**NARRATOR:**
+—your users read on mobile but *create* on desktop. Different physics for different use cases.
+
+[SCREEN: Round 2 begins. Steve fires back: "Elon is half-right, which means he's half-wrong."]
+
+**NARRATOR:**
+Now watch. Steve doesn't concede. He pushes. Voice input. Smart templates. He won't accept that mobile is consumption-only.
+
+[SCREEN: Elon counters: "Voice input has a 23% error rate on technical queries. Steve wants to invent a new category. I want to ship a product that works."]
+
+**NARRATOR:**
+Elon comes back with data. Twenty-three percent error rate. He's not here to dream—he's here to ship.
+
+[SCREEN: The debate pauses. A third panel slides in from below: PHIL JACKSON — Orchestrator]
+
+**NARRATOR:**
+And then Phil Jackson steps in.
+
+[SCREEN: Phil's summary appears: "LOCKED DECISION: Mobile-first responsive design, with desktop-optimized composition flow."]
+
+**NARRATOR:**
+Phil doesn't pick a winner. He finds the synthesis. Steve's constraints *and* Elon's pragmatism. Mobile-first for the interface. Desktop-optimized for input. One codebase. Clear priorities.
+
+[SCREEN: The word "LOCKED" pulses once, then settles. The decision is final.]
+
+**NARRATOR:**
+The decision locks. No more relitigating. No more "let's revisit this next week." It's done.
+
+[SCREEN: Time-lapse. The interface expands. New agents appear: JONY IVE, MAYA ANGELOU, SARA BLAKELY, JENSEN HUANG, WARREN BUFFETT...]
+
+**NARRATOR:**
+And now the real work starts. Jony Ive designs. Maya Angelou writes the copy. Sara Blakely maps the growth strategy. Jensen Huang stress-tests the technical moat. Warren Buffett checks the unit economics.
+
+[SCREEN: Documents materializing in real-time. Brand guidelines. Customer personas. Marketing messaging. Market fit analysis.]
+
+**NARRATOR:**
+Fourteen agents. Working in parallel. All building from the same locked decisions.
+
+[SCREEN: A clock in the corner. Two hours pass in seconds.]
+
+**NARRATOR:**
+Two hours later, you have a product design vision. A market fit analysis. Customer personas. Team structure. Marketing goals. A full strategy—pressure-tested by minds that don't agree with each other.
+
+[SCREEN: The final document opens. A joint summary from Steve and Elon.]
+
+**NARRATOR:**
+And here's the moment.
+
+[SCREEN: Close on the joint summary. Specific recommendations. Clear priorities. Reasoned synthesis.]
+
+**NARRATOR:**
+Steve Jobs and Elon Musk—who spent an hour arguing—wrote you a joint summary. Where they aligned. Where they compromised. And exactly what to build next.
+
+[SCREEN: Pull back. The user sits at that same kitchen table. Sun coming through the window now. Morning.]
+
+**NARRATOR:**
+You went to bed with an idea. You woke up with a plan.
+
+[SCREEN: Great Minds logo. Tagline appears: "Ideas collide. You think."]
+
+**NARRATOR:**
+Great Minds. Because the best ideas don't need protection.
+
+They need a fight.
+
+[SCREEN: Fade to black.]
 
 ---
 

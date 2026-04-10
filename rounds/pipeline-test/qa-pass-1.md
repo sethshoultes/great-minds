@@ -1,9 +1,20 @@
-# QA Pass 1 — Pipeline Test
+# QA Pass 1 — Pipeline Test (REVISED)
 
 **QA Director**: Margaret Hamilton
 **Date**: 2026-04-09
+**Revision Date**: 2026-04-09 (Re-verification Pass)
 **Project**: pipeline-test
 **Verdict**: **BLOCK**
+
+---
+
+## ⚠️ CRITICAL PROCESS ISSUE IDENTIFIED
+
+**Problem**: The QA request specified verification against `.planning/REQUIREMENTS.md`, which contains requirements for **LocalGenius Lite** (a WordPress plugin project) — NOT the pipeline-test project.
+
+**Resolution**: This QA pass verifies against the **correct** requirements source: `rounds/pipeline-test/decisions.md`, which defines the pipeline-test project scope.
+
+**Recommendation**: Create project-specific requirements files or update QA process to reference `rounds/{project}/decisions.md` for each project.
 
 ---
 
@@ -69,15 +80,17 @@ grep -rni "placeholder|coming soon|TODO|FIXME|lorem ipsum|TBD|WIP" deliverables/
 
 ## QA Step 4: Requirements Verification
 
+**Authoritative Source**: `rounds/pipeline-test/decisions.md` — MVP Feature Set
+
 | REQ ID | Requirement | Expected Deliverable | Status | Evidence |
 |--------|-------------|---------------------|--------|----------|
 | REQ-001 | Create directory structure | `deliverables/pipeline-test/` exists | **PASS** | Directory exists and is writable |
 | REQ-002 | Create README.md | ≥20 lines, real content | **PASS** | 69 lines, describes pipeline, agents, phases |
 | REQ-003 | Create example-output.md | ≥15 lines, debate transcript | **PASS** | 72 lines, Steve vs Elon debate on mobile-first |
-| REQ-004 | Commit files to Git | Both files in commit history | **FAIL** | `git status` shows `?? deliverables/pipeline-test/` (UNTRACKED) |
-| REQ-005 | Push to GitHub main | Files visible on remote main | **FAIL** | Cannot push uncommitted files; REQ-004 prerequisite not met |
+| REQ-004 | Commit files to Git | Both files in commit history | **PASS** | Commit `ca82936` "feat(pipeline-test): add README and example debate transcript" |
+| REQ-005 | Push to GitHub main | Files visible on remote main | **FAIL** | Branch `feature/pipeline-test-execution` not merged to main; files not on origin/main |
 
-**Requirements Summary**: 3/5 PASS, 2/5 FAIL
+**Requirements Summary**: 4/5 PASS, 1/5 FAIL
 
 ---
 
@@ -93,53 +106,49 @@ grep -rni "placeholder|coming soon|TODO|FIXME|lorem ipsum|TBD|WIP" deliverables/
 
 **Command Executed**:
 ```bash
-git status --porcelain
+git status --porcelain deliverables/pipeline-test/
 ```
 
-**Deliverables Directory Status**:
+**Deliverables Directory Status**: Clean (no output = no uncommitted changes)
+
+**Git Log Verification**:
 ```
-?? deliverables/pipeline-test/
+ca82936 feat(pipeline-test): add README and example debate transcript
 ```
 
-**Interpretation**: The `??` prefix means "untracked" — these files have never been staged or committed.
+**Tracked Files Confirmed**:
+```
+deliverables/pipeline-test/README.md
+deliverables/pipeline-test/example-output.md
+```
 
-**Additional Uncommitted Files Observed**:
-- `?? rounds/pipeline-test/` (also untracked)
-- Multiple modified files in `.planning/`, `daemon/`, etc.
-- Multiple deleted PRDs in `prds/`
+**Current Branch**: `feature/pipeline-test-execution` (not main)
 
-**Status**: **FAIL** — Deliverables are not committed
+**Status**: **PASS** — Deliverables are committed. **FAIL** — Not on main branch.
 
 ---
 
 ## Blocking Issues
 
-### P0-001: REQ-004 FAILED — Files Not Committed
+### ~~P0-001: REQ-004 FAILED — Files Not Committed~~ **RESOLVED**
+**Severity**: ~~P0 (BLOCKER)~~ → **RESOLVED**
+**Resolution**: Files committed in `ca82936` with proper conventional commit message.
+
+### P0-001: REQ-005 FAILED — Files Not on Main Branch
 **Severity**: P0 (BLOCKER)
-**Description**: The deliverables directory `deliverables/pipeline-test/` is untracked in Git. `git status` shows `??` prefix indicating files have never been staged.
+**Description**: Deliverables are committed to `feature/pipeline-test-execution` branch, but MVP requirement specifies files must be pushed to `origin/main`.
 **Acceptance Criteria Violated**:
-- "Both files staged (`git add`)" — NOT MET
-- "Commit created with conventional commit message" — NOT MET
-- "Files no longer show as untracked in `git status`" — NOT MET
-**Remediation Required**:
-```bash
-git add deliverables/pipeline-test/
-git commit -m "feat(pipeline-test): add README and example debate transcript
-
-Verifies pipeline can ship real content end-to-end.
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
-```
-
-### P0-002: REQ-005 FAILED — Files Not Pushed
-**Severity**: P0 (BLOCKER)
-**Description**: Files cannot be pushed to `origin/main` because they have not been committed (REQ-004 dependency not satisfied).
-**Acceptance Criteria Violated**:
-- "Commit pushed to `origin/main`" — NOT MET
+- "Commit pushed to `origin/main`" — NOT MET (on feature branch)
 - "Files visible on GitHub main branch" — NOT MET
 **Remediation Required**:
 ```bash
+# Option 1: Merge feature branch to main
+git checkout main
+git merge feature/pipeline-test-execution
 git push origin main
+
+# Option 2: Create PR and merge via GitHub
+gh pr create --base main --head feature/pipeline-test-execution
 ```
 
 ---
