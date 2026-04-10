@@ -1,5 +1,9 @@
 Apr 9, 2026 — 6:36 PM
 
+  Stash changes in CHANGELOG.human.md  ·  e86b298
+
+Apr 9, 2026 — 6:36 PM
+
   Workshop: simple, memorable, no SDK required — 7 slides + 4 hands-on exercises in AGENTS-ASSEMBLE-WORKSHOP.md  ·  1c592f5
 
 Apr 9, 2026 — 6:05 PM

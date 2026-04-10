@@ -1,48 +1,56 @@
 # Round 2: Elon Musk — Response to Steve Jobs
 
-## Where Beauty Is Blocking the Launchpad
+## Where Steve Is Wrong: Beauty as a Delay Tactic
 
-Steve, I respect the craft. But let's pressure-test some of these positions against cold reality.
+**"Genie" is a trademark minefield.** A 5-second search shows Disney's "Genie+" service, countless apps, and active trademarks. You want to launch with a cease-and-desist? "LocalGenius" is ugly but *shippable*. We can rebrand when we have traction. Tesla was almost "Faraday."
 
-**"AskLocal" vs shipping with what we have.** You want to rename the product before we've proven it works. That's backwards. Tesla was a terrible name — people thought we made coils. We shipped anyway. Name changes are a one-line code update. Architecture decisions are not. Ship "LocalGenius Lite," rebrand when we hit 1,000 installs and have data on what users actually call it.
+**"It scanned their pages" is scope creep in a tuxedo.** You described site scanning as *magical*. It's not magic—it's 400 lines of DOM parsing that breaks on 30% of WordPress themes and adds 2 weeks of development. The "magic" of auto-detection is the same as the "magic" of asking one dropdown question. The outcome is identical. The effort is 10x different.
 
-**"The Prestige" is hiding scope creep.** You describe the setup screen, user clicks Activate, and — magic — the widget appears "already generating FAQs, already scanning their pages." That's TWO background processes triggered by one button. That's async jobs, loading states, failure modes, retry logic. The "miracle" you're describing is 4 hours of edge-case handling. The actual miracle is: click button → widget appears with 5 pre-written FAQs for their business type. No generation. No scanning. Ship.
+**"No customization" sounds principled but ships pain.** Bottom-right widget placement works until it covers a client's live chat, cookie notice, or accessibility button. One position toggle isn't "47 options"—it's respecting that websites aren't identical. Apple ships one phone but lets you move the icons.
 
-**"Warm and human" AI voice requires prompt engineering cycles we don't have.** "We'll try to make it work" sounds great until Llama outputs it for a funeral home asking about late arrivals. Default prompts need to be safe, not charming. Charm is v1.2.
-
-## Why Technical Simplicity Wins
-
-You quoted "simple can be harder than complex." Agreed. But your version of simple is *experiential* simplicity. Mine is *systemic* simplicity.
-
-**Fewer components = fewer failures.** Every feature you add is a failure mode. Site scanning fails silently? Widget shows nothing. FAQ generation times out? User sees spinner forever. My version: hardcoded FAQ templates per business type. Can't fail. Loads instantly. Boring? Yes. Ships? Yes.
-
-**Boring scales.** SpaceX doesn't fly the most elegant rocket — we fly the one that survives the flight. "Invisible intelligence" is beautiful positioning, but a cached FAQ response hitting in 50ms beats a "magical" LLM call that occasionally hangs for 3 seconds.
-
-## Where Steve Is Right
-
-I'm conceding three points:
-
-1. **Kill "Lite" from the name.** You're right — it signals inferiority. "LocalGenius" alone or "Genie" works. I still say ship first, rename second, but the point stands.
-
-2. **No "AI" in the interface.** 100% correct. The moment users see "AI-powered," they expect it to fail. Let it work silently.
-
-3. **No color pickers or customization in v1.** Yes. One widget. One style. Ship. This is exactly right.
-
-## My Non-Negotiables (Locked)
-
-These are final. Not debating further:
-
-### 1. Single LLM Path (Llama 3.1 8B only)
-No Claude fallback. No "hybrid AI." One model, one latency profile, one cost structure. If Llama can't handle it, we fix the prompt — not add complexity.
-
-### 2. No Background Jobs on Activation
-The activation flow does NOT trigger site scanning or FAQ generation. User selects business type → we load pre-written FAQ template → widget goes live. Background intelligence is v1.1 after we've proven the core loop works.
-
-### 3. Cache Before LLM
-Every user question hits cache first. "What are your hours?" is the same question on 10,000 sites. Hash it, cache it, skip the inference. This is the only path to sustainable unit economics at scale.
+**"Want me to text you a reminder?" is v3 territory.** You've written copy for a feature that requires SMS integration, user phone capture, and compliance with TCPA. That's not voice—that's a product roadmap dressed as brand positioning.
 
 ---
 
-Steve, the magic trick doesn't fail because the prestige isn't beautiful. It fails because the trap door got stuck.
+## Defending Technical Simplicity: Why It Wins
 
-Build the trap door first.
+**Speed is the ultimate design.** You know this—you eliminated buttons on the iPod. But you're adding invisible complexity: site scanning, "wake up" animations, real-time preview. Each adds 100-500ms of perceived latency.
+
+The fastest experience is: Install → Widget appears → It works. No preview screen. No "watch it scan." Instant value.
+
+**The cost cliff is real.** Every "delightful" feature has compute cost. Site scanning = Workers CPU time. Rich preview = another render pass. At 100K installs, these "small" additions cost $5-10K/month. Tesla nearly died three times from underestimating unit economics. I'm not doing it again on a WordPress plugin.
+
+**Defaults beat choices, but some choices prevent support tickets.** Every "it's covering my chat button" email is a 1-star review waiting to happen. Ship opinionated defaults with an escape hatch—not a dashboard.
+
+---
+
+## Where Steve Is Right: Concessions
+
+**The name matters.** "LocalGenius Lite" does sound apologetic. Not "Genie"—but maybe "LocalGenius" alone. Drop the "Lite." If we ship constraints, make them feel intentional, not budget.
+
+**"Your business never sleeps" is the tagline.** That's not a feature—it's the positioning. Copy that directly to the plugin description. I was focused on mechanics; you found the emotion.
+
+**Kill "AI-powered" badges.** Completely right. The widget should feel native, not like a technology demo. No "Powered by AI" anywhere visible. The attribution link says "LocalGenius"—not "AI chatbot by LocalGenius."
+
+---
+
+## Locked Decisions: Non-Negotiable
+
+### 1. No site scanning in v1.
+Dropdown selection only. Business type → pre-generated FAQs. If we need more context, we add one text field: "Describe your business in one sentence." That's the input. Not a spider.
+
+### 2. Pre-generated FAQs ship in the plugin.
+All 20 business types, 15 Q&As each, baked into a JSON file. Zero activation latency. Zero AI cost until user interaction. This is the core cost and speed advantage.
+
+### 3. Usage limits visible from Day 1.
+"25 free questions/month" displayed on activation. Not a nag—a contract. Users know the terms. This prevents "bait and switch" reviews and builds trust for conversion later. Freemium that hides the "mium" is dishonest design.
+
+---
+
+## Moving Forward
+
+Steve, we agree on 80%. The gap is *when*—not *if*. Site scanning, rich previews, and SMS reminders are v2 features that earn their complexity after we've proven the core loop works.
+
+Ship the simplest thing. Make it beautiful within those constraints. Iterate with real data.
+
+*The iPhone v1 didn't have copy-paste. It shipped anyway.*

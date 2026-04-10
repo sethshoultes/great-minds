@@ -5,81 +5,74 @@
 
 ### Product Naming
 
-**Kill "LocalGenius Lite."** The word "Lite" is a confession of inadequacy. It whispers "this is the lesser version." Nobody falls in love with "lite."
+**"LocalGenius Lite" is a catastrophe.** You've taken two mediocre words and glued them together with the most cowardly suffix in product history.
 
-The name should be **AskLocal**. One word (technically). It's a verb. It tells you exactly what it does. When a customer visits your site, they *ask*. You become the *local* expert. Install AskLocal. Done.
+"Lite" tells your customer: *this is the version for people who can't afford the real thing.* You're apologizing before they've even installed it.
 
-Or if we must stay in the LocalGenius family: **Genie**. Three syllables. Magical. "I installed Genie on my site." That's a sentence people want to say.
+The name is **Genie**. One word. Magical. Universal. When a customer rubs the lamp — installs your plugin — their wishes come true. "I installed Genie." "Genie answered my customers all weekend." That's a product people *talk about*.
 
 ---
 
 ### Design Philosophy
 
-This product is a **magic trick**, and magic tricks have three parts: the pledge, the turn, and the prestige.
+The iPod succeeded because we didn't build a "portable digital music player with advanced codec support." We built **1,000 songs in your pocket.**
 
-**The Pledge**: You install a plugin. Boring. Everyone does this.
-**The Turn**: You select "Dentist" and "Austin, TX." Two clicks.
-**The Prestige**: Your website now *thinks*. It knows your business. It answers questions while you sleep.
+This product succeeds when we stop calling it a "chatbot" or "AI widget" and realize what it actually is: **Your business never sleeps.**
 
-The design philosophy is **invisible intelligence**. The best AI doesn't announce itself — it just works. No "AI-powered!" badges. No robot icons. Just a clean chat bubble that feels like talking to someone who actually read your entire website.
+The design philosophy is *aggressive simplicity*. Not minimalism as aesthetic — minimalism as ruthlessness. Every dropdown, every toggle, every setting is a confession that we didn't do our job. The best design decision is the one the user never has to make.
 
 ---
 
 ### User Experience: The First 30 Seconds
 
-The user activates the plugin. They see ONE screen. Not a wizard. Not "Step 1 of 5." ONE screen.
+Thirty seconds is an eternity. If this takes thirty seconds, we've already failed.
 
-A dropdown: "What kind of business are you?"
-A text field: "Where are you located?"
-A button: "Activate."
+The experience is this: Activate. Select "Dentist." Type "Chicago." Click once. **Done.**
 
-They click Activate. The screen transforms. They see their chat widget — live, breathing, on their actual site — embedded right in the admin preview. Not a mockup. *Their* widget. Already generating FAQs. Already scanning their pages.
+The magic isn't in the chat widget appearing. The magic is watching your own website *wake up*. In the admin preview, they see their actual site — and there's Genie, already knowing things. Already answering. It scanned their pages. It built FAQs. It's *working*.
 
-**The first 30 seconds should feel like witnessing a small miracle.** They didn't configure anything. They didn't train anything. It just... knows.
+This should feel like the first time you touched an iPhone. Not "let me figure this out" — but "it already knows what I want."
 
 ---
 
 ### Brand Voice
 
-This product speaks like a **confident local expert** — not a corporation, not a robot.
+The voice isn't "AI assistant." The voice isn't "customer service representative."
 
-❌ "Your inquiry has been received. A representative will respond within 24-48 hours."
-✅ "We're usually open until 6, but give us a call if you're running late — we'll try to make it work."
+The voice is **the business owner on their best day** — the version of themselves they wish they could be on every call.
 
-The AI should sound like the business owner on their best day. Warm. Helpful. Human. No corporate speak. No "I'm an AI assistant, I can't..."
+When someone asks "Are you open Saturday?" the AI doesn't say "Our business hours are..." It says: "Yep! We're here 9-5 on Saturdays. Want me to text you a reminder?"
 
-When the AI doesn't know something, it says: "Great question — I'd text the team directly at [number] for that one." Not "I don't have that information in my database."
+Human. Warm. Zero corporate contamination.
 
 ---
 
 ### What to Say NO To
 
-**NO** to customization options in v1. No color pickers. No font selectors. No "widget position: 47 pixels from bottom." These are decisions masquerading as features. We make the decisions. We ship one beautiful widget that works.
+**NO** to customization. People don't want 47 color options. They want something beautiful that works. We pick the colors. We pick the position. We ship one design that's right.
 
-**NO** to conversation history. This is answering questions, not building relationships. Keep it stateless. Keep it fast.
+**NO** to the word "chatbot." Poisoned. Dead. It promises failure.
 
-**NO** to "AI" anywhere in the user interface. The moment you say "AI," you invite skepticism, you invite "can I trust this?" Just let it work.
+**NO** to setup wizards. A wizard is an admission that your product is too complicated.
 
-**NO** to analytics beyond the essentials. Top questions. Unanswered questions. That's it. We're not building a dashboard empire.
+**NO** to "AI-powered" badges. The moment you advertise the AI, you invite distrust. Magic doesn't explain itself.
 
-**NO** to the word "chatbot." That word is poisoned. It conjures images of "I didn't understand that, please rephrase." We're building an *Answer Engine*.
+**NO** to anything that makes the small business owner feel small. No "Upgrade to unlock!" nags. No feature walls that remind them they're on the free tier.
 
 ---
 
 ### The Emotional Hook
 
-Here's why people will *love* this:
+Here's the truth about small business owners: **They're exhausted.**
 
-**It gives them their evenings back.**
+They didn't start a dental practice to answer "Do you take Cigna?" at 11pm. They didn't open a restaurant to explain their parking situation over email sixteen times a day.
 
-That dentist who spends Sunday nights answering "Do you take Delta Dental?" for the 400th time? She installs this, and suddenly — someone else is handling it. Not "someone" — *her website* is handling it. Her digital storefront became intelligent.
+The emotional hook isn't technology. It's **liberation.**
 
-The emotional hook isn't "AI for your business." Nobody cares about AI. The hook is: **"Your website finally works for you."**
+Your website — that static brochure that's been sitting there for five years doing nothing — just became your hardest-working employee. It shows up first. It leaves last. It never complains. It never forgets.
 
-For five years, that WordPress site sat there like a digital brochure. Static. Dumb. Now it *participates*. It answers. It helps. It never sleeps.
-
-That's not a feature. That's a transformation.
+**Your website finally works for you.** That's not a feature. That's freedom.
 
 ---
 
-*"Simple can be harder than complex. You have to work hard to get your thinking clean to make it simple. But it's worth it in the end because once you get there, you can move mountains."*
+*"People think focus means saying yes to the thing you've got to focus on. But that's not what it means at all. It means saying no to the hundred other good ideas."*

@@ -3,7 +3,13 @@
 ## Workshop Format
 - 15 min talk (7 slides, you demo live)
 - 15 min hands-on (attendees try 3-4 things)
-- No SDK required — just Claude Code (CLI or desktop app)
+- **Audience:** Claude Code users who want to level up — they know the basics, we're showing them the power features
+- **Prerequisites:** Claude Code installed
+- **First thing attendees do:** Install the plugins:
+  ```
+  npx plugins add sethshoultes/great-minds-plugin
+  npx plugins add sethshoultes/ralph-wiggum
+  ```
 
 ---
 
@@ -15,7 +21,7 @@ Agents Assemble
 Building Teams That Work While You Sleep
 ```
 
-**Say:** "How many of you use Claude or ChatGPT for coding? Cool. Now how many of you close your laptop and it keeps working? Nobody? That's what we're fixing today."
+**Say:** "You all use Claude Code. You know how to ask it to write code, fix bugs, explain things. But how many of you close your laptop and it keeps working? Nobody? That's what we're fixing today."
 
 ---
 
