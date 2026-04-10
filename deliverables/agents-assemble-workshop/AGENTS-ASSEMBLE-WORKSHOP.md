@@ -83,18 +83,28 @@ Write a standup update: what I did, what's next, blockers.
 
 *(pause)*
 
+**Say:** "Here's how it actually works — and this is the part most people miss."
+
 ```
-/ralph-loop:ralph-loop "Read TODO.md. Pick one unchecked task. Build it.
-  Test it. Commit if tests pass. Mark it done."
-  --completion-promise "ALL TASKS COMPLETE"
-  --max-iterations 20
+prd.json          ← what needs to be built (requirements with pass/fail per story)
+progress.txt      ← notes the AI writes to itself about what it's done so far
 ```
 
-**Say:** "This is the Ralph Wiggum plugin — named after the Simpsons character. He's not the smartest, but he never stops trying. You give it a prompt and a completion phrase. Claude runs the task, tries to exit, gets sent right back in. Over and over until the work is done. Someone used this to build 6 repos at a Y Combinator hackathon. Another completed a $50K contract for $297 in API costs."
+**Say:** "Two files. That's the whole memory system. Every iteration, Ralph wakes up fresh — no memory of the previous run. But it reads these two files first. It knows what the requirements are, it knows what's already done, it picks the next failing requirement and builds it. Marks it pass. Exits. Loop starts again. This keeps going until every requirement in the PRD is marked pass."
 
-**Say:** "To stop it: `/ralph-loop:cancel-ralph`. One command."
+**Say:** "The technique is called eventual consistency. Ralph doesn't have to get it right the first time. He just has to keep trying. Each iteration is a fresh mind with a clear brief. That's not a bug — that's the design."
 
-**Say:** "One note on power: Ralph will keep going until you stop him or the work is done. Always tell him what done looks like. Always review before you ship. The tool is the labor. You are still the engineer."
+```
+/ralph-loop:ralph-loop "Read prd.json and progress.txt. Pick the next
+  requirement where status is fail. Implement it. Update prd.json to
+  mark it pass. Update progress.txt with what you did."
+  --completion-promise "ALL REQUIREMENTS PASSING"
+  --max-iterations 50
+```
+
+**Say:** "Someone used this to build 6 repos at a Y Combinator hackathon. Another completed a $50K contract for $297 in API costs. The original technique was described by Jeffrey Huntley and later demonstrated by Gary Sims building a full MQTT server — from spec to working server — while the loop ran unattended."
+
+**Say:** "To stop it: `/ralph-loop:cancel-ralph`. One command. Always review before you ship. The tool is the labor. You are still the engineer."
 
 ---
 
@@ -285,6 +295,8 @@ You came in knowing how to use Claude Code. You leave knowing how to make it wor
 Drop these in the chat or on a closing slide:
 
 - **Ralph Wiggum Plugin:** `/plugin install ralph-loop@claude-plugins-official` — https://awesomeclaude.ai/ralph-wiggum
+- **Gary Sims — Ralph Demo (YouTube):** https://www.youtube.com/watch?v=A6vYr0dmQAY
+- **Matt Pocock — Ralph Deep Dive (prd.json + feedback loops):** https://www.youtube.com/watch?v=_IK18goX4X8
 - **Great Minds Plugin:** `npx plugins add sethshoultes/great-minds-plugin`
 - **Addy Osmani — The Code Agent Orchestra:** https://addyosmani.com/blog/code-agent-orchestra/
 - **Addy Osmani — How to Write a Good Spec for AI Agents:** https://addyo.substack.com/p/how-to-write-a-good-spec-for-ai-agents
