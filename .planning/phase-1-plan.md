@@ -1,823 +1,507 @@
-# Phase 1 Plan — Pulse Benchmark Engine (MVP)
+# Phase 1 Plan — Pulse Benchmark Engine Integration
 
-**Generated**: 2026-04-09
-**Requirements**: `rounds/localgenius-benchmark-engine/decisions.md` + `prds/localgenius-benchmark-engine.md`
-**Total Tasks**: 18
-**Waves**: 5 (Wave 0 is blocker)
-**Timeline**: 2 weeks (~500 LOC)
+**Generated**: 2026-04-12
+**Requirements**: `rounds/localgenius-benchmark-engine/decisions.md` + `.planning/REQUIREMENTS.md`
+**Total Tasks**: 12
+**Waves**: 4
+**Timeline**: 3-5 days (integration only — code already exists)
 **Product Name**: Pulse
 
 ---
 
 ## Executive Summary
 
-This plan implements the Pulse benchmark engine for LocalGenius — a competitive intelligence tool that shows restaurant owners how they compare to peers via a single percentile rank.
+This plan covers the **INTEGRATION** of the completed Pulse benchmark engine code into the LocalGenius application. The code has been written (~6,075 LOC across 22 files) and passes QA content review. The focus is now on resolving P0 blockers, performing integration testing, and preparing for production deployment.
 
-**Key Insight from Codebase Scout**: LocalGenius already has production-ready infrastructure:
-- `benchmarkAggregates` table designed for this use case
-- Dual-write pattern in analytics.recordEvent()
-- Multi-tenant RLS architecture
-- Job scheduler framework
+**Key Insight from Research Agents**:
+- **Codebase Scout**: All 22 deliverable files mapped, integration patterns identified
+- **Requirements Analyst**: 40/40 requirements implemented, 2 P0 blockers
+- **Risk Scanner**: 15 risks identified, 3 critical blockers
 
-**Build Strategy**: Extend existing infrastructure, don't reinvent. Focus on the UI layer and public distribution features.
+**Build Strategy**: Clear blockers, merge code, validate integration, deploy.
 
 ---
 
 ## Requirements Traceability
 
-| Requirement | Task(s) | Wave |
-|-------------|---------|------|
-| REQ-031: Data Audit | phase-1-task-0 | 0 |
-| REQ-025: Database Schema | phase-1-task-1 | 1 |
-| REQ-008: NAICS Codes | phase-1-task-1 | 1 |
-| REQ-016: Core Metrics | phase-1-task-2 | 1 |
-| INT-3, INT-4: Analytics Integration | phase-1-task-3 | 1 |
-| REQ-017: Nightly Batch Job | phase-1-task-4 | 2 |
-| REQ-018: API Endpoint | phase-1-task-5 | 2 |
-| REQ-009, REQ-015, REQ-028, REQ-037: Peer Groups | phase-1-task-4, task-5 | 2 |
-| REQ-019: PulseScore Component | phase-1-task-6 | 3 |
-| REQ-020: IndustryComparison Component | phase-1-task-7 | 3 |
-| REQ-021: PeerGroupSelector Component | phase-1-task-8 | 3 |
-| REQ-036: Insufficient Data State | phase-1-task-9 | 3 |
-| REQ-022: EmbeddableBadge Component | phase-1-task-10 | 3 |
-| REQ-023: Dashboard Page | phase-1-task-11 | 4 |
-| REQ-024: Public Report Page | phase-1-task-12 | 4 |
-| REQ-012: State of Local Restaurants | phase-1-task-13 | 4 |
-| REQ-014: Freemium Preview | phase-1-task-14 | 4 |
-| REQ-026: Badge Embed Script | phase-1-task-15 | 4 |
-| QA-1 to QA-5: Testing | phase-1-task-16, task-17 | 5 |
+| Requirement | Task(s) | Wave | Status |
+|-------------|---------|------|--------|
+| P0-BLOCKER-1: Git commit db/ and lib/ | phase-1-task-1 | 1 | BLOCKING |
+| P0-BLOCKER-2: Integration testing | phase-1-task-5, task-6, task-7 | 2-3 | BLOCKING |
+| P0-BLOCKER-3: Database migrations | phase-1-task-2 | 1 | BLOCKING |
+| P1-ISSUE: Batch job scheduler | phase-1-task-3 | 1 | HIGH |
+| P1-ISSUE: Multi-tenant RLS | phase-1-task-4 | 1 | HIGH |
+| REQ-018: API endpoint validation | phase-1-task-6 | 2 | PENDING |
+| REQ-023: Dashboard page validation | phase-1-task-7 | 3 | PENDING |
+| REQ-026: Badge embed validation | phase-1-task-8 | 3 | PENDING |
+| QA: E2E tests | phase-1-task-9 | 3 | PENDING |
+| DEPLOY: Staging | phase-1-task-10 | 4 | PENDING |
+| DEPLOY: Production | phase-1-task-11 | 4 | PENDING |
+| CLEANUP: Status update | phase-1-task-12 | 4 | PENDING |
 
 ---
 
 ## Wave Execution Order
 
-### Wave 0 (BLOCKER — Day 1)
+### Wave 1 (Sequential — Day 1) — Blocker Resolution
 
-This task must complete before any code is written.
-
-```xml
-<task-plan id="phase-1-task-0" wave="0">
-  <title>Data Audit — Validate Core Metrics Exist</title>
-  <requirement>REQ-031: Audit existing schema to confirm 5 core metrics exist before build</requirement>
-  <description>CRITICAL BLOCKER. Before writing any code, validate that the 5 core metrics (engagement rate, post frequency, follower growth, response time, conversion rate) can be calculated from existing data. If metrics don't exist, this becomes a data collection project and timeline explodes.</description>
-
-  <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/db/schema.ts" reason="Contains analyticsEvents (lines 397-422), attributionEvents (lines 427-455), benchmarkAggregates (lines 490-524)" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/analytics.ts" reason="Contains recordEvent() with dual-write to benchmarkAggregates" />
-    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Defines 5 core metrics (line 200-206)" />
-  </context>
-
-  <steps>
-    <step order="1">Query analyticsEvents for distinct eventType values: SELECT DISTINCT eventType FROM analytics_events</step>
-    <step order="2">Map each metric to existing event types:
-      - Engagement rate: social_engagement events ÷ follower count
-      - Post frequency: social_post events per week
-      - Follower growth: follower_count snapshots over time
-      - Response time: review_response events with timestamp deltas
-      - Conversion rate: attributionEvents with confidence > 0</step>
-    <step order="3">Document gaps: which metrics have data, which don't</step>
-    <step order="4">For missing metrics, identify the data collection change required</step>
-    <step order="5">Write audit report to .planning/data-audit-results.md</step>
-    <step order="6">Make GO/NO-GO decision: if >2 metrics missing, escalate to stakeholders</step>
-  </steps>
-
-  <verification>
-    <check type="manual">Review .planning/data-audit-results.md</check>
-    <check type="manual">Confirm GO decision documented before proceeding</check>
-  </verification>
-
-  <dependencies>
-    <!-- Wave 0: No dependencies - this IS the blocker -->
-  </dependencies>
-
-  <commit-message>docs(pulse): complete data audit for 5 core metrics availability</commit-message>
-</task-plan>
-```
-
----
-
-### Wave 1 (Parallel — Days 2-4) — Foundation
-
-These tasks establish the data layer. They can run in parallel.
+These tasks must complete before integration can begin.
 
 ```xml
 <task-plan id="phase-1-task-1" wave="1">
-  <title>Pulse Database Schema Extensions</title>
-  <requirement>REQ-025: Database schema for benchmarks, REQ-008: NAICS codes</requirement>
-  <description>Extend existing LocalGenius schema with Pulse-specific tables. Leverage the existing benchmarkAggregates table pattern. Add pulseRankings for storing calculated percentiles and naicsIndustries reference table.</description>
+  <title>Commit Uncommitted Files to Git</title>
+  <requirement>P0-BLOCKER-1: db/ and lib/ directories not in version control</requirement>
+  <description>CRITICAL BLOCKER. The db/seeds/ and lib/ directories containing NAICS seeding and region utilities are not committed to git. This violates deployment policy and blocks all further work.</description>
 
   <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/db/schema.ts" reason="Existing schema with benchmarkAggregates (lines 490-524), businesses (lines 124-159), multi-tenant RLS patterns" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/drizzle.config.ts" reason="Drizzle ORM configuration" />
-    <file path="/Users/sethshoultes/Local Sites/great-minds/.planning/REQUIREMENTS.md" reason="REQ-008: NAICS code requirements" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/deliverables/localgenius-benchmark-engine/db/seeds/naics-restaurants.ts" reason="166 LOC - NAICS code seed data for restaurants" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/deliverables/localgenius-benchmark-engine/lib/naics.ts" reason="270 LOC - NAICS code mapping utilities" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/deliverables/localgenius-benchmark-engine/lib/regions.ts" reason="547 LOC - MSA/State region utilities" />
   </context>
 
   <steps>
-    <step order="1">Add pulseRankings table to schema.ts:
-      - id: uuid primary key
-      - businessId: references businesses
-      - organizationId: references organizations (for RLS)
-      - naicsCode: varchar(6)
-      - regionType: enum('metro', 'state')
-      - regionCode: varchar(10)
-      - sizeBucket: enum('1-5', '6-15', '16-50')
-      - metricName: varchar(50)
-      - percentileRank: integer (0-100)
-      - peerCount: integer
-      - benchmarkDate: date
-      - calculatedAt: timestamp</step>
-    <step order="2">Add naicsIndustries reference table:
-      - code: varchar(6) primary key
-      - level: integer (2, 4, or 6)
-      - description: text
-      - parentCode: varchar(6) nullable</step>
-    <step order="3">Add unique constraint on pulseRankings: (businessId, metricName, benchmarkDate)</step>
-    <step order="4">Add composite index: (naicsCode, regionType, regionCode, sizeBucket, benchmarkDate)</step>
-    <step order="5">Seed naicsIndustries with restaurant codes: 722110, 722511, 722513, 722514, 722515</step>
-    <step order="6">Run npm run db:generate && npm run db:push</step>
+    <step order="1">Navigate to /Users/sethshoultes/Local Sites/great-minds/</step>
+    <step order="2">Run: git status to confirm db/ and lib/ are untracked</step>
+    <step order="3">Run: git add deliverables/localgenius-benchmark-engine/db/ deliverables/localgenius-benchmark-engine/lib/</step>
+    <step order="4">Run: git commit -m "feat(pulse): add NAICS seeding and region utilities"</step>
+    <step order="5">Verify commit: git log --oneline -1</step>
+    <step order="6">Push to remote: git push origin main</step>
   </steps>
 
   <verification>
-    <check type="build">npm run build</check>
-    <check type="manual">psql: SELECT * FROM information_schema.tables WHERE table_name LIKE 'pulse%'</check>
-    <check type="manual">psql: SELECT * FROM naics_industries WHERE code LIKE '722%'</check>
+    <check type="bash">git status --porcelain | grep -E "^(\?\?|A)" | grep -E "(db/|lib/)" | wc -l # Should be 0</check>
+    <check type="bash">git log --oneline -1 # Should show NAICS commit</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-0" reason="Requires data audit GO decision" />
+    <!-- Wave 1: No dependencies - this IS the first blocker -->
   </dependencies>
 
-  <commit-message>feat(pulse): add database schema for rankings and NAICS industries</commit-message>
+  <commit-message>feat(pulse): add NAICS seeding and region utilities</commit-message>
 </task-plan>
 ```
 
 ```xml
 <task-plan id="phase-1-task-2" wave="1">
-  <title>Core Metrics Service</title>
-  <requirement>REQ-016: 5 core metrics tracked and calculated</requirement>
-  <description>Create a metrics normalization service that transforms raw analytics events into the 5 core Pulse metrics. This service will be used by the nightly batch job.</description>
+  <title>Create Database Migration Files</title>
+  <requirement>P0-BLOCKER-3: 6 Pulse tables need DDL migrations</requirement>
+  <description>Create Drizzle migration files for the 6 new Pulse tables defined in schema-pulse.ts. Without migrations, database won't have required tables.</description>
 
   <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/analytics.ts" reason="Existing analytics aggregation patterns (getWeeklyAggregates, getAttributionSummary)" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/db/schema.ts" reason="analyticsEvents and attributionEvents schemas" />
-    <file path="/Users/sethshoultes/Local Sites/great-minds/.planning/REQUIREMENTS.md" reason="Metric definitions (REQ-016)" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/deliverables/localgenius-benchmark-engine/src/db/schema-pulse.ts" reason="349 LOC - 6 table definitions (pulseBenchmarks, pulsePublicReports, pulseBadgeConfigs, percentileHistory, notificationPreferences, pulseBadges)" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/drizzle.config.ts" reason="Drizzle ORM configuration" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/db/schema.ts" reason="Main schema file - Pulse tables must integrate here" />
   </context>
 
   <steps>
-    <step order="1">Create /src/services/pulse-metrics.ts</step>
-    <step order="2">Define MetricDefinition interface: { name, calculate: (events) => number, unit }</step>
-    <step order="3">Implement engagementRate: (likes + comments) / followers * 100</step>
-    <step order="4">Implement postFrequency: count(social_post events) / weeks in period</step>
-    <step order="5">Implement followerGrowth: (current - previous) / previous * 100</step>
-    <step order="6">Implement responseTime: avg(review_response.timestamp - review.timestamp)</step>
-    <step order="7">Implement conversionRate: attributed_conversions / total_impressions * 100</step>
-    <step order="8">Export getMetricsForBusiness(businessId, dateRange) function</step>
-    <step order="9">Add JSDoc documentation for each metric calculation</step>
+    <step order="1">Copy Pulse table definitions from schema-pulse.ts to LocalGenius schema.ts</step>
+    <step order="2">Add organization_id column to pulseBenchmarks, pulsePublicReports, percentileHistory for RLS compliance</step>
+    <step order="3">Run: cd /Users/sethshoultes/Local Sites/localgenius && npm run db:generate</step>
+    <step order="4">Review generated migration in drizzle/ directory</step>
+    <step order="5">Run: npm run db:push (or db:migrate depending on setup)</step>
+    <step order="6">Verify tables exist: psql -c "\dt pulse*" or equivalent</step>
   </steps>
 
   <verification>
-    <check type="test">npm run test -- --grep "pulse-metrics"</check>
-    <check type="manual">Call getMetricsForBusiness with test business, verify 5 metrics returned</check>
+    <check type="bash">npm run db:generate # Should complete without errors</check>
+    <check type="bash">npm run db:push # Should apply migrations</check>
+    <check type="manual">Query: SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'pulse%'</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-0" reason="Requires data audit to confirm metric sources" />
+    <depends-on task-id="phase-1-task-1" reason="Must commit code before integrating" />
   </dependencies>
 
-  <commit-message>feat(pulse): add core metrics normalization service</commit-message>
+  <commit-message>feat(pulse): add database migrations for Pulse tables</commit-message>
 </task-plan>
 ```
 
 ```xml
 <task-plan id="phase-1-task-3" wave="1">
-  <title>Analytics Integration Hook</title>
-  <requirement>INT-3, INT-4: Leverage existing benchmarkAggregates and recordEvent() for dual-write</requirement>
-  <description>Extend the existing analytics.recordEvent() to capture Pulse-relevant data. Ensures new events automatically flow into benchmark aggregations.</description>
+  <title>Register Batch Job in Scheduler</title>
+  <requirement>P1-ISSUE: Nightly batch job not registered in LocalGenius scheduler</requirement>
+  <description>The batch-percentiles.ts service exists but the cron trigger is not registered. Register the job to run at 2 AM UTC daily.</description>
 
   <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/analytics.ts" reason="Existing recordEvent() with updateBenchmarks() dual-write (line 129-177)" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/api/middleware/tenant.ts" reason="getSizeBucket() helper function" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/deliverables/localgenius-benchmark-engine/src/services/batch-percentiles.ts" reason="451 LOC - Exports cronHandler() for nightly job" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/scheduler.ts" reason="Job scheduler framework with register() function" />
   </context>
 
   <steps>
-    <step order="1">Review existing updateBenchmarks() in analytics.ts</step>
-    <step order="2">Add Pulse metric mappings to the metricName field:
-      - 'pulse_engagement_rate'
-      - 'pulse_post_frequency'
-      - 'pulse_follower_growth'
-      - 'pulse_response_time'
-      - 'pulse_conversion_rate'</step>
-    <step order="3">Ensure business.vertical (NAICS code equivalent) flows to aggregates</step>
-    <step order="4">Ensure business.city flows to aggregates</step>
-    <step order="5">Use getSizeBucket(business.employeeCount) for size categorization</step>
-    <step order="6">Add unit tests for the integration</step>
+    <step order="1">Open /Users/sethshoultes/Local Sites/localgenius/src/services/scheduler.ts</step>
+    <step order="2">Import cronHandler from Pulse batch service</step>
+    <step order="3">Add job registration:
+      register({
+        name: "pulse-nightly-benchmark",
+        description: "Calculate Pulse percentile rankings for all restaurants",
+        schedule: "0 2 * * *", // 2 AM UTC daily
+        handler: cronHandler,
+      });</step>
+    <step order="4">Update scheduler.ts to export the new job</step>
+    <step order="5">Test job manually: curl -X POST localhost:3000/api/cron/run?job=pulse-nightly-benchmark</step>
   </steps>
 
   <verification>
-    <check type="test">npm run test -- --grep "analytics"</check>
-    <check type="manual">Record test event, query benchmarkAggregates for pulse_ prefix</check>
+    <check type="bash">grep -n "pulse-nightly-benchmark" /Users/sethshoultes/Local Sites/localgenius/src/services/scheduler.ts</check>
+    <check type="manual">Trigger job via cron API endpoint, verify no errors</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-0" reason="Requires data audit completion" />
+    <depends-on task-id="phase-1-task-2" reason="Database tables must exist before job runs" />
   </dependencies>
 
-  <commit-message>feat(pulse): integrate Pulse metrics into analytics dual-write pipeline</commit-message>
+  <commit-message>feat(pulse): register nightly benchmark job in scheduler</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-4" wave="1">
+  <title>Add Multi-Tenant RLS Columns</title>
+  <requirement>P1-ISSUE: Pulse tables missing organization_id for Row-Level Security</requirement>
+  <description>Risk Scanner found that pulseBenchmarks, pulsePublicReports, and percentileHistory tables are missing organization_id column. This could cause cross-tenant data leakage.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/great-minds/deliverables/localgenius-benchmark-engine/src/db/schema-pulse.ts" reason="Table definitions - need organization_id added" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/db/schema.ts" reason="Reference for organization_id pattern used in other tables" />
+  </context>
+
+  <steps>
+    <step order="1">Review businesses table in schema.ts for organization_id pattern</step>
+    <step order="2">Add organization_id column to pulseBenchmarks:
+      organizationId: uuid("organization_id").notNull().references(() => organizations.id)</step>
+    <step order="3">Add organization_id column to pulsePublicReports:
+      organizationId: uuid("organization_id").notNull().references(() => organizations.id)</step>
+    <step order="4">Add organization_id column to percentileHistory:
+      organizationId: uuid("organization_id").notNull().references(() => organizations.id)</step>
+    <step order="5">Update peer-groups.ts and batch-percentiles.ts to filter by organization_id</step>
+    <step order="6">Regenerate migrations: npm run db:generate && npm run db:push</step>
+  </steps>
+
+  <verification>
+    <check type="bash">grep -n "organizationId" /Users/sethshoultes/Local Sites/localgenius/src/db/schema.ts | grep -i pulse</check>
+    <check type="manual">Verify RLS policy applies to Pulse tables</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-2" reason="Base tables must exist before adding RLS columns" />
+  </dependencies>
+
+  <commit-message>security(pulse): add organization_id for multi-tenant RLS compliance</commit-message>
 </task-plan>
 ```
 
 ---
 
-### Wave 2 (Parallel, after Wave 1 — Days 5-7) — Data Layer
-
-```xml
-<task-plan id="phase-1-task-4" wave="2">
-  <title>Nightly Benchmark Calculation Job</title>
-  <requirement>REQ-017: Nightly batch percentile calculation, REQ-009: Curated peer groups, REQ-015: 50+ business threshold, REQ-028: Regional fallback</requirement>
-  <description>Create the nightly batch job that calculates percentile rankings for each business within their peer group. Uses PostgreSQL PERCENTILE_CONT() for accurate statistical ranking with metro-to-state fallback.</description>
-
-  <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/scheduler.ts" reason="Job scheduler framework with cron registration" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/jobs/analytics-rollup.ts" reason="Pattern for batch aggregation jobs" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/services/pulse-metrics.ts" reason="Metrics service from task-2" />
-  </context>
-
-  <steps>
-    <step order="1">Create /src/services/jobs/pulse-benchmark.ts with PulseBenchmarkJob class</step>
-    <step order="2">Implement peer group query:
-      SELECT business_id, naics_code, city, size_bucket, metric_value
-      FROM benchmark_aggregates
-      WHERE metric_name LIKE 'pulse_%'
-      GROUP BY naics_code, city, size_bucket
-      HAVING count(DISTINCT business_id) >= 10</step>
-    <step order="3">Implement metro fallback: if peer count < 10 at city level, expand to state</step>
-    <step order="4">Implement percentile calculation using PERCENTILE_CONT:
-      PERCENT_RANK() WITHIN GROUP (ORDER BY metric_value) * 100</step>
-    <step order="5">Insert/update pulseRankings table with calculated percentiles</step>
-    <step order="6">Track peer count for each ranking (for UI display)</step>
-    <step order="7">Register job in scheduler.ts: cron '0 2 * * *' (2 AM daily)</step>
-    <step order="8">Add job result logging: businesses processed, duration, errors</step>
-    <step order="9">Handle edge cases: NULL metrics, division by zero, empty cohorts</step>
-  </steps>
-
-  <verification>
-    <check type="test">npm run test -- --grep "pulse-benchmark"</check>
-    <check type="manual">curl -X POST localhost:3000/api/cron/pulse-benchmark -H "X-Cron-Secret: $SECRET"</check>
-    <check type="manual">Query pulseRankings: SELECT COUNT(*) FROM pulse_rankings WHERE benchmark_date = CURRENT_DATE</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Requires pulseRankings schema" />
-    <depends-on task-id="phase-1-task-2" reason="Requires metrics service" />
-    <depends-on task-id="phase-1-task-3" reason="Requires analytics integration" />
-  </dependencies>
-
-  <commit-message>feat(pulse): add nightly benchmark calculation job with PERCENTILE_CONT</commit-message>
-</task-plan>
-```
+### Wave 2 (Sequential — Day 2) — Code Integration
 
 ```xml
 <task-plan id="phase-1-task-5" wave="2">
-  <title>Benchmarks API Endpoint</title>
-  <requirement>REQ-018: GET /api/pulse/benchmarks/:customerId</requirement>
-  <description>Create the single REST endpoint that powers the Pulse dashboard. Returns percentile rank, peer group metadata, and comparison metrics.</description>
+  <title>Merge Pulse Code into LocalGenius Source Tree</title>
+  <requirement>P0-BLOCKER-2: Integration testing - code must be in main app</requirement>
+  <description>Copy Pulse deliverables into LocalGenius source tree at correct locations. Verify TypeScript compilation passes.</description>
 
   <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/api/analytics/route.ts" reason="API route pattern with auth, response format" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/api/middleware/auth.ts" reason="verifyAuth() middleware" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/api/middleware/tenant.ts" reason="Multi-tenant context" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/deliverables/localgenius-benchmark-engine/" reason="All Pulse deliverables" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/" reason="LocalGenius source tree" />
   </context>
 
   <steps>
-    <step order="1">Create /src/app/api/pulse/benchmarks/[customerId]/route.ts</step>
-    <step order="2">Add GET handler with verifyAuth() middleware</step>
-    <step order="3">Security check: verify customerId matches auth.businessId</step>
-    <step order="4">Query pulseRankings for latest benchmarkDate matching businessId</step>
-    <step order="5">Query peer group metadata: industry name, region, size range, peer count</step>
-    <step order="6">Build response shape:
-      {
-        data: {
-          percentileRank: number,
-          peerGroup: { industry, region, sizeRange, peerCount },
-          metrics: [{ name, value, percentile, median, p25, p75 }]
-        },
-        meta: { timestamp, benchmarkDate }
-      }</step>
-    <step order="7">Handle errors: 401 (no auth), 403 (wrong customer), 404 (no data)</step>
-    <step order="8">Add response caching headers (5 min cache, data updates nightly)</step>
+    <step order="1">Copy services:
+      cp deliverables/localgenius-benchmark-engine/src/services/*.ts /Users/sethshoultes/Local Sites/localgenius/src/services/pulse/</step>
+    <step order="2">Copy components:
+      cp deliverables/localgenius-benchmark-engine/src/components/*.tsx /Users/sethshoultes/Local Sites/localgenius/src/components/pulse/</step>
+    <step order="3">Copy API routes:
+      cp -r deliverables/localgenius-benchmark-engine/src/api/* /Users/sethshoultes/Local Sites/localgenius/src/app/api/</step>
+    <step order="4">Copy pages:
+      cp -r deliverables/localgenius-benchmark-engine/src/pages/* /Users/sethshoultes/Local Sites/localgenius/src/app/</step>
+    <step order="5">Copy lib utilities:
+      cp deliverables/localgenius-benchmark-engine/lib/*.ts /Users/sethshoultes/Local Sites/localgenius/src/lib/pulse/</step>
+    <step order="6">Copy badge embed script:
+      cp deliverables/localgenius-benchmark-engine/badges/badge-embed.js /Users/sethshoultes/Local Sites/localgenius/public/badges/</step>
+    <step order="7">Update import paths in copied files to use @/ alias</step>
+    <step order="8">Run: cd /Users/sethshoultes/Local Sites/localgenius && npm run build</step>
   </steps>
 
   <verification>
-    <check type="test">npm run test -- --grep "api/pulse/benchmarks"</check>
-    <check type="manual">curl -H "Authorization: Bearer $TOKEN" localhost:3000/api/pulse/benchmarks/$ID</check>
-    <check type="manual">Verify 401 without token, 403 with wrong customer ID</check>
+    <check type="build">npm run build # Must complete without TypeScript errors</check>
+    <check type="bash">ls -la /Users/sethshoultes/Local Sites/localgenius/src/services/pulse/</check>
+    <check type="bash">ls -la /Users/sethshoultes/Local Sites/localgenius/src/components/pulse/</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Requires pulseRankings schema" />
-    <depends-on task-id="phase-1-task-4" reason="Requires data from benchmark job" />
+    <depends-on task-id="phase-1-task-1" reason="Code must be committed first" />
+    <depends-on task-id="phase-1-task-2" reason="Database schema must be ready" />
+    <depends-on task-id="phase-1-task-3" reason="Scheduler must be configured" />
+    <depends-on task-id="phase-1-task-4" reason="RLS columns must be added" />
   </dependencies>
 
-  <commit-message>feat(pulse): add GET /api/pulse/benchmarks/:customerId endpoint</commit-message>
+  <commit-message>feat(pulse): integrate Pulse benchmark engine into LocalGenius</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-6" wave="2">
+  <title>Validate API Endpoint Integration</title>
+  <requirement>REQ-018: GET /api/pulse/benchmarks/:customerId must work</requirement>
+  <description>Test the Pulse API endpoint in LocalGenius context. Verify authentication, response format, and error handling.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/api/pulse/benchmarks/[customerId]/route.ts" reason="Main benchmark API endpoint" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/api/middleware/auth.ts" reason="Authentication middleware" />
+  </context>
+
+  <steps>
+    <step order="1">Start LocalGenius dev server: npm run dev</step>
+    <step order="2">Test unauthenticated request: curl localhost:3000/api/pulse/benchmarks/test-id
+      Expected: 401 Unauthorized</step>
+    <step order="3">Get valid auth token from dev environment</step>
+    <step order="4">Test authenticated request: curl -H "Authorization: Bearer $TOKEN" localhost:3000/api/pulse/benchmarks/$BUSINESS_ID</step>
+    <step order="5">Verify response shape matches BenchmarkResponse interface</step>
+    <step order="6">Test wrong customer ID: should return 403 Forbidden</step>
+    <step order="7">Test nonexistent customer: should return 404 Not Found</step>
+    <step order="8">Verify response time &lt; 200ms</step>
+  </steps>
+
+  <verification>
+    <check type="manual">curl -w "%{time_total}\n" -o /dev/null -s localhost:3000/api/pulse/benchmarks/$ID # Under 0.2s</check>
+    <check type="manual">Verify JSON response has: pulseScore, metrics[], peerGroup{}</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-5" reason="Code must be integrated before testing" />
+  </dependencies>
+
+  <commit-message>test(pulse): validate API endpoint integration</commit-message>
 </task-plan>
 ```
 
 ---
 
-### Wave 3 (Parallel, after Wave 2 — Days 8-10) — UI Components
-
-```xml
-<task-plan id="phase-1-task-6" wave="3">
-  <title>PulseScore Hero Component</title>
-  <requirement>REQ-019: Hero component, REQ-002: Single percentile on first screen</requirement>
-  <description>The most important component in Pulse. Displays the single percentile number prominently. This is the emotional hook — instant clarity, one number, one answer.</description>
-
-  <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/digest/WeeklyDigest.tsx" reason="Existing metrics display with animations" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/lib/animations.ts" reason="fadeUpStagger animation utilities" />
-    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="UX requirement: single percentile hero" />
-  </context>
-
-  <steps>
-    <step order="1">Create /src/components/pulse/PulseScore.tsx with 'use client'</step>
-    <step order="2">Define props: { percentileRank: number, metricLabel?: string, loading?: boolean }</step>
-    <step order="3">Render "You're ahead of {percentileRank}% of restaurants" in large typography</step>
-    <step order="4">Alternative phrasing option: "You're in the {100-percentileRank}th percentile"</step>
-    <step order="5">Add subtle entrance animation using existing fadeUpStagger</step>
-    <step order="6">Add context subtext: "in {metricLabel}" if provided</step>
-    <step order="7">Handle loading state with skeleton placeholder</step>
-    <step order="8">Apply brand voice: confident, direct, no hedging</step>
-  </steps>
-
-  <verification>
-    <check type="build">npm run build</check>
-    <check type="manual">Import in test page, verify typography is prominent</check>
-    <check type="manual">Verify loading skeleton renders correctly</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-5" reason="Needs API response shape understanding" />
-  </dependencies>
-
-  <commit-message>feat(pulse): add PulseScore hero component</commit-message>
-</task-plan>
-```
+### Wave 3 (Parallel — Day 3) — UI Validation
 
 ```xml
 <task-plan id="phase-1-task-7" wave="3">
-  <title>IndustryComparison Charts Component</title>
-  <requirement>REQ-020: 3-4 comparison charts, REQ-010: Charts showing position vs peers</requirement>
-  <description>Visual comparison showing customer's position across 4 metrics. Fixed layout (no customization). Uses existing sparkline patterns for consistency.</description>
+  <title>Validate Dashboard Page</title>
+  <requirement>REQ-023: Dashboard page must render correctly</requirement>
+  <description>Test the Pulse dashboard page in browser. Verify all components render, data flows correctly, and responsive design works.</description>
 
   <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/digest/WeeklyDigest.tsx" reason="Sparkline component pattern" />
-    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="4 metrics, no customization" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/dashboard/pulse/page.tsx" reason="Main dashboard page" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/pulse/" reason="All Pulse components" />
   </context>
 
   <steps>
-    <step order="1">Create /src/components/pulse/IndustryComparison.tsx</step>
-    <step order="2">Define props:
-      { metrics: Array<{
-        name: string,
-        yourValue: number,
-        percentile: number,
-        median: number,
-        p25: number,
-        p75: number
-      }> }</step>
-    <step order="3">Create MetricCard subcomponent showing:
-      - Your value (prominent)
-      - Position indicator (green above median, neutral in band, red below p25)
-      - Percentile band visualization (p25-median-p75)</step>
-    <step order="4">Implement exactly 4 cards: Engagement, Frequency, Growth, Response Time</step>
-    <step order="5">Use 2x2 grid layout on desktop, single column on mobile</step>
-    <step order="6">Add loading state per card (independent)</step>
-    <step order="7">Color coding: green > median, gray in band, red < p25</step>
+    <step order="1">Navigate to http://localhost:3000/dashboard/pulse (authenticated)</step>
+    <step order="2">Verify PulseScore hero renders with percentile number</step>
+    <step order="3">Verify IndustryComparison shows 4 metric charts</step>
+    <step order="4">Verify PeerGroupSelector displays peer group info</step>
+    <step order="5">Verify ProgressTracking shows week-over-week change</step>
+    <step order="6">Test InsufficientDataState: mock sparse cohort, verify message appears</step>
+    <step order="7">Test responsive design: check mobile viewport</step>
+    <step order="8">Verify no console errors in browser DevTools</step>
   </steps>
 
   <verification>
-    <check type="build">npm run build</check>
-    <check type="manual">Render with mock data, verify all 4 charts display</check>
-    <check type="manual">Test responsive layout on mobile viewport</check>
+    <check type="manual">Visual: PulseScore number is text-7xl and prominent</check>
+    <check type="manual">DevTools: No React errors or warnings</check>
+    <check type="manual">Mobile: Layout stacks correctly at 375px width</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-5" reason="Needs API metrics response shape" />
+    <depends-on task-id="phase-1-task-6" reason="API must work before UI testing" />
   </dependencies>
 
-  <commit-message>feat(pulse): add IndustryComparison charts component</commit-message>
+  <commit-message>test(pulse): validate dashboard page rendering</commit-message>
 </task-plan>
 ```
 
 ```xml
 <task-plan id="phase-1-task-8" wave="3">
-  <title>PeerGroupSelector Display Component</title>
-  <requirement>REQ-021: Read-only peer group display</requirement>
-  <description>Shows which peer group the customer is being compared against. Builds trust through transparency. Read-only, no selection — curated only.</description>
+  <title>Validate Badge Embed System</title>
+  <requirement>REQ-026: Badge embed script must work cross-origin</requirement>
+  <description>Test the badge embed system on an external page. Verify CORS, rendering, and API integration.</description>
 
   <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/shared/" reason="Existing UI component patterns" />
-    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Curated peer groups, no browsing" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/public/badges/badge-embed.js" reason="449 LOC - Standalone badge loader" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/api/badges/[embedId]/route.ts" reason="Badge data API" />
   </context>
 
   <steps>
-    <step order="1">Create /src/components/pulse/PeerGroupSelector.tsx</step>
-    <step order="2">Define props: { industry: string, region: string, sizeRange: string, peerCount: number }</step>
-    <step order="3">Display: "Comparing to {peerCount} {industry} businesses in {region} ({sizeRange} employees)"</step>
-    <step order="4">Style as subtle info card (supporting role, not prominent)</step>
-    <step order="5">Add info icon with tooltip: "Your peer group is selected based on your industry, location, and business size to ensure meaningful comparisons."</step>
-    <step order="6">Handle edge case: if peerCount < 50, show softer confidence indicator</step>
+    <step order="1">Create test HTML file on different port (e.g., python -m http.server 8080)</step>
+    <step order="2">Add badge embed code to test HTML:
+      &lt;div data-pulse-badge="$EMBED_ID" data-theme="light"&gt;&lt;/div&gt;
+      &lt;script src="http://localhost:3000/badges/badge-embed.js"&gt;&lt;/script&gt;</step>
+    <step order="3">Open test page in browser</step>
+    <step order="4">Verify badge renders with correct tier (gold/silver/bronze)</step>
+    <step order="5">Verify CORS headers allow cross-origin fetch</step>
+    <step order="6">Test dark theme: data-theme="dark"</step>
+    <step order="7">Test size variants: data-size="small|medium|large"</step>
+    <step order="8">Verify no JavaScript errors in console</step>
   </steps>
 
   <verification>
-    <check type="build">npm run build</check>
-    <check type="manual">Render component, verify tooltip works</check>
-    <check type="manual">Verify no interactive/edit elements</check>
+    <check type="manual">Badge SVG renders on external page</check>
+    <check type="bash">curl -I localhost:3000/badges/badge-embed.js | grep Access-Control</check>
+    <check type="manual">Network tab: Badge API returns 200 with JSON data</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-5" reason="Needs peer group data shape" />
+    <depends-on task-id="phase-1-task-6" reason="API infrastructure must work" />
   </dependencies>
 
-  <commit-message>feat(pulse): add PeerGroupSelector display component</commit-message>
+  <commit-message>test(pulse): validate badge embed cross-origin functionality</commit-message>
 </task-plan>
 ```
 
 ```xml
 <task-plan id="phase-1-task-9" wave="3">
-  <title>Insufficient Data State Component</title>
-  <requirement>REQ-036: Graceful message when cohort < threshold</requirement>
-  <description>When peer group has insufficient data for meaningful benchmarks, show helpful message explaining why and when to check back. Not an error state — an informational state.</description>
+  <title>Run E2E Test Suite</title>
+  <requirement>QA: End-to-end tests for complete user flows</requirement>
+  <description>Create and run Playwright E2E tests covering critical Pulse user journeys.</description>
 
   <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/shared/NotificationBanner.tsx" reason="Existing notification patterns" />
-    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Minimum 10 for display, 50 for full confidence" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/playwright.config.ts" reason="Playwright configuration" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/e2e/" reason="E2E test directory" />
   </context>
 
   <steps>
-    <step order="1">Create /src/components/pulse/InsufficientDataState.tsx</step>
-    <step order="2">Define props: { peerGroup: { industry, region, size }, currentCount: number, minRequired: number }</step>
-    <step order="3">Friendly message: "We need more restaurants like yours to show meaningful benchmarks."</step>
-    <step order="4">Context: "Currently tracking {currentCount} {industry} businesses in {region}. Benchmarks appear when we reach {minRequired}."</step>
-    <step order="5">Add hopeful note: "As more restaurants join LocalGenius, your benchmarks will unlock."</step>
-    <step order="6">Style as informational (blue/gray), not error (red)</step>
-    <step order="7">Include illustration or icon suggesting "coming soon"</step>
+    <step order="1">Create /Users/sethshoultes/Local Sites/localgenius/e2e/pulse.spec.ts</step>
+    <step order="2">Test: Unauthenticated user at /dashboard/pulse redirects to login</step>
+    <step order="3">Test: Authenticated user sees PulseScore hero</step>
+    <step order="4">Test: All 4 comparison charts render</step>
+    <step order="5">Test: Peer group info displays correctly</step>
+    <step order="6">Test: Public report page loads at /reports/state-of-local-restaurants</step>
+    <step order="7">Test: Badge embed script loads (if separate test environment available)</step>
+    <step order="8">Run: npx playwright test e2e/pulse.spec.ts</step>
   </steps>
 
   <verification>
-    <check type="build">npm run build</check>
-    <check type="manual">Render with currentCount=5, minRequired=10</check>
-    <check type="manual">Verify messaging is encouraging, not discouraging</check>
+    <check type="test">npx playwright test pulse --reporter=list</check>
+    <check type="manual">npx playwright test pulse --headed # Visual verification</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-5" reason="Needs to understand when this state triggers" />
+    <depends-on task-id="phase-1-task-7" reason="Dashboard must work before E2E" />
+    <depends-on task-id="phase-1-task-8" reason="Badges must work before E2E" />
   </dependencies>
 
-  <commit-message>feat(pulse): add InsufficientDataState component</commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-10" wave="3">
-  <title>EmbeddableBadge Component</title>
-  <requirement>REQ-022: Badge component with tiers, REQ-033: Calculation date</requirement>
-  <description>Badge showing "Top X% in Engagement" for customer websites. Includes qualification date to prevent outdated displays. Three tiers: Gold (Top 10%), Silver (Top 25%), Bronze (Top 50%).</description>
-
-  <context>
-    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Badge tiers and date requirement" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/" reason="Existing styling patterns" />
-  </context>
-
-  <steps>
-    <step order="1">Create /src/components/pulse/EmbeddableBadge.tsx</step>
-    <step order="2">Define props:
-      { tier: 'gold' | 'silver' | 'bronze',
-        percentile: number,
-        metricName: string,
-        businessName: string,
-        qualifiedDate: string,
-        variant?: 'light' | 'dark' }</step>
-    <step order="3">Map tiers: gold = top 10%, silver = top 25%, bronze = top 50%</step>
-    <step order="4">Design badge: Pulse logo, tier badge, "{businessName}" text, "Top {X}% in {metric}"</step>
-    <step order="5">Include date: "Verified {qualifiedDate}" in small text</step>
-    <step order="6">Create distinct visual styles: gold = gold/amber, silver = gray/silver, bronze = bronze/copper</step>
-    <step order="7">Support light/dark background variants</step>
-    <step order="8">Keep component dependency-free for embed use</step>
-  </steps>
-
-  <verification>
-    <check type="build">npm run build</check>
-    <check type="manual">Render all 3 tiers, verify visual distinction</check>
-    <check type="manual">Test on light and dark backgrounds</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-5" reason="Needs percentile thresholds from API" />
-  </dependencies>
-
-  <commit-message>feat(pulse): add EmbeddableBadge component with tier system</commit-message>
+  <commit-message>test(pulse): add E2E tests for dashboard and public pages</commit-message>
 </task-plan>
 ```
 
 ---
 
-### Wave 4 (Parallel, after Wave 3 — Days 11-13) — Integration
+### Wave 4 (Sequential — Day 4-5) — Deployment
 
 ```xml
-<task-plan id="phase-1-task-11" wave="4">
-  <title>Main Pulse Dashboard Page</title>
-  <requirement>REQ-023: Dashboard page integrating all components</requirement>
-  <description>The main Pulse dashboard that brings together all components into a cohesive, opinionated layout. This is where the magic happens — one page, one number, instant clarity.</description>
+<task-plan id="phase-1-task-10" wave="4">
+  <title>Deploy to Staging Environment</title>
+  <requirement>DEPLOY: Staging validation before production</requirement>
+  <description>Deploy the integrated Pulse code to staging environment. Run smoke tests.</description>
 
   <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/" reason="Next.js App Router patterns" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/pulse/" reason="All Pulse components from Wave 3" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/lib/auth-client.ts" reason="Client-side auth utilities" />
+    <file path="/Users/sethshoultes/Local Sites/localgenius/.env.staging" reason="Staging environment configuration" />
   </context>
 
   <steps>
-    <step order="1">Create /src/app/pulse/dashboard/page.tsx</step>
-    <step order="2">Add authentication check — redirect to /login if not authenticated</step>
-    <step order="3">Fetch benchmark data from /api/pulse/benchmarks/:customerId</step>
-    <step order="4">Layout structure (fixed, not customizable):
-      - Header: "Pulse" branding
-      - Hero: PulseScore (full width, prominent)
-      - Subhead: PeerGroupSelector (subtle, informational)
-      - Body: IndustryComparison (2x2 grid)</step>
-    <step order="5">Conditional rendering: if peerCount < 10, show InsufficientDataState instead</step>
-    <step order="6">Add loading skeleton for entire page while data fetches</step>
-    <step order="7">Add error boundary with friendly error message</step>
-    <step order="8">Add "Last updated: {benchmarkDate}" footer</step>
+    <step order="1">Create staging branch: git checkout -b staging/pulse-v1</step>
+    <step order="2">Push to remote: git push origin staging/pulse-v1</step>
+    <step order="3">Trigger staging deployment (Vercel preview or equivalent)</step>
+    <step order="4">Wait for deployment to complete</step>
+    <step order="5">Run database migrations on staging DB</step>
+    <step order="6">Smoke test: Visit staging URL /dashboard/pulse</step>
+    <step order="7">Smoke test: Call API endpoint with staging auth token</step>
+    <step order="8">Smoke test: Test badge embed on external staging page</step>
+    <step order="9">Manually trigger nightly batch job via cron endpoint</step>
+    <step order="10">Verify percentile calculations appear in staging DB</step>
   </steps>
 
   <verification>
-    <check type="build">npm run build</check>
-    <check type="test">npm run test -- --grep "pulse/dashboard"</check>
-    <check type="manual">Visit /pulse/dashboard as authenticated user</check>
-    <check type="manual">Verify layout: hero number prominent, charts below</check>
-    <check type="manual">Verify redirect to login when not authenticated</check>
+    <check type="manual">Staging dashboard loads without errors</check>
+    <check type="manual">API returns valid benchmark data</check>
+    <check type="manual">Batch job completes successfully</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-5" reason="Requires API endpoint" />
-    <depends-on task-id="phase-1-task-6" reason="Requires PulseScore" />
-    <depends-on task-id="phase-1-task-7" reason="Requires IndustryComparison" />
-    <depends-on task-id="phase-1-task-8" reason="Requires PeerGroupSelector" />
-    <depends-on task-id="phase-1-task-9" reason="Requires InsufficientDataState" />
+    <depends-on task-id="phase-1-task-9" reason="E2E tests must pass before staging" />
   </dependencies>
 
-  <commit-message>feat(pulse): add main dashboard page with integrated components</commit-message>
+  <commit-message>deploy(pulse): deploy to staging environment</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-11" wave="4">
+  <title>Deploy to Production</title>
+  <requirement>DEPLOY: Production deployment</requirement>
+  <description>After staging validation, deploy Pulse to production. Monitor for errors.</description>
+
+  <context>
+    <file path="/Users/sethshoultes/Local Sites/localgenius/.env.production" reason="Production environment configuration" />
+  </context>
+
+  <steps>
+    <step order="1">Merge staging branch to main: git checkout main && git merge staging/pulse-v1</step>
+    <step order="2">Create release tag: git tag -a v1.0.0-pulse -m "Pulse Benchmark Engine v1"</step>
+    <step order="3">Push to remote: git push origin main --tags</step>
+    <step order="4">Trigger production deployment</step>
+    <step order="5">Run database migrations on production DB</step>
+    <step order="6">Verify deployment: Visit production /dashboard/pulse</step>
+    <step order="7">Monitor error tracking (Sentry or equivalent) for 30 minutes</step>
+    <step order="8">Verify first nightly batch job completes (wait for 2 AM UTC or trigger manually)</step>
+    <step order="9">Post deployment notification to team</step>
+  </steps>
+
+  <verification>
+    <check type="manual">Production dashboard loads</check>
+    <check type="manual">No errors in monitoring for 30 minutes</check>
+    <check type="manual">Batch job completes without errors</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-10" reason="Staging must validate before production" />
+  </dependencies>
+
+  <commit-message>deploy(pulse): release v1.0.0-pulse to production</commit-message>
 </task-plan>
 ```
 
 ```xml
 <task-plan id="phase-1-task-12" wave="4">
-  <title>Public Report Page Template</title>
-  <requirement>REQ-024: SEO-friendly public report page</requirement>
-  <description>Page template for public benchmark reports like "State of Local Restaurants". Optimized for SEO with proper meta tags, structured data, and social sharing.</description>
+  <title>Update Status and Documentation</title>
+  <requirement>CLEANUP: Update STATUS.md and decisions.md</requirement>
+  <description>Mark Pulse as shipped. Update project status files. Archive round transcripts.</description>
 
   <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/" reason="Next.js App Router patterns" />
-    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Public reports for SEO/PR" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/STATUS.md" reason="Agency status file" />
+    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Locked decisions - update build status" />
   </context>
 
   <steps>
-    <step order="1">Create /src/app/pulse/reports/[slug]/page.tsx</step>
-    <step order="2">Add generateMetadata() for SEO:
-      - title: "{Report Title} | Pulse by LocalGenius"
-      - description: Dynamic summary
-      - Open Graph tags for social sharing</step>
-    <step order="3">Add JSON-LD structured data (Article schema)</step>
-    <step order="4">Create report layout sections:
-      - Hero: Report title, publish date, key stat
-      - Executive Summary: 3 bullet points
-      - Key Metrics: Charts/visualizations
-      - Methodology: Data collection explanation
-      - CTA: "See where your restaurant ranks"</step>
-    <step order="5">Style for readability with proper typography hierarchy</step>
-    <step order="6">Add social sharing buttons (Twitter, LinkedIn, Facebook)</step>
-    <step order="7">Add badge embed code section for easy copying</step>
-    <step order="8">Add "Powered by LocalGenius" footer with signup CTA</step>
+    <step order="1">Update STATUS.md:
+      - state: shipped
+      - active project: pulse v1.0.0
+      - last updated: {current date}</step>
+    <step order="2">Update decisions.md:
+      - Build Status: SHIPPED
+      - Remove P0 blockers (resolved)</step>
+    <step order="3">Move /prds/failed/localgenius-benchmark-engine.md to /prds/shipped/</step>
+    <step order="4">Create /memory/pulse-learnings.md with retrospective notes</step>
+    <step order="5">Update MEMORY.md index</step>
+    <step order="6">Commit all status updates</step>
   </steps>
 
   <verification>
-    <check type="build">npm run build</check>
-    <check type="manual">Visit /pulse/reports/test-report</check>
-    <check type="manual">Check meta tags with View Source</check>
-    <check type="manual">Validate structured data at search.google.com/test/rich-results</check>
+    <check type="manual">STATUS.md shows state: shipped</check>
+    <check type="manual">decisions.md shows Build Status: SHIPPED</check>
+    <check type="bash">ls /Users/sethshoultes/Local Sites/great-minds/prds/shipped/ | grep localgenius</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-10" reason="Needs badge component for embed section" />
+    <depends-on task-id="phase-1-task-11" reason="Must ship before updating status" />
   </dependencies>
 
-  <commit-message>feat(pulse): add public report page template with SEO optimization</commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-13" wave="4">
-  <title>State of Local Restaurants Report</title>
-  <requirement>REQ-012: First public benchmark report</requirement>
-  <description>Create the first public benchmark report content. This is the content that drives SEO and establishes LocalGenius as a thought leader in local business marketing.</description>
-
-  <context>
-    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Report content requirements" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/pulse/reports/" reason="Report page template" />
-  </context>
-
-  <steps>
-    <step order="1">Create /content/reports/state-of-local-restaurants.json (or .md with frontmatter)</step>
-    <step order="2">Write Executive Summary:
-      - Key finding 1: Average restaurant engagement rate
-      - Key finding 2: Top performing regions
-      - Key finding 3: Size correlation with performance</step>
-    <step order="3">Add Key Metrics section with visualizations:
-      - Median engagement rate by size
-      - Post frequency distribution
-      - Response time benchmarks</step>
-    <step order="4">Add Regional Insights: top 5 metros, lagging metros</step>
-    <step order="5">Add Size Analysis: small (1-5) vs medium (6-15) vs large (16-50)</step>
-    <step order="6">Add Methodology: data collection, anonymization, statistical approach</step>
-    <step order="7">Add CTA: "See where your restaurant ranks — sign up for LocalGenius"</step>
-    <step order="8">Generate placeholder charts (can be updated with real data post-launch)</step>
-  </steps>
-
-  <verification>
-    <check type="build">npm run build</check>
-    <check type="manual">Visit /pulse/reports/state-of-local-restaurants</check>
-    <check type="manual">Verify all sections render</check>
-    <check type="manual">Verify CTA links to signup</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-12" reason="Requires report page template" />
-    <depends-on task-id="phase-1-task-4" reason="Needs benchmark data for content" />
-  </dependencies>
-
-  <commit-message>content(pulse): add State of Local Restaurants benchmark report</commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-14" wave="4">
-  <title>Freemium Preview Interface</title>
-  <requirement>REQ-014: Preview with signup gate</requirement>
-  <description>Public preview showing partial benchmark data to drive signups. Shows industry-level stats but hides personal percentile behind auth.</description>
-
-  <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/app/" reason="Page routing patterns" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/components/pulse/" reason="Pulse components" />
-  </context>
-
-  <steps>
-    <step order="1">Create /src/app/pulse/preview/page.tsx (public, no auth required)</step>
-    <step order="2">Accept query params: ?industry=restaurants&region=denver</step>
-    <step order="3">Create public API endpoint: /api/pulse/preview for aggregate stats only</step>
-    <step order="4">Show industry-level stats: "Restaurants in Denver average X% engagement"</step>
-    <step order="5">Add blurred/locked charts overlay with message: "Sign up to see your exact rank"</step>
-    <step order="6">Add prominent CTA button: "See How You Stack Up" → /signup</step>
-    <step order="7">Track preview page views for conversion analytics</step>
-    <step order="8">Add social sharing: "Share industry insights with your network"</step>
-  </steps>
-
-  <verification>
-    <check type="build">npm run build</check>
-    <check type="manual">Visit /pulse/preview?industry=restaurants&region=denver (no auth)</check>
-    <check type="manual">Verify charts are blurred</check>
-    <check type="manual">Verify CTA links to signup</check>
-    <check type="manual">Verify no personal data exposed</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-7" reason="Requires IndustryComparison for blur overlay" />
-    <depends-on task-id="phase-1-task-5" reason="Needs API data structure understanding" />
-  </dependencies>
-
-  <commit-message>feat(pulse): add freemium preview with signup gate</commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-15" wave="4">
-  <title>Badge Embed Script</title>
-  <requirement>REQ-026: Lightweight embeddable script for customer HTML</requirement>
-  <description>JavaScript embed script that customers add to their websites to display their Pulse badge. Must be lightweight, work without React, and handle CORS.</description>
-
-  <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/public/" reason="Static assets location" />
-    <file path="/Users/sethshoultes/Local Sites/great-minds/rounds/localgenius-benchmark-engine/decisions.md" reason="Badge embed requirements" />
-  </context>
-
-  <steps>
-    <step order="1">Create /public/badges/pulse-badge.js (vanilla JS, no dependencies)</step>
-    <step order="2">Script accepts data attributes: data-business-id, data-metric, data-theme</step>
-    <step order="3">Create public badge API: /api/pulse/badges/[businessId]/route.ts
-      - Returns: { tier, percentile, metric, qualifiedDate, businessName }
-      - No auth required (public badges)
-      - Add rate limiting</step>
-    <step order="4">Render badge using vanilla JS DOM manipulation</step>
-    <step order="5">Include inline CSS scoped to .pulse-badge class (prevent conflicts)</step>
-    <step order="6">Add CORS headers to badge API: Access-Control-Allow-Origin: *</step>
-    <step order="7">Handle errors: invalid business ID, no badge qualification</step>
-    <step order="8">Keep script under 5KB minified</step>
-    <step order="9">Document embed code in help center format</step>
-  </steps>
-
-  <verification>
-    <check type="manual">Create test.html with embed script, verify badge renders</check>
-    <check type="manual">Test cross-origin: serve HTML from different port</check>
-    <check type="manual">Verify script size: ls -la public/badges/pulse-badge.js</check>
-    <check type="manual">Test in Chrome, Firefox, Safari</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-10" reason="Requires badge design/styling from component" />
-  </dependencies>
-
-  <commit-message>feat(pulse): add embeddable badge script for customer websites</commit-message>
-</task-plan>
-```
-
----
-
-### Wave 5 (After Wave 4 — Day 14) — Testing & Polish
-
-```xml
-<task-plan id="phase-1-task-16" wave="5">
-  <title>Integration Tests</title>
-  <requirement>QA-1 to QA-4: Tests for calculations, fallback, badges, auth</requirement>
-  <description>Comprehensive integration tests ensuring Pulse calculations are correct, fallback logic works, and security is enforced.</description>
-
-  <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/vitest.config.ts" reason="Test configuration" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/src/__tests__/" reason="Existing test patterns" />
-  </context>
-
-  <steps>
-    <step order="1">Create /src/__tests__/services/pulse-benchmark.test.ts</step>
-    <step order="2">Test percentile calculation accuracy with seed data (50+ businesses)</step>
-    <step order="3">Test edge cases: 1 business, 9 businesses, exactly 10, 100+</step>
-    <step order="4">Test metro-to-state fallback when metro < 10</step>
-    <step order="5">Create /src/__tests__/api/pulse-benchmarks.test.ts</step>
-    <step order="6">Test 401 for unauthenticated requests</step>
-    <step order="7">Test 403 when accessing different customer's data</step>
-    <step order="8">Test badge tier assignment: verify 10%/25%/50% thresholds</step>
-    <step order="9">Test NULL handling and empty cohort edge cases</step>
-  </steps>
-
-  <verification>
-    <check type="test">npm run test -- --grep "pulse" --coverage</check>
-    <check type="manual">Verify coverage > 80% for Pulse code</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-4" reason="Tests benchmark job" />
-    <depends-on task-id="phase-1-task-5" reason="Tests API endpoint" />
-    <depends-on task-id="phase-1-task-10" reason="Tests badge qualification" />
-  </dependencies>
-
-  <commit-message>test(pulse): add integration tests for benchmark calculation and API</commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-17" wave="5">
-  <title>E2E Tests</title>
-  <requirement>QA-5: End-to-end tests with Playwright</requirement>
-  <description>End-to-end tests verifying the complete Pulse user flow from landing to dashboard.</description>
-
-  <context>
-    <file path="/Users/sethshoultes/Local Sites/localgenius/playwright.config.ts" reason="Playwright config" />
-    <file path="/Users/sethshoultes/Local Sites/localgenius/e2e/" reason="Existing E2E patterns" />
-  </context>
-
-  <steps>
-    <step order="1">Create /e2e/pulse.spec.ts</step>
-    <step order="2">Test: Unauthenticated user at /pulse/dashboard redirects to login</step>
-    <step order="3">Test: Authenticated user sees PulseScore hero number</step>
-    <step order="4">Test: Peer group info displays correctly</step>
-    <step order="5">Test: All 4 comparison charts render</step>
-    <step order="6">Test: InsufficientDataState shows when peerCount < 10</step>
-    <step order="7">Test: Public report page loads at /pulse/reports/state-of-local-restaurants</step>
-    <step order="8">Test: Freemium preview shows blurred charts and CTA</step>
-    <step order="9">Test: Badge embed script loads and renders on external page</step>
-  </steps>
-
-  <verification>
-    <check type="test">npx playwright test pulse</check>
-    <check type="manual">npx playwright test pulse --headed (visual verification)</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-11" reason="Tests dashboard page" />
-    <depends-on task-id="phase-1-task-13" reason="Tests public report" />
-    <depends-on task-id="phase-1-task-14" reason="Tests freemium preview" />
-    <depends-on task-id="phase-1-task-15" reason="Tests badge embed" />
-  </dependencies>
-
-  <commit-message>test(pulse): add E2E tests for dashboard, reports, and badges</commit-message>
+  <commit-message>docs(pulse): update status files for v1.0.0 release</commit-message>
 </task-plan>
 ```
 
@@ -825,30 +509,30 @@ These tasks establish the data layer. They can run in parallel.
 
 ## Risk Notes
 
-### Critical Risks (Must Mitigate Before Build)
+### P0 Blockers (MUST Fix Before Integration)
+
+| Risk | Impact | Status | Mitigation |
+|------|--------|--------|------------|
+| Uncommitted files | CRITICAL | phase-1-task-1 | Git add and commit |
+| Missing DB migrations | CRITICAL | phase-1-task-2 | Create Drizzle migrations |
+| Batch job not scheduled | HIGH | phase-1-task-3 | Register in scheduler.ts |
+| Missing RLS columns | HIGH | phase-1-task-4 | Add organization_id |
+
+### P1 Issues (Fix During Integration)
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| RISK-001: Data doesn't exist | CRITICAL | Wave 0 data audit is a hard gate. No code until GO decision. |
-| RISK-005: Insights creep | CRITICAL | REQUIREMENTS.md explicitly excludes insights. Refer stakeholders there. |
-| RISK-006: Timeline slip | CRITICAL | Day 5 checkpoint: schema + job + API scaffolded or cut scope. |
+| Schema import failures | HIGH | Validate in task-5 build step |
+| API auth bypass | HIGH | Verify middleware in task-6 |
+| CORS not configured | MEDIUM | Test in task-8 |
 
-### High Risks (Monitor During Build)
+### P2 Concerns (Post-Launch)
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| RISK-002: Sparse cohorts | HIGH | InsufficientDataState component. Metro→state fallback. |
-| RISK-003: Privacy exposure | HIGH | Minimum 10 businesses. No individual identification possible. |
-| RISK-011: PERCENTILE_CONT edge cases | HIGH | Unit tests for empty groups, single values, precision. |
-| RISK-012: Auth integration | HIGH | Reuse LocalGenius auth middleware. Don't write custom. |
-| RISK-016: Badge CORS | HIGH | Test cross-origin in Wave 4. CORS headers on badge API. |
-
-### Architectural Notes
-
-- **LocalGenius infrastructure is production-ready**: benchmarkAggregates, dual-write, RLS all exist.
-- **Extend, don't reinvent**: Pulse adds pulseRankings table and new job, reuses everything else.
-- **Multi-tenant security**: All queries must respect organization_id RLS.
-- **~500 LOC target**: Components are focused. If any task exceeds 100 LOC, reconsider.
+| Risk | Timeline | Notes |
+|------|----------|-------|
+| Hardcoded URLs | v1.1 | Move to env config |
+| Zero unit tests | v1.1 | Add test coverage |
+| Engagement proxy metric | v2 | Replace with true follower tracking |
 
 ---
 
@@ -856,27 +540,23 @@ These tasks establish the data layer. They can run in parallel.
 
 | Day | Wave | Tasks | Checkpoint |
 |-----|------|-------|------------|
-| 1 | 0 | Data Audit | GO/NO-GO decision |
-| 2-4 | 1 | Schema, Metrics, Analytics | Foundation complete |
-| 5-7 | 2 | Batch Job, API | Day 5: 30% complete or cut scope |
-| 8-10 | 3 | All UI Components | Components in Storybook |
-| 11-13 | 4 | Dashboard, Reports, Preview, Badge Script | Integration complete |
-| 14 | 5 | Tests | Ship! |
+| 1 | 1 | task-1, task-2, task-3, task-4 | Blockers cleared, DB ready |
+| 2 | 2 | task-5, task-6 | Code merged, API validated |
+| 3 | 3 | task-7, task-8, task-9 | UI validated, E2E passing |
+| 4-5 | 4 | task-10, task-11, task-12 | Deployed and documented |
 
 ---
 
 ## Wave Summary
 
 ```
-Wave 0: [task-0]                                    ← BLOCKER (data audit)
-Wave 1: [task-1, task-2, task-3]                    ← 3 parallel (foundation)
-Wave 2: [task-4, task-5]                            ← 2 parallel (data layer)
-Wave 3: [task-6, task-7, task-8, task-9, task-10]   ← 5 parallel (components)
-Wave 4: [task-11, task-12, task-13, task-14, task-15] ← 5 parallel (integration)
-Wave 5: [task-16, task-17]                          ← 2 parallel (testing)
+Wave 1: [task-1, task-2, task-3, task-4]  <- Sequential (blockers)
+Wave 2: [task-5, task-6]                   <- Sequential (integration)
+Wave 3: [task-7, task-8, task-9]           <- Parallel (validation)
+Wave 4: [task-10, task-11, task-12]        <- Sequential (deployment)
 ```
 
-**Total**: 18 tasks, 5 waves (+ blocker wave), 14 days
+**Total**: 12 tasks, 4 waves, 3-5 days
 
 ---
 
@@ -888,13 +568,13 @@ Before each wave, verify:
 - [ ] Tests pass: `npm run test`
 - [ ] No lint errors: `npm run lint`
 
-Before ship (end of Wave 5):
-- [ ] All 18 tasks committed
+Before ship (end of Wave 4):
+- [ ] All 12 tasks committed
 - [ ] E2E tests pass
-- [ ] Security review: auth, CORS, RLS
-- [ ] Performance: API < 200ms, page load < 3s
-- [ ] Accessibility: keyboard navigation, screen reader
-- [ ] Mobile responsive
+- [ ] Staging validated
+- [ ] Production deployed
+- [ ] STATUS.md updated
+- [ ] Monitoring shows no errors
 
 ---
 
@@ -902,4 +582,4 @@ Before ship (end of Wave 5):
 
 ---
 
-**Now we build.**
+**Clear the blockers. Then we ship.**

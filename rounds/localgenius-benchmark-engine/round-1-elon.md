@@ -2,77 +2,80 @@
 
 ## Architecture: What's the Simplest System That Could Work?
 
-The PRD describes a data warehouse. Stop. You don't need an "Insights Engine" — you need a spreadsheet with percentiles.
+The PRD says "Benchmark Engine." That's hand-waving. From physics: what actually needs to happen?
 
-**MVP architecture:** One cron job, one database table, one dashboard view.
-- Nightly aggregation of 5 metrics per business (engagement rate, post frequency, follower growth, response time, conversion rate)
-- Store as pre-computed percentiles by industry vertical
-- Display: "You're in the 73rd percentile for engagement among restaurants"
+**Three operations:** Collect numbers. Group by industry. Divide to get percentile.
 
-That's it. No ML. No "insights engine." No monthly report automation. Those are features pretending to be requirements.
+**Simplest implementation:** One Postgres table. One cron job. One SQL query: `PERCENT_RANK() OVER (PARTITION BY industry)`. Done.
+
+No "engine." No ML. No microservices. A junior dev could build this in a day. If your architecture diagram has more than 3 boxes, you've already failed.
 
 ## Performance: Where Are the Bottlenecks?
 
-At current scale (assuming <1,000 businesses), there are zero performance concerns. This is premature optimization territory.
+With <1,000 businesses, performance is a non-issue. Stop optimizing for scale you don't have.
 
-Real bottleneck: **Data quality.** How many businesses have clean industry categorization? How many have 30+ days of data? If the answer is <50 per vertical, your benchmarks are statistically meaningless. Fix the data pipeline before building dashboards.
+**Actual bottleneck:** Data quality. The PRD assumes "anonymized data collection" just works. It doesn't. What happens when:
+- A business miscategorizes their industry?
+- 80% of your "restaurants" are actually food trucks?
+- Half your customers have <7 days of data?
 
-## Distribution: The 10,000 User Path Without Paid Ads
+Your benchmarks become statistically meaningless garbage. Fix data hygiene first. Performance is a rounding error.
 
-Benchmarks are inherently viral. The move:
-1. Generate public "State of Local Business Marketing" reports by city/industry
-2. Let businesses claim their ranking: "Top 10% of Denver restaurants for Instagram engagement"
-3. Embeddable badges: "LocalGenius Verified: Above Average"
+## Distribution: How Does This Reach 10,000 Users Without Paid Ads?
 
-**Key insight:** Benchmarks only work if businesses SHARE them. Build the share mechanic first. Not the dashboard.
+This PRD confuses retention with acquisition. Benchmarks don't get new users—they keep existing ones.
 
-## What to CUT (v2 Features Disguised as v1)
+**The distribution hack:** Shareable bragging rights. "You're in the top 15% of Austin restaurants." Make that a badge. Make it embeddable. Make it social proof.
 
-- **"Monthly benchmark reports (automated)"** — Cut. Manual export is fine for v1.
-- **"Insights engine: Businesses like yours that did X saw Y% improvement"** — Cut. This is a recommendation system. That's a different product.
-- **"3 industry categories"** — Reduce to 1. Pick restaurants. Nail it. Then expand.
-- **Anonymization complexity** — For v1, just don't show individual business data. Aggregate only.
+But here's the brutal math: benchmarks require N>100 per cohort to be meaningful. With 3 industries and 50 cities, you need 15,000 customers BEFORE this feature has value. The "flywheel" doesn't spin until you have scale. This is a chicken-and-egg the PRD ignores.
 
-The PRD has 5 requirements. Ship with 2: aggregation + comparison dashboard.
+## What to CUT: V2 Features Masquerading as V1
+
+**Cut "Insights engine"** — This is a recommendation system. Different product. Different PRD.
+
+**Cut "Monthly automated reports"** — If users want data, they'll click a button. Automation is polish.
+
+**Cut "3 industry categories"** — Pick ONE. Restaurants. Nail the data model. Then expand.
+
+**Cut "Data moat" language** — Strategy isn't a feature. Remove from requirements.
+
+**V1 is:** Collect. Compare. Display one number. That's it.
 
 ## Technical Feasibility: Can One Agent Session Build This?
 
-**Yes, if scoped correctly.**
+**The PRD as written? No.** It's too vague and too broad.
 
-One session can build:
-- Database schema for metrics storage
-- Aggregation script (Python/Node)
-- Basic dashboard component showing percentile rank
-- Industry lookup/categorization
+**A stripped-down V1? Yes.** One session can deliver:
+- Schema for metrics + industry tags
+- Nightly aggregation script
+- Single percentile display component
 
-One session CANNOT build:
-- A robust anonymization framework
-- An ML-powered insights engine
-- Automated report generation with PDF export
-- Multi-tenant data isolation at enterprise scale
+**Cannot be done in one session:**
+- Robust anonymization (legal review required)
+- Multi-industry taxonomy
+- Shareable badges with proper OG tags
+- PDF report generation
 
-The PRD as written? No. The PRD stripped to essentials? Absolutely.
+Rewrite the PRD with concrete metrics and a single industry. Then it's feasible.
 
-## Scaling: What Breaks at 100x Usage?
+## Scaling: What Breaks at 100x?
 
 At 100K businesses:
-- **Pre-computed aggregates hold fine** — This is the right architecture choice
-- **Industry granularity breaks** — "Restaurant" becomes meaningless. Need subcategories (fast casual, fine dining, coffee shops)
-- **Geographic segmentation required** — NYC restaurant benchmarks are useless for rural Kansas
-- **Real-time updates become necessary** — Nightly batches feel stale
 
-The 100x problem isn't technical. It's **statistical validity.** With 100K businesses across 50 industries across 1,000 cities, most cohorts have <10 members. Your "benchmarks" become noise.
+**Statistical validity collapses.** "Restaurants in Phoenix" might have 50 businesses. "Vegan restaurants in Phoenix" has 3. Your percentile is now based on 3 data points—useless.
+
+**Industry taxonomy explodes.** "Restaurant" means nothing. You need 50+ subcategories. The schema must support this DAY ONE or you're rebuilding.
+
+**Privacy surface area grows.** One de-anonymization incident kills the product. At scale, the attack surface is 100x larger. Anonymization can't be an afterthought.
 
 ## Bottom Line
 
-This PRD is 60% vision, 40% spec. Strip it to:
-1. Collect 5 metrics nightly
-2. Compute percentiles by industry
-3. Show one number: "You're in the Xth percentile"
-4. Build the share button
+The thesis is right: network effects create moats. The execution is over-engineered.
 
-Ship in 2 weeks. Validate that anyone cares. Then iterate.
+**Ship this:** One industry. One metric. One percentile. One share button.
 
-The "data moat" thesis is correct. The execution plan is over-engineered. Simplify ruthlessly.
+Validate that ANYONE cares. Then build the engine.
+
+This PRD is 70% vision statement, 30% spec. Flip that ratio or kill it.
 
 — Elon

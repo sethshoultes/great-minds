@@ -1,28 +1,28 @@
-# Sara Blakely Gut-Check: Pulse MVP
+# Sara Blakely Gut-Check: Phase 1 Integration Plan
 
 ## Would a customer pay for this?
 
-**Maybe once.** You're selling "you're in the 72nd percentile" to someone working 14-hour days. She'll look once, feel mildly validated, then never come back. A percentile tells me where I am. It doesn't tell me what to do Monday morning. You built a mirror, not a coach.
+**Not yet.** This plan is all plumbing — git commits, migrations, RLS columns. That's fine, you gotta build the pipes. But 12 tasks deep and I still don't see: What does the customer GET that makes them reach for their wallet? A "PulseScore hero component" isn't a reason to buy. "You're outperforming 78% of taquerias in Houston" is. Lead with the outcome, not the architecture.
 
 ## What's confusing / bounce risk?
 
-- **5 metrics is 4 too many.** One number. Make it count.
-- **"Engagement rate" means nothing** to a taco shop owner. Say: "Your posts get 3x more likes than the average spot on your block."
-- **No "so what."** Dashboard shows rank but no next step. That's when they close the tab.
-- **Bronze badge = "You're mediocre."** Nobody displays that. Cut to one tier or zero.
+- **No onboarding mentioned.** First-time user lands on dashboard and sees... what? Empty state? Error? Plan doesn't say.
+- **Badge system buried at task #8.** That's your distribution engine. Should be validated Day 1, not Day 3.
+- **"Percentile" is jargon.** Your customer didn't finish college, she started a restaurant. Say "Top 25%" not "75th percentile."
+- **4 metric charts = decision paralysis.** One number. One action. That's what busy people need.
 
 ## 30-Second Elevator Pitch
 
-*"Pulse shows restaurant owners exactly where they rank against similar spots in their city—one number, updated weekly. Stop guessing if your marketing is working. Top performers get a badge for their website. It's like Yelp stars, but for your hustle."*
+*"Pulse gives restaurant owners one number that shows exactly how they stack up against similar spots nearby. Updated weekly. Top performers get a badge for their website — free marketing that says 'we're better than the rest.' It's like a credit score for your restaurant's hustle."*
 
 ## $0 Marketing Test
 
-Call 10 existing customers. Tell them they're top 25%. Ask: *"Would you put this badge on your website?"* If 7+ say yes without hesitation, you've got something. If they shrug, your whole viral loop is dead.
+**Skip the dashboard. Test the badge first.** Mock up the gold badge. Call 10 restaurant owners: "Would you put this on your website if it meant free credibility?" 7+ enthusiastic yes = green light. Anything less = redesign the hook before writing another line of code.
 
 ## Retention Hook
 
-**Weak.** Checking a static percentile monthly isn't a habit. Add: "You improved 12% this month" — beat your own best, not just rank vs. strangers. Personal trend > peer comparison for stickiness.
+**Currently missing.** Weekly percentile updates aren't sticky. Add: *"Maria's Tacos just passed you in Google reviews this week."* Competition creates habit. Leaderboards create addiction. A static score creates a one-time glance.
 
 ---
 
-**Bottom line:** Good infrastructure. But you're shipping a *feature*, not a *habit*. Add the "what do I do now?" and I'm in.
+**Bottom line:** You've got solid engineering rigor. But this reads like a deployment checklist, not a customer acquisition plan. Ship it, sure — but know that the real work starts after task #12.
