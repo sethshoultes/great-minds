@@ -17,6 +17,12 @@
 
 import React from "react";
 
+/**
+ * Base URL for Pulse service - configurable via environment variable
+ * Falls back to production URL if not set
+ */
+const PULSE_BASE_URL = process.env.NEXT_PUBLIC_PULSE_BASE_URL || "https://pulse.localgenius.com";
+
 export type BadgeTheme = "light" | "dark";
 export type BadgeSize = "small" | "medium" | "large";
 
@@ -293,7 +299,7 @@ export function generateEmbedCode(
 ): string {
   const { theme = "light", size = "medium" } = options;
 
-  return `<script src="https://pulse.localgenius.com/badges/badge-embed.js" data-pulse-id="${embedId}" data-theme="${theme}" data-size="${size}"></script>`;
+  return `<script src="${PULSE_BASE_URL}/badges/badge-embed.js" data-pulse-id="${embedId}" data-theme="${theme}" data-size="${size}"></script>`;
 }
 
 /**
@@ -308,7 +314,7 @@ export function generateBadgeImageUrl(
 ): string {
   const { theme = "light", size = "medium" } = options;
 
-  return `https://pulse.localgenius.com/api/badges/${embedId}.svg?theme=${theme}&size=${size}`;
+  return `${PULSE_BASE_URL}/api/badges/${embedId}.svg?theme=${theme}&size=${size}`;
 }
 
 export default EmbeddableBadge;
