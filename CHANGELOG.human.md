@@ -1,3 +1,11 @@
+Apr 12, 2026 — 8:43 PM
+
+  Address QA Pass 1 issues in decisions.md and EmbeddableBadge.tsx  ·  81a39ac
+
+Apr 12, 2026 — 8:41 PM
+
+  Add NAICS seeding and region utilities  ·  ef24545
+
 Apr 6, 2026 — 5:30 PM
 
   Document daemon resilience and developer intelligence features  ·  abfbd16
