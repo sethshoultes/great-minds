@@ -3,87 +3,103 @@
 
 ---
 
-### Product Naming
+### Product Naming: **Pulse**
 
-**Call it: Pulse.**
+Throw out "Benchmark Engine." That's what engineers call it. That's not what customers *feel*.
 
-Not "Benchmark Engine." Not "Analytics Dashboard." Not "Performance Insights Module." *Pulse.*
+*Pulse.*
 
-One word. One heartbeat. The collective heartbeat of every local business in our ecosystem.
+One syllable. Primal. Every human understands pulse — it's the difference between alive and dead. When you check your Pulse, you know instantly: Am I thriving? Am I fading?
 
-When a doctor checks your pulse, they know instantly if you're thriving or dying. That's what this is. Your business has a Pulse. Is it strong? Is it weak? How does it compare to the healthiest businesses in your category?
+"How's your Pulse?" That's what business owners will ask each other. That's the test of a great name — it becomes a verb, a question, a way of life.
 
-"Check your Pulse" becomes the verb. That's how you know you've named something right.
+Not "Benchmark Dashboard." Not "CompareMetrics." Not "InsightHub."
 
----
-
-### Design Philosophy
-
-The magic here isn't the data — it's the *collective intelligence*. We're building something that gets smarter with every customer. That's the network effect. That's the moat.
-
-But here's what makes it insanely great: **the customer should never see the complexity.**
-
-They shouldn't see "anonymized aggregate data pipelines" or "industry vertical segmentation." They should see: *"You're outperforming 73% of restaurants in your region."* One number. One insight. One action.
-
-The best products feel like magic because they hide the machinery. The iPhone didn't show you the ARM processor. Pulse won't show you the data lake.
+*Pulse.* Final answer.
 
 ---
 
-### User Experience — The First 30 Seconds
+### Design Philosophy: One Number. One Truth.
 
-You open Pulse. You see one number. Big. Bold. Beautiful.
+Most analytics products are designed by engineers who love complexity. They give you 47 charts because they *can*, not because you *should*.
 
-**"Your Pulse Score: 78"**
+Pulse shows you ONE number. Your rank. Top 15%? Bottom third? That single piece of information changes everything.
 
-Green, because you're healthy. Trending up, because you're improving. One sentence below: *"You're generating 40% more engagement than similar restaurants."*
+This is the lesson Apple learned with iPod: 1,000 songs in your pocket. Not "5GB flash storage with AAC encoding." One truth that matters.
 
-That's it. That's the first 30 seconds.
+The machinery should be invisible. The data science, the anonymization, the industry clustering — users should never see it. They see a number. They feel something. They act.
 
-No tutorials. No onboarding flows. No "let us show you around." You *understand* it the moment you see it. A score. A comparison. A feeling.
-
-Then — and only then — you can go deeper. But most won't need to. The best interface is one you don't have to learn.
+**The best products hide their complexity inside beauty.**
 
 ---
 
-### Brand Voice
+### The First 30 Seconds: The Mirror Moment
 
-Pulse speaks like a trusted advisor who respects your time.
+You open Pulse.
 
-Not corporate: *"Your Q2 performance metrics indicate above-average engagement ratios."*
-Not cute: *"Woohoo! You're crushing it, superstar!"*
+One number fills the screen: **Top 23%**
 
-**Like this:** *"You're ahead of most restaurants your size. Here's one thing that could push you further."*
+Below it: *"Your coffee shop outperforms 77% of similar businesses in customer engagement."*
 
-Confident. Direct. Actionable. No fluff. No jargon. We're talking to small business owners who have 47 things on their plate. Respect that.
+No sidebar. No navigation. No tutorial asking if you want a tour.
 
----
+Just you, facing the truth.
 
-### What to Say NO To
+That first moment is everything. It's the mirror moment — when you see yourself in context for the first time. Some will feel pride. Some will feel urgency. Both are fuel.
 
-**No comparison shopping.** Don't let users browse other businesses' data, even anonymized. That's not insight — that's distraction.
-
-**No customizable dashboards.** The moment you let people move widgets around, you've admitted your design failed. We decide what matters.
-
-**No raw data exports.** We're not a data warehouse. We're an intelligence engine. Exporting CSV files is admitting defeat.
-
-**No industry jargon.** No "KPIs." No "benchmarks." No "verticals." Speak human.
-
-**No feature creep.** If someone asks for "competitive analysis" or "market research tools" — that's a different product. Pulse does one thing: tells you where you stand.
+Then — only then — they scroll for depth. But we earned their attention with clarity, not confusion.
 
 ---
 
-### The Emotional Hook
+### Brand Voice: Your Coach, Not Your Consultant
 
-Here's why people will *love* this:
+Consultants hedge. Coaches tell you the truth.
 
-Every small business owner lies awake at 2am wondering: *"Am I doing okay? Is everyone else struggling too, or is it just me?"*
+**Wrong:** "Your engagement metrics demonstrate a 14.3% deviation from category median benchmarks."
 
-Pulse answers that question. Not with vague platitudes, but with truth. You're ahead. You're behind. Here's what the winners are doing.
+**Right:** "You've dropped 12 spots this month. Here's what top performers are doing that you're not."
 
-That's not a feature. That's *relief*. That's *clarity*. That's the feeling of finally knowing where you stand instead of operating in the dark.
+Pulse speaks directly. Short sentences. No jargon. We respect that our users have 47 problems and zero time for corporate speak.
 
-The emotional hook is belonging to something bigger. You're not alone anymore. You're part of a collective intelligence. Every business in the network makes yours smarter. That's community. That's a flywheel. That's something worth paying for.
+When you're winning, we say: "You're crushing it. Don't let up."
+When you're losing, we say: "You're falling behind. Here's exactly what to fix."
+
+No hedging. No asterisks. No "results may vary." Truth, delivered with respect.
 
 ---
 
-*Simplicity is the ultimate sophistication. Pulse should feel inevitable — like it was always supposed to exist.*
+### What We Say NO To
+
+**NO custom dashboards.** The moment users can rearrange widgets, we've admitted our design failed.
+
+**NO export to CSV.** We're not a data warehouse. If they need raw data, we've failed to deliver insight.
+
+**NO competitor lookup.** You don't get to see Joe's Pizza specifically. Anonymity is sacred.
+
+**NO advanced settings.** One experience. One truth. For everyone.
+
+**NO weekly digest emails.** If it's worth knowing, it's worth opening the app.
+
+**NO gamification badges.** Your business isn't a video game. Respect the stakes.
+
+Every feature request is a threat to simplicity. Most should die on arrival.
+
+---
+
+### The Emotional Hook: You Are Not Alone
+
+Here's the secret no one says out loud: running a small business is *lonely*.
+
+You have no idea if your struggles are normal. You wonder at 2am: Is everyone else figuring this out? Am I the only one drowning?
+
+Pulse answers the unanswerable question. For the first time, you're not operating in the dark. You see exactly where you stand among thousands of businesses just like yours.
+
+That's not a feature. That's *relief*.
+
+The emotional hook isn't data. It's *belonging*. You're part of a collective intelligence now. Every business that joins makes yours smarter. That's community. That's a flywheel. That's something people will pay for and never leave.
+
+---
+
+*"People don't know what they want until you show it to them."*
+
+Pulse shows them where they stand. They didn't know they needed it. Now they can't live without it.

@@ -1,66 +1,18 @@
-Apr 10, 2026 — 2:45 AM
+Apr 14, 2026 — 9:45 AM
 
-  Review(customer): Sara Blakely gut-check on Playground messaging in sara-blakely-review-playground.md  ·  51496aa
+  Final commit: great-minds-cloud in CHANGELOG.human.md  ·  4a189ef
 
-Apr 9, 2026 — 7:16 PM
+Apr 14, 2026 — 9:44 AM
 
-  Final commit: localgenius-lite in CHANGELOG.human.md  ·  cef35e5
+  Add retrospective for great-minds-cloud  ·  656d81d
 
-Apr 9, 2026 — 7:15 PM
+Apr 12, 2026 — 8:43 PM
 
-  Add retrospective for localgenius-lite  ·  f950638
+  Address QA Pass 1 issues in decisions.md and EmbeddableBadge.tsx  ·  81a39ac
 
-Apr 9, 2026 — 6:43 PM
+Apr 12, 2026 — 8:41 PM
 
-  Workshop: Claude Code audience, install Great Minds + Ralph Wiggum plugins  ·  47688e6
-
-Apr 9, 2026 — 6:36 PM
-
-  Stash changes in CHANGELOG.human.md  ·  e86b298
-
-Apr 9, 2026 — 6:36 PM
-
-  Workshop: simple, memorable, no SDK required — 7 slides + 4 hands-on exercises in AGENTS-ASSEMBLE-WORKSHOP.md  ·  1c592f5
-
-Apr 9, 2026 — 6:05 PM
-
-  Ship agents-assemble-workshop: slides, script, 7 exercises (1011 lines)  ·  5f735a8
-
-Apr 9, 2026 — 5:50 PM
-
-  Complete agents-assemble-workshop deliverables  ·  9bdee8a
-
-Apr 9, 2026 — 5:06 PM
-
-  Final commit: localgenius-lite in CHANGELOG.human.md  ·  1f99035
-
-Apr 9, 2026 — 5:06 PM
-
-  Add retrospective for localgenius-lite  ·  9d2877d
-
-Apr 9, 2026 — 4:30 PM
-
-  Final commit: pipeline-test in CHANGELOG.human.md  ·  a722202
-
-Apr 9, 2026 — 4:30 PM
-
-  Add retrospective for pipeline-test in CHANGELOG.human.md and retrospective.md  ·  e324aba
-
-Apr 9, 2026 — 4:29 PM
-
-  Ship pipeline-test: retrospective, planning artifacts, changelog  ·  c9ce0b1
-
-Apr 9, 2026 — 4:20 PM
-
-  Add README and example debate transcript in README.md and example-output.md  ·  ca82936
-
-Apr 9, 2026 — 4:00 PM
-
-  Push remaining uncommitted deliverables in CHANGELOG.human.md  ·  e55cbaa
-
-Apr 9, 2026 — 4:00 PM
-
-  Merge all feature branches to main — resolve conflicts accepting newest in Root.tsx  ·  3a88455
+  Add NAICS seeding and region utilities  ·  ef24545
 
 Apr 6, 2026 — 5:30 PM
 
