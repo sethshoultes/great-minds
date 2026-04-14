@@ -1,0 +1,54 @@
+{
+  "business_type": "realtor",
+  "display_name": "Real Estate",
+  "faqs": [
+    {
+      "question": "What areas do you serve?",
+      "answer": "We serve multiple neighborhoods and communities in the region. Contact us to discuss the specific areas you're interested in buying or selling."
+    },
+    {
+      "question": "Are you helping buyers, sellers, or both?",
+      "answer": "We work with both buyers and sellers. Whether you're looking to purchase a home or sell your property, we're here to help you succeed."
+    },
+    {
+      "question": "What is your commission rate?",
+      "answer": "Commission structures are negotiable and vary by transaction. We'll discuss our fees and what's included in our services during your consultation."
+    },
+    {
+      "question": "How do I start the home buying process?",
+      "answer": "The first step is to get pre-approved for a mortgage and discuss your needs with us. We'll help you understand the market and find the right home."
+    },
+    {
+      "question": "How do I list my home for sale?",
+      "answer": "We'll schedule a consultation to view your home, discuss pricing strategy, and explain our marketing plan. Contact us to get started."
+    },
+    {
+      "question": "What should I know about the current market?",
+      "answer": "Market conditions change frequently. Contact us for a current market analysis specific to your neighborhood or target area."
+    },
+    {
+      "question": "How long does it take to buy or sell a home?",
+      "answer": "Timelines vary based on market conditions, pricing, and other factors. On average, the process takes several weeks to a few months."
+    },
+    {
+      "question": "Do you help with new construction?",
+      "answer": "Yes, we can assist with new construction purchases. We'll help you navigate builder contracts and ensure your interests are protected."
+    },
+    {
+      "question": "What's my home worth?",
+      "answer": "We provide free market analyses for homeowners. Contact us to schedule a valuation of your property based on current market data."
+    },
+    {
+      "question": "How can I schedule a showing?",
+      "answer": "Contact us with the properties you're interested in and your availability. We'll arrange showings at times convenient for you."
+    },
+    {
+      "question": "Do you offer virtual tours?",
+      "answer": "We offer virtual tours and video walkthroughs for many listings. Ask us about virtual viewing options for properties you're interested in."
+    },
+    {
+      "question": "What documents do I need to buy a home?",
+      "answer": "You'll need proof of income, bank statements, identification, and mortgage pre-approval. We'll provide a complete checklist during your consultation."
+    }
+  ]
+}

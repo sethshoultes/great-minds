@@ -1,0 +1,54 @@
+{
+  "business_type": "dentist",
+  "display_name": "Dental Practice",
+  "faqs": [
+    {
+      "question": "What are your hours of operation?",
+      "answer": "Our office hours vary by day. Please check our website or call us directly for our current schedule and to confirm availability."
+    },
+    {
+      "question": "Do you accept my insurance?",
+      "answer": "We work with many insurance providers. Please contact our office with your insurance details and we'll verify your coverage before your appointment."
+    },
+    {
+      "question": "How do I schedule an appointment?",
+      "answer": "You can schedule an appointment by calling our office or using our online booking system if available. We'll find a time that works best for you."
+    },
+    {
+      "question": "What services do you offer?",
+      "answer": "We offer comprehensive dental care including cleanings, exams, fillings, crowns, root canals, extractions, and cosmetic dentistry. Contact us to discuss your specific needs."
+    },
+    {
+      "question": "Do you handle dental emergencies?",
+      "answer": "Yes, we accommodate dental emergencies. If you're experiencing severe pain, swelling, or a dental injury, please call our office immediately."
+    },
+    {
+      "question": "Are you accepting new patients?",
+      "answer": "We welcome new patients! Please call our office or fill out our new patient forms to get started with your first appointment."
+    },
+    {
+      "question": "Is there parking available?",
+      "answer": "Parking information varies by location. Please check our website or call ahead for specific parking details and accessibility options."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept most major credit cards, cash, and checks. We also offer payment plans for larger treatments. Ask our team about financing options."
+    },
+    {
+      "question": "How often should I visit the dentist?",
+      "answer": "We recommend visiting every six months for routine cleanings and exams. However, some patients may need more frequent visits depending on their dental health."
+    },
+    {
+      "question": "Do you offer teeth whitening?",
+      "answer": "Yes, we offer professional teeth whitening services. Contact us to learn about our whitening options and what might work best for your smile."
+    },
+    {
+      "question": "What should I bring to my first appointment?",
+      "answer": "Please bring your ID, insurance card, completed new patient forms, and a list of any medications you're currently taking."
+    },
+    {
+      "question": "Do you see children?",
+      "answer": "We provide dental care for patients of all ages, including children. Our team is experienced in making young patients feel comfortable during their visits."
+    }
+  ]
+}

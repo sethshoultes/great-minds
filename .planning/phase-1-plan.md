@@ -1,474 +1,1092 @@
-# Phase 1 Plan — Narrate CLI (v1)
+# Phase 1 Plan — Agents Assemble Workshop
 
-**Generated:** 2026-04-05
-**Requirements:** `.planning/REQUIREMENTS.md`, `prds/witness.md`, `rounds/witness/decisions.md`
-**Total Tasks:** 10
-**Waves:** 4
+**Generated**: 2024-04-09
+**Requirements**: `.planning/REQUIREMENTS.md` + `rounds/agents-assemble-workshop/decisions.md`
+**Total Tasks**: 14
+**Waves**: 4
+**Timeline**: 6-8 hours focused session
+**Project Slug**: `agents-assemble-workshop`
+
+---
+
+## Executive Summary
+
+Agents Assemble is a hands-on workshop teaching developers how to build autonomous AI agent teams using Claude Code. This plan implements the 3 deliverable files (slides, script, exercises) with 7 exercises covering headless mode, loops, commands, hooks, and multi-agent orchestration.
+
+**Core Essence** (from decisions.md):
+> "Teaching developers to build tireless workers that ship code while they sleep."
+
+**The One Thing That Must Be Perfect**:
+> "The first 30 seconds. Paste. Watch it work. Jaw drops."
+
+**Emotional Hook** (from Decision 8):
+> "You will leave this room dangerous."
 
 ---
 
 ## Requirements Traceability
 
-| Requirement(s) | Task | Wave |
-|----------------|------|------|
-| PS-1, PS-2, PS-3, PS-6 | phase-1-task-1 (Project scaffold) | 1 |
-| CFG-1..6 | phase-1-task-2 (Config loader) | 1 |
-| AI-1..10 | phase-1-task-3 (System prompt + AI caller) | 1 |
-| FMT-1..7 | phase-1-task-4 (Changelog formatter) | 1 |
-| OFF-1..5 | phase-1-task-5 (Offline fallback) | 1 |
-| CH-1..7, QA-2 | phase-1-task-6 (Post-commit hook engine) | 2 |
-| CMD-1..4 | phase-1-task-7 (`narrate init`) | 2 |
-| CMD-5, CMD-6 | phase-1-task-8 (`narrate log`) | 2 |
-| CMD-7, CMD-8 | phase-1-task-9 (`narrate backfill`) | 3 |
-| QA-1..6 | phase-1-task-10 (Integration test + dogfood) | 4 |
+| Requirement | Task(s) | Wave |
+|-------------|---------|------|
+| REQ-001: Slides markdown file | phase-1-task-1 | 2 |
+| REQ-002: Script markdown file | phase-1-task-2 | 2 |
+| REQ-003: Exercises markdown file | phase-1-task-3 to phase-1-task-9 | 2, 3 |
+| REQ-004-010: Slide content (7 slides) | phase-1-task-1 | 2 |
+| REQ-011-017: Exercise content (7 exercises) | phase-1-task-3 to phase-1-task-9 | 2, 3 |
+| REQ-018-024: Script requirements | phase-1-task-2 | 2 |
+| REQ-025: Zero placeholder content | phase-1-task-12 | 4 |
+| REQ-026: All commands functional | phase-1-task-10 | 1 |
+| REQ-029: Expected output samples | phase-1-task-3 to phase-1-task-9 | 2, 3 |
+| REQ-030: Windows compatibility | phase-1-task-11 | 3 |
+| REQ-032-037: Testing requirements | phase-1-task-12, phase-1-task-13 | 4 |
+| REQ-038: Three markdown files structure | phase-1-task-1, phase-1-task-2 | 2 |
 
 ---
 
 ## Wave Execution Order
 
-### Wave 1 (Parallel — no dependencies)
+### Wave 1 (Parallel — Foundation & Verification)
 
-<task-plan id="phase-1-task-1" wave="1">
-  <title>Project scaffold and package.json</title>
-  <requirement>PS-1, PS-2, PS-3, PS-5, PS-6</requirement>
-  <description>
-    Create the narrate-cli project structure with package.json (ESM, bin field),
-    directory layout, and install the single runtime dependency (@anthropic-ai/sdk).
-    This is the foundation every other task builds on.
-  </description>
+These tasks validate the technical foundation before content creation. They ensure all commands are real and functional.
+
+```xml
+<task-plan id="phase-1-task-10" wave="1">
+  <title>Verify All Claude Code CLI Commands</title>
+  <requirement>REQ-026: All commands real and functional (HARD BLOCKER)</requirement>
+  <description>Test and verify every Claude Code command that will appear in slides and exercises. Document exact syntax with verified output. This prevents hallucinated commands from reaching the workshop.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Architecture decisions: ESM, no build step, native child_process" />
-    <file path="prds/witness.md" reason="Tech stack requirements" />
+    <file path=".planning/REQUIREMENTS.md" reason="Verified Claude Code CLI Syntax section" />
+    <file path="CLAUDE.md" reason="Anti-hallucination rules - verify before claiming success" />
   </context>
 
   <steps>
-    <step order="1">Create directory: deliverables/narrate-cli/</step>
-    <step order="2">Create package.json with: name "narrate-cli", type "module", bin {"narrate": "./bin/narrate.js"}, engines {"node": ">=18.0.0"}, version "0.1.0"</step>
-    <step order="3">Create bin/narrate.js — CLI entry point with shebang (#!/usr/bin/env node), imports commander or minimal arg parser, routes to commands</step>
-    <step order="4">Create directory structure: bin/, src/, src/commands/, src/lib/</step>
-    <step order="5">Run npm install @anthropic-ai/sdk in the project directory</step>
-    <step order="6">Create .gitignore (node_modules/)</step>
-    <step order="7">Verify: node bin/narrate.js --help prints usage without errors</step>
+    <step order="1">Verify headless mode command syntax:
+      - Test: `claude -p "echo hello world" --max-turns 1`
+      - Verify: `-p` flag works for non-interactive mode
+      - Verify: `--max-turns` flag exists and accepts integers
+      - Document actual output</step>
+    <step order="2">Verify budget control flag:
+      - Test: `claude -p "echo test" --max-budget-usd 0.10`
+      - Verify: `--max-budget-usd` flag exists
+      - Document behavior when budget exceeded</step>
+    <step order="3">Verify tool allowlist:
+      - Test: `claude -p "list files" --allowedTools "Bash,Read"`
+      - Verify: `--allowedTools` flag syntax
+      - Document expected behavior</step>
+    <step order="4">Verify /loop command exists:
+      - Start Claude Code session
+      - Test: `/loop 1m echo 'test'`
+      - Verify: command is recognized
+      - Document actual syntax</step>
+    <step order="5">Verify custom commands path:
+      - Confirm: `~/.claude/skills/` directory structure
+      - Test: creating a skill and invoking it
+      - Document exact file format required</step>
+    <step order="6">Verify hooks configuration:
+      - Confirm: settings.json location
+      - Test: PostToolUse hook configuration
+      - Document exact JSON schema</step>
+    <step order="7">Create CLI-VERIFIED.md with all verified syntax</step>
   </steps>
 
   <verification>
-    <check type="manual">node bin/narrate.js --help runs without error</check>
-    <check type="manual">package.json has "type": "module" and correct bin field</check>
-    <check type="manual">Only @anthropic-ai/sdk in dependencies (minimal deps)</check>
+    <check type="bash">test -f .planning/CLI-VERIFIED.md &amp;&amp; echo "VERIFICATION DOC EXISTS"</check>
+    <check type="bash">grep -q "claude -p" .planning/CLI-VERIFIED.md &amp;&amp; echo "HEADLESS VERIFIED"</check>
+    <check type="bash">grep -q "/loop" .planning/CLI-VERIFIED.md &amp;&amp; echo "LOOP VERIFIED"</check>
   </verification>
 
-  <dependencies />
+  <dependencies>
+    <!-- Wave 1: No dependencies - foundation task -->
+  </dependencies>
 
-  <commit-message>feat: scaffold narrate-cli project with ESM package.json and CLI entry point</commit-message>
+  <commit-message>docs(planning): verify all Claude Code CLI commands for workshop</commit-message>
 </task-plan>
+```
 
-<task-plan id="phase-1-task-2" wave="1">
-  <title>Configuration loader (.narraterc.json)</title>
-  <requirement>CFG-1, CFG-2, CFG-3, CFG-4, CFG-5, CFG-6</requirement>
-  <description>
-    Build the config module that reads .narraterc.json from repo root,
-    merges with defaults, and exposes a clean config object. Handles
-    missing file gracefully (uses defaults). API key comes from env var only.
-  </description>
+```xml
+<task-plan id="phase-1-task-11" wave="1">
+  <title>Create FAQ/Troubleshooting Section</title>
+  <requirement>REQ-030: Windows compatibility documented; REQ-037: API key failure handling</requirement>
+  <description>Create troubleshooting documentation for common issues including Windows path differences, API key setup, and command failures.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Config spec: 3 fields (model, ignore, attribution), defaults, env var for API key" />
+    <file path="rounds/agents-assemble-workshop/decisions.md" reason="Risk Register: Windows path issues" />
+    <file path=".planning/REQUIREMENTS.md" reason="REQ-030, REQ-037 requirements" />
   </context>
 
   <steps>
-    <step order="1">Create src/lib/config.js</step>
-    <step order="2">Define defaults: { model: "claude-haiku-4-5-20251001", ignore: [], attribution: true }</step>
-    <step order="3">Export async function loadConfig(repoRoot) that: reads .narraterc.json if exists, merges with defaults, returns config object</step>
-    <step order="4">Export function getApiKey() that reads ANTHROPIC_API_KEY from process.env, returns null if missing</step>
-    <step order="5">Do NOT support tone, changelog path, or maxDiffLines in config (hardcoded/cut per decisions)</step>
-    <step order="6">Handle malformed JSON gracefully — warn and use defaults</step>
+    <step order="1">Document Windows-specific issues:
+      - Path differences: `~/.claude/` vs `%USERPROFILE%\.claude\`
+      - Shell requirements: bash via WSL, Git Bash, or PowerShell alternatives
+      - Line ending differences (CRLF vs LF)</step>
+    <step order="2">Document API key setup:
+      - How to set ANTHROPIC_API_KEY
+      - Common error messages and fixes
+      - Rate limit behavior and recovery</step>
+    <step order="3">Document common command failures:
+      - "Command not found" for claude
+      - Permission errors on macOS
+      - Node.js/npm requirements for plugin install</step>
+    <step order="4">Create PowerShell alternatives for bash scripts:
+      - Ralph Wiggum Loop PowerShell version
+      - File creation commands for Windows</step>
+    <step order="5">Add troubleshooting to exercises file structure</step>
   </steps>
 
   <verification>
-    <check type="manual">Import config.js and call loadConfig() with no .narraterc.json — returns defaults</check>
-    <check type="manual">Create a .narraterc.json with custom model — loadConfig() returns merged config</check>
-    <check type="manual">getApiKey() returns env var value or null</check>
+    <check type="bash">grep -q "Windows\|PowerShell" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "WINDOWS DOCS PASS"</check>
+    <check type="bash">grep -q "ANTHROPIC_API_KEY\|API.*key" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "API KEY DOCS PASS"</check>
   </verification>
 
-  <dependencies />
+  <dependencies>
+    <!-- Wave 1: No dependencies - documentation task -->
+  </dependencies>
 
-  <commit-message>feat: add config loader for .narraterc.json with 3-field schema</commit-message>
+  <commit-message>docs(workshop): add FAQ and troubleshooting for Windows and API issues</commit-message>
 </task-plan>
-
-<task-plan id="phase-1-task-3" wave="1">
-  <title>System prompt and AI summarizer</title>
-  <requirement>AI-1, AI-2, AI-3, AI-4, AI-5, AI-6, AI-7, AI-8, AI-9, AI-10, CH-6, CH-7</requirement>
-  <description>
-    Build the AI module that sends a diff + commit message to Claude API
-    and returns a plain-English summary. Uses the exact v1 system prompt
-    from decisions.md. Enforces 500-line diff limit (hardcoded).
-  </description>
-
-  <context>
-    <file path="rounds/witness/decisions.md" reason="Exact system prompt text, model name, max diff lines" />
-  </context>
-
-  <steps>
-    <step order="1">Create src/lib/summarize.js</step>
-    <step order="2">Define SYSTEM_PROMPT constant — exact text from decisions.md v1 system prompt</step>
-    <step order="3">Define MAX_DIFF_LINES = 500 (hardcoded constant)</step>
-    <step order="4">Export function truncateDiff(diff, maxLines) — splits by newline, truncates, appends "[DIFF TRUNCATED]" marker</step>
-    <step order="5">Export async function summarize({ diff, commitMessage, config }) that: creates Anthropic client, truncates diff if needed, sends system prompt + user message (diff + commit msg), returns response text</step>
-    <step order="6">Add timeout of 30 seconds on API call to prevent hangs</step>
-    <step order="7">If API call fails, throw descriptive error (caller decides fallback behavior)</step>
-  </steps>
-
-  <verification>
-    <check type="manual">truncateDiff with 600-line diff returns 500 lines + truncation marker</check>
-    <check type="manual">With valid API key, summarize() returns a sentence starting with a verb</check>
-    <check type="manual">System prompt matches decisions.md exactly</check>
-  </verification>
-
-  <dependencies />
-
-  <commit-message>feat: add AI summarizer with v1 system prompt and 500-line diff limit</commit-message>
-</task-plan>
-
-<task-plan id="phase-1-task-4" wave="1">
-  <title>Changelog formatter and writer</title>
-  <requirement>FMT-1, FMT-2, FMT-3, FMT-4, FMT-5, FMT-6, FMT-7</requirement>
-  <description>
-    Build the changelog module that formats entries in the locked format
-    (natural date, indented sentence, hash with dot separator) and appends
-    them to CHANGELOG.human.md. Handles file creation, attribution footer.
-  </description>
-
-  <context>
-    <file path="rounds/witness/decisions.md" reason="Changelog format spec: date format, entry structure, spacing, attribution" />
-  </context>
-
-  <steps>
-    <step order="1">Create src/lib/changelog.js</step>
-    <step order="2">Define CHANGELOG_FILE = "CHANGELOG.human.md" (hardcoded)</step>
-    <step order="3">Export function formatDate(date) — returns "Apr 5, 2026 — 7:36 AM" format using Intl.DateTimeFormat or manual formatting</step>
-    <step order="4">Export function formatEntry({ date, summary, hash }) — returns formatted string with: date line, blank line, 2-space indented summary + " · " + short hash, trailing blank line</step>
-    <step order="5">Export async function appendEntry(repoRoot, entry, config) — reads existing file (or creates), prepends new entry at top (newest first), writes back. If config.attribution is true, ensures attribution footer exists at end of file.</step>
-    <step order="6">Attribution footer text: "*Narrated by Narrate — your code, in plain English*"</step>
-    <step order="7">Ensure output has no raw markdown symbols (no ##, no **) — plain text optimized for terminal</step>
-  </steps>
-
-  <verification>
-    <check type="manual">formatDate(new Date("2026-04-05T07:36:00")) returns "Apr 5, 2026 — 7:36 AM"</check>
-    <check type="manual">formatEntry produces exact format from decisions.md example</check>
-    <check type="manual">appendEntry creates CHANGELOG.human.md if missing, appends correctly if exists</check>
-    <check type="manual">Attribution footer appears once at end of file when enabled</check>
-  </verification>
-
-  <dependencies />
-
-  <commit-message>feat: add changelog formatter with natural dates and locked entry format</commit-message>
-</task-plan>
-
-<task-plan id="phase-1-task-5" wave="1">
-  <title>Offline fallback summarizer</title>
-  <requirement>OFF-1, OFF-2, OFF-3, OFF-4, OFF-5</requirement>
-  <description>
-    Build the rule-based fallback that generates a grammatical sentence
-    from diff headers and commit message when the API is unavailable.
-    Must NOT produce file lists — must produce real sentences.
-  </description>
-
-  <context>
-    <file path="rounds/witness/decisions.md" reason="Offline fallback spec: sentence-based, not file list, examples" />
-  </context>
-
-  <steps>
-    <step order="1">Create src/lib/fallback.js</step>
-    <step order="2">Export function extractChangedFiles(diff) — parse diff headers to get file paths</step>
-    <step order="3">Export function categorizeChanges(files) — group by type: added, modified, deleted, renamed</step>
-    <step order="4">Export function generateFallback({ diff, commitMessage }) — produces a grammatical sentence:
-      - If commit message is meaningful (not "fix", "wip", "stuff"): use it as base, append file context
-      - If commit message is unhelpful: construct from diff headers using verb + file description
-      - Example good output: "Updated authentication logic in auth.js and config.ts"
-      - Must start with a verb (matching AI prompt rules)</step>
-    <step order="5">Never produce output like "Modified 3 files: ..." — always a natural sentence</step>
-    <step order="6">Handle edge cases: empty diff (initial commit), single file, many files (summarize top 2-3)</step>
-  </steps>
-
-  <verification>
-    <check type="manual">generateFallback with meaningful commit msg produces sentence incorporating the message</check>
-    <check type="manual">generateFallback with "wip" commit msg produces sentence from diff headers only</check>
-    <check type="manual">Output never matches the "bad" pattern: "Modified N files: ..."</check>
-    <check type="manual">Output always starts with a verb</check>
-  </verification>
-
-  <dependencies />
-
-  <commit-message>feat: add rule-based offline fallback with sentence generation</commit-message>
-</task-plan>
+```
 
 ---
 
-### Wave 2 (Parallel — depends on Wave 1)
+### Wave 2 (Parallel — Core Content Creation)
 
+These tasks create the three main deliverable files with exercises 1-5.
+
+```xml
+<task-plan id="phase-1-task-1" wave="2">
+  <title>Create AGENTS-ASSEMBLE-SLIDES.md</title>
+  <requirement>REQ-001: Slides file; REQ-004-010: 7 slides with commands</requirement>
+  <description>Create the slides markdown file with 7 slides. Minimal text, mostly commands on screen. Each slide maps to a key concept from the workshop.</description>
+
+  <context>
+    <file path="prds/agents-assemble-workshop.md" reason="Slide specifications 1-7" />
+    <file path="rounds/agents-assemble-workshop/decisions.md" reason="Voice/brand decisions, naming" />
+    <file path=".planning/CLI-VERIFIED.md" reason="Verified command syntax" />
+  </context>
+
+  <steps>
+    <step order="1">Create docs/ directory if not exists</step>
+    <step order="2">Create Slide 1 - Title:
+      # Agents Assemble
+      ## Building Teams That Work While You Sleep
+      (No commands - title only)</step>
+    <step order="3">Create Slide 2 - Headless Mode:
+      ```bash
+      claude -p "Fix the bug in auth.py" --max-turns 10 --max-budget-usd 1.00
+      ```
+      (Show the power of non-interactive execution)</step>
+    <step order="4">Create Slide 3 - Ralph Wiggum Loop:
+      ```bash
+      while true; do
+        claude -p "Pick next task from TODO.md, implement it, test, commit"
+        sleep 60
+      done
+      ```
+      (Build while you sleep)</step>
+    <step order="5">Create Slide 4 - /loop, Commands, Hooks:
+      ```bash
+      /loop 5m check build status
+      /standup
+      # hooks in settings.json
+      ```
+      (One-liner examples of each)</step>
+    <step order="6">Create Slide 5 - Multi-Agent Teams:
+      ```bash
+      # Two agents debating in parallel
+      claude -p "As Steve Jobs, critique this design..." &amp;
+      claude -p "As Elon Musk, evaluate feasibility..." &amp;
+      wait
+      ```
+      (Show parallel agent orchestration)</step>
+    <step order="7">Create Slide 6 - Full Pipeline:
+      ```
+      PRD → Debate → Plan → Build → QA → Board Review → Ship
+      ```
+      (Aspirational vision, not required execution)</step>
+    <step order="8">Create Slide 7 - Your Turn:
+      ```bash
+      npx @anthropic-ai/claude-code-mcp add sethshoultes/great-minds-plugin
+      ```
+      (Let them type - end in silence)</step>
+  </steps>
+
+  <verification>
+    <check type="bash">test -f docs/AGENTS-ASSEMBLE-SLIDES.md &amp;&amp; echo "SLIDES FILE EXISTS"</check>
+    <check type="bash">grep -c "^## Slide" docs/AGENTS-ASSEMBLE-SLIDES.md | awk '{print ($1 == 7 ? "7 SLIDES PASS" : "SLIDE COUNT FAIL: " $1)}'</check>
+    <check type="bash">grep -q "claude -p" docs/AGENTS-ASSEMBLE-SLIDES.md &amp;&amp; echo "HEADLESS COMMAND PASS"</check>
+    <check type="bash">grep -q "while true" docs/AGENTS-ASSEMBLE-SLIDES.md &amp;&amp; echo "RALPH LOOP PASS"</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-10" reason="Commands must be verified first" />
+  </dependencies>
+
+  <commit-message>docs(workshop): create 7-slide deck for Agents Assemble workshop</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-2" wave="2">
+  <title>Create AGENTS-ASSEMBLE-SCRIPT.md</title>
+  <requirement>REQ-002: Script file; REQ-018-024: Script content requirements</requirement>
+  <description>Create the presenter script with conversational notes for each slide. Include timing notes (~2 min per slide). Total talk time: 10-15 minutes.</description>
+
+  <context>
+    <file path="prds/agents-assemble-workshop.md" reason="Script requirements" />
+    <file path="rounds/agents-assemble-workshop/decisions.md" reason="Decision 6 (voice), Decision 7 (no theory first), Decision 8 (dangerous), Decision 12 (end in silence)" />
+    <file path="docs/AGENTS-ASSEMBLE-SLIDES.md" reason="Slides to write notes for" />
+  </context>
+
+  <steps>
+    <step order="1">Create script header with timing overview:
+      - Total: 10-15 minutes
+      - Per slide: ~1.5-2 minutes
+      - Exercise time: 30-45 minutes total (separate)</step>
+    <step order="2">Write Slide 1 script (~1 min):
+      - Opening hook: "You will leave this room dangerous"
+      - No theory - jump straight to demo
+      - Voice: casual expertise, senior engineer energy</step>
+    <step order="3">Write Slide 2 script (~2 min):
+      - Explain headless mode
+      - The "jaw drop" moment - paste, watch it work
+      - Mention budget control for safety</step>
+    <step order="4">Write Slide 3 script (~2 min):
+      - Ralph Wiggum Loop concept
+      - "Build while you sleep"
+      - Safety: sleep delays, budget caps</step>
+    <step order="5">Write Slide 4 script (~2 min):
+      - Quick tour of /loop, commands, hooks
+      - Point to exercises for hands-on
+      - Keep it brief - exercises will teach</step>
+    <step order="6">Write Slide 5 script (~2 min):
+      - Multi-agent teams concept
+      - Different perspectives working in parallel
+      - This is the climax - build excitement</step>
+    <step order="7">Write Slide 6 script (~1.5 min):
+      - Full pipeline vision
+      - "This is where it's going"
+      - Aspirational, not required</step>
+    <step order="8">Write Slide 7 script (~1.5 min):
+      - "Your turn"
+      - Plugin installation command
+      - End: "Now... go build something." [silence - let them type]</step>
+    <step order="9">Review for forbidden phrases:
+      - Remove: "leverage", "utilize", "empower your workflow"
+      - Keep: "build while you sleep", "ship it", "your turn"</step>
+  </steps>
+
+  <verification>
+    <check type="bash">test -f docs/AGENTS-ASSEMBLE-SCRIPT.md &amp;&amp; echo "SCRIPT FILE EXISTS"</check>
+    <check type="bash">grep -c "~.*min\|minutes" docs/AGENTS-ASSEMBLE-SCRIPT.md | awk '{print ($1 >= 7 ? "TIMING NOTES PASS" : "TIMING NOTES FAIL")}'</check>
+    <check type="bash">grep -q "dangerous" docs/AGENTS-ASSEMBLE-SCRIPT.md &amp;&amp; echo "EMOTIONAL HOOK PASS"</check>
+    <check type="bash">grep -qiE "leverage|utilize|empower your workflow" docs/AGENTS-ASSEMBLE-SCRIPT.md &amp;&amp; echo "FAIL: CORPORATE JARGON FOUND" || echo "NO JARGON PASS"</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-1" reason="Slides must exist to write script" />
+  </dependencies>
+
+  <commit-message>docs(workshop): create presenter script with timing notes and casual voice</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-3" wave="2">
+  <title>Create Exercise 1: Headless Mode</title>
+  <requirement>REQ-011: Exercise 1 with headless mode, budget cap, expected output</requirement>
+  <description>Write Exercise 1 teaching headless mode using `claude -p`. This is the "jaw drop" moment - first autonomous action.</description>
+
+  <context>
+    <file path="prds/agents-assemble-workshop.md" reason="Exercise 1 specification" />
+    <file path="rounds/agents-assemble-workshop/decisions.md" reason="Decision 7: jaw drop moment" />
+    <file path=".planning/CLI-VERIFIED.md" reason="Verified command syntax" />
+  </context>
+
+  <steps>
+    <step order="1">Create docs/AGENTS-ASSEMBLE-EXERCISES.md with header</step>
+    <step order="2">Write Exercise 1 introduction:
+      - Title: "Exercise 1: Headless Mode — Your First Autonomous Commit"
+      - Estimated time: 5-7 minutes
+      - Goal: Run Claude without interaction</step>
+    <step order="3">Write Step 1 - Basic headless command:
+      ```bash
+      claude -p "Create a file called hello.txt with the text 'Hello from Claude'"
+      ```
+      - Expected output: file creation confirmation</step>
+    <step order="4">Write Step 2 - With budget control:
+      ```bash
+      claude -p "Add a timestamp to hello.txt" --max-turns 3 --max-budget-usd 0.50
+      ```
+      - Expected output: modification confirmation</step>
+    <step order="5">Write Step 3 - Piped input:
+      ```bash
+      cat code.py | claude -p "Review this code for bugs"
+      ```
+      - Expected output: code review</step>
+    <step order="6">Write "Expected Output" section with sample</step>
+    <step order="7">Write "What You Learned" summary:
+      - Headless mode runs without interaction
+      - Budget caps prevent runaway costs
+      - Piping enables integration with other tools</step>
+  </steps>
+
+  <verification>
+    <check type="bash">grep -q "Exercise 1" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "EXERCISE 1 EXISTS"</check>
+    <check type="bash">grep -q "claude -p" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "HEADLESS COMMAND PASS"</check>
+    <check type="bash">grep -q "Expected Output\|Expected Result" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "EXPECTED OUTPUT PASS"</check>
+    <check type="bash">grep -q "What You Learned\|What you learned" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "LEARNING SUMMARY PASS"</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-10" reason="Commands must be verified first" />
+  </dependencies>
+
+  <commit-message>docs(workshop): add Exercise 1 - Headless Mode with expected output</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-4" wave="2">
+  <title>Create Exercise 2: Ralph Wiggum Loop</title>
+  <requirement>REQ-012: 10-line bash script for build-while-you-sleep</requirement>
+  <description>Write Exercise 2 with the Ralph Wiggum Loop - an infinite loop that picks tasks and executes them autonomously.</description>
+
+  <context>
+    <file path="prds/agents-assemble-workshop.md" reason="Exercise 2 specification" />
+    <file path="rounds/agents-assemble-workshop/decisions.md" reason="Risk: API rate limits, add sleep delays" />
+    <file path=".planning/CLI-VERIFIED.md" reason="Verified command syntax" />
+  </context>
+
+  <steps>
+    <step order="1">Write Exercise 2 introduction:
+      - Title: "Exercise 2: The Ralph Wiggum Loop — Build While You Sleep"
+      - Estimated time: 5-7 minutes
+      - Goal: Create an autonomous build loop</step>
+    <step order="2">Write Step 1 - Create a simple TODO file:
+      ```bash
+      echo "- Add error handling to utils.py" > TODO.md
+      echo "- Write tests for the auth module" >> TODO.md
+      echo "- Update README with usage examples" >> TODO.md
+      ```</step>
+    <step order="3">Write Step 2 - The 10-line Ralph Loop:
+      ```bash
+      #!/bin/bash
+      # Ralph Wiggum Loop - Build while you sleep
+
+      MAX_ITERATIONS=3  # Safety limit for demo
+      ITERATION=0
+
+      while [ $ITERATION -lt $MAX_ITERATIONS ]; do
+        claude -p "Read TODO.md. Pick ONE task. Do it. Mark done. Commit." \
+          --max-turns 10 \
+          --max-budget-usd 1.00
+        sleep 60  # Pause between iterations (be nice to the API)
+        ITERATION=$((ITERATION + 1))
+      done
+
+      echo "Ralph is done for now!"
+      ```</step>
+    <step order="4">Write Step 3 - Run it safely:
+      - Explain the safety limits (MAX_ITERATIONS, budget cap)
+      - Note: Remove limits for production use at your own risk</step>
+    <step order="5">Write "Expected Output" section:
+      - Show sample of Claude picking a task
+      - Show commit message example</step>
+    <step order="6">Write "What You Learned" summary:
+      - Infinite loops can drive autonomous work
+      - Safety mechanisms are critical
+      - This is how you "build while you sleep"</step>
+    <step order="7">Add Windows PowerShell alternative</step>
+  </steps>
+
+  <verification>
+    <check type="bash">grep -q "Exercise 2" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "EXERCISE 2 EXISTS"</check>
+    <check type="bash">grep -q "while.*true\|while \[" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "LOOP COMMAND PASS"</check>
+    <check type="bash">grep -q "sleep" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "RATE LIMIT PROTECTION PASS"</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-3" reason="Exercises are sequential in one file" />
+  </dependencies>
+
+  <commit-message>docs(workshop): add Exercise 2 - Ralph Wiggum Loop with safety limits</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-5" wave="2">
+  <title>Create Exercise 3: /loop Command</title>
+  <requirement>REQ-013: /loop for recurring monitoring tasks</requirement>
+  <description>Write Exercise 3 demonstrating the built-in /loop command for scheduling recurring prompts within a session.</description>
+
+  <context>
+    <file path="prds/agents-assemble-workshop.md" reason="Exercise 3 specification" />
+    <file path=".planning/CLI-VERIFIED.md" reason="Verified /loop syntax" />
+  </context>
+
+  <steps>
+    <step order="1">Write Exercise 3 introduction:
+      - Title: "Exercise 3: The /loop Command — Scheduled Tasks Made Easy"
+      - Estimated time: 5 minutes
+      - Goal: Use built-in scheduling</step>
+    <step order="2">Write Step 1 - Basic /loop usage:
+      ```
+      /loop 2m check if any tests are failing
+      ```
+      - Explain: runs every 2 minutes</step>
+    <step order="3">Write Step 2 - Natural language intervals:
+      ```
+      /loop check the build status every 5 minutes
+      /loop remind me to commit in 30 minutes
+      ```</step>
+    <step order="4">Write Step 3 - Managing scheduled tasks:
+      ```
+      what scheduled tasks do I have?
+      cancel the build check job
+      ```</step>
+    <step order="5">Write "Expected Output" section:
+      - Show scheduled task confirmation
+      - Show task list output</step>
+    <step order="6">Write "What You Learned" summary:
+      - /loop is session-scoped (disappears when you exit)
+      - Natural language intervals work
+      - Different from Ralph Loop: /loop is built-in, Ralph is your script</step>
+  </steps>
+
+  <verification>
+    <check type="bash">grep -q "Exercise 3" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "EXERCISE 3 EXISTS"</check>
+    <check type="bash">grep -q "/loop" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "LOOP COMMAND PASS"</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-4" reason="Exercises are sequential in one file" />
+  </dependencies>
+
+  <commit-message>docs(workshop): add Exercise 3 - /loop command for scheduled tasks</commit-message>
+</task-plan>
+```
+
+```xml
 <task-plan id="phase-1-task-6" wave="2">
-  <title>Post-commit hook engine</title>
-  <requirement>CH-1, CH-2, CH-3, CH-4, CH-5, QA-2</requirement>
-  <description>
-    Build the core hook engine: the script that runs on post-commit,
-    spawns a detached child process (fire-and-forget), reads the diff
-    and commit message, calls the summarizer (AI or fallback), and
-    appends to the changelog. The hook script itself must return in < 50ms.
-  </description>
+  <title>Create Exercise 4: Custom Slash Commands</title>
+  <requirement>REQ-014: Create ~/.claude/commands/standup.md</requirement>
+  <description>Write Exercise 4 showing how to create custom slash commands (skills) that extend Claude Code.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Hook spec: detached child, fire-and-forget, < 50ms return" />
-    <file path="deliverables/narrate-cli/src/lib/summarize.js" reason="AI summarizer to call" />
-    <file path="deliverables/narrate-cli/src/lib/fallback.js" reason="Offline fallback to use when API unavailable" />
-    <file path="deliverables/narrate-cli/src/lib/changelog.js" reason="Changelog writer to append entry" />
-    <file path="deliverables/narrate-cli/src/lib/config.js" reason="Config + API key loader" />
+    <file path="prds/agents-assemble-workshop.md" reason="Exercise 4 specification" />
+    <file path=".planning/CLI-VERIFIED.md" reason="Verified skills path and format" />
   </context>
 
   <steps>
-    <step order="1">Create src/lib/git.js — exports: getLastDiff(repoRoot), getCommitMessage(repoRoot), getCommitHash(repoRoot), getRepoRoot(). All use child_process.execSync with native git commands.</step>
-    <step order="2">Create src/lib/hook-worker.js — the detached worker script that: loads config, reads diff/message/hash via git.js, calls summarize() (or fallback on error), calls appendEntry(), exits cleanly</step>
-    <step order="3">Create src/lib/hook-runner.js — exports function runHook(repoRoot) that: spawns hook-worker.js as detached child (child_process.spawn with detached: true, stdio: 'ignore'), calls unref(), returns immediately (< 50ms)</step>
-    <step order="4">In hook-worker.js: wrap everything in try/catch. On API failure, use generateFallback(). On any failure, log error to .narrate-error.log and exit silently (never crash git).</step>
-    <step order="5">Apply ignore patterns from config: filter diff to exclude files matching config.ignore globs before sending to AI</step>
+    <step order="1">Write Exercise 4 introduction:
+      - Title: "Exercise 4: Custom Slash Commands — Extend Your Agent"
+      - Estimated time: 5-7 minutes
+      - Goal: Create a reusable /standup command</step>
+    <step order="2">Write Step 1 - Create the skills directory:
+      ```bash
+      mkdir -p ~/.claude/skills/standup
+      ```</step>
+    <step order="3">Write Step 2 - Create SKILL.md:
+      ```bash
+      cat > ~/.claude/skills/standup/SKILL.md << 'EOF'
+      ---
+      name: standup
+      description: Generate a daily standup report from recent git activity
+      ---
+
+      # Daily Standup Generator
+
+      Look at the git log for the past 24 hours and generate a standup report:
+
+      1. What I did yesterday (commits from last 24h)
+      2. What I'm doing today (open TODO items or issues)
+      3. Any blockers (failing tests, unresolved conflicts)
+
+      Format the output as a clean markdown list.
+      EOF
+      ```</step>
+    <step order="4">Write Step 3 - Test the command:
+      ```
+      /standup
+      ```</step>
+    <step order="5">Write "Expected Output" section:
+      - Show sample standup report format</step>
+    <step order="6">Write "What You Learned" summary:
+      - Skills live in ~/.claude/skills/ or .claude/skills/
+      - SKILL.md defines the command behavior
+      - You can distribute skills to your team via git</step>
+    <step order="7">Add Windows path note: `%USERPROFILE%\.claude\skills\`</step>
   </steps>
 
   <verification>
-    <check type="manual">runHook() returns in < 50ms (measure with console.time)</check>
-    <check type="manual">After runHook(), CHANGELOG.human.md is updated within ~5 seconds (async)</check>
-    <check type="manual">With no API key, fallback entry appears in changelog</check>
-    <check type="manual">With API key, AI-generated entry appears</check>
-    <check type="manual">Ignored files (e.g., package-lock.json) are excluded from diff sent to AI</check>
+    <check type="bash">grep -q "Exercise 4" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "EXERCISE 4 EXISTS"</check>
+    <check type="bash">grep -q "SKILL.md\|skills/" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "SKILLS PATH PASS"</check>
+    <check type="bash">grep -q "/standup" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "STANDUP COMMAND PASS"</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Needs project structure and dependencies installed" />
-    <depends-on task-id="phase-1-task-2" reason="Needs config loader" />
-    <depends-on task-id="phase-1-task-3" reason="Needs AI summarizer" />
-    <depends-on task-id="phase-1-task-4" reason="Needs changelog writer" />
-    <depends-on task-id="phase-1-task-5" reason="Needs offline fallback" />
+    <depends-on task-id="phase-1-task-5" reason="Exercises are sequential in one file" />
   </dependencies>
 
-  <commit-message>feat: add post-commit hook engine with detached worker and < 50ms return</commit-message>
+  <commit-message>docs(workshop): add Exercise 4 - Custom slash commands with /standup example</commit-message>
 </task-plan>
+```
 
+```xml
 <task-plan id="phase-1-task-7" wave="2">
-  <title>narrate init command</title>
-  <requirement>CMD-1, CMD-2, CMD-3, CMD-4, QA-1</requirement>
-  <description>
-    Implement the `narrate init` command that installs the post-commit hook,
-    detects existing hooks (appends rather than overwrites), and outputs
-    the exact 4-line init message from decisions.md. Must complete in < 2 seconds.
-  </description>
+  <title>Create Exercise 5: Hooks</title>
+  <requirement>REQ-015: PostToolUse hook that reminds after commits</requirement>
+  <description>Write Exercise 5 demonstrating hooks - automated actions triggered by Claude Code events.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Init experience: exact output text, hook conflict detection behavior" />
-    <file path="deliverables/narrate-cli/bin/narrate.js" reason="CLI entry point to register init command" />
-    <file path="deliverables/narrate-cli/src/lib/hook-runner.js" reason="The hook invocation code that init will install" />
+    <file path="prds/agents-assemble-workshop.md" reason="Exercise 5 specification" />
+    <file path=".planning/CLI-VERIFIED.md" reason="Verified hooks schema" />
   </context>
 
   <steps>
-    <step order="1">Create src/commands/init.js</step>
-    <step order="2">Detect .git directory — error if not a git repo</step>
-    <step order="3">Check if .git/hooks/post-commit exists:
-      - If no: create it with narrate hook code
-      - If yes: read it, check if narrate already installed (idempotent), if not append narrate section with clear markers (# --- narrate start --- / # --- narrate end ---)</step>
-    <step order="4">Hook script content: shebang, call to node with path to hook-runner.js, passing repo root</step>
-    <step order="5">Make hook file executable (chmod +x)</step>
-    <step order="6">Print exact output:
-      "  Narrate is watching."
-      ""
-      "  Hook installed in .git/hooks/post-commit"
-      "  Changelog will appear in CHANGELOG.human.md"
-      ""
-      "  Make your next commit to see it work."</step>
-    <step order="7">Wire into CLI entry point (bin/narrate.js) as the "init" subcommand</step>
+    <step order="1">Write Exercise 5 introduction:
+      - Title: "Exercise 5: Hooks — Automate Your Workflow"
+      - Estimated time: 5-7 minutes
+      - Goal: Trigger actions on Claude events</step>
+    <step order="2">Write Step 1 - Create settings.json:
+      ```bash
+      mkdir -p .claude
+      cat > .claude/settings.json << 'EOF'
+      {
+        "hooks": {
+          "PostToolUse": [
+            {
+              "matcher": "Bash",
+              "if": "Bash(git commit*)",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "echo '✓ Commit complete! Remember to push.' >&2"
+                }
+              ]
+            }
+          ]
+        }
+      }
+      EOF
+      ```</step>
+    <step order="3">Write Step 2 - Test the hook:
+      ```
+      Ask Claude to make a commit
+      ```
+      - Observe the reminder message after commit</step>
+    <step order="4">Write Step 3 - More hook examples:
+      - PreToolUse: Block dangerous commands
+      - SessionStart: Load context on startup
+      - Notification: Send alerts to Slack/Discord</step>
+    <step order="5">Write "Expected Output" section:
+      - Show commit output with hook message</step>
+    <step order="6">Write "What You Learned" summary:
+      - Hooks automate responses to events
+      - Can block, modify, or extend behavior
+      - Project hooks in .claude/settings.json
+      - Global hooks in ~/.claude/settings.json</step>
   </steps>
 
   <verification>
-    <check type="manual">Run `node bin/narrate.js init` in a git repo — prints exact 4-line output</check>
-    <check type="manual">.git/hooks/post-commit exists and is executable</check>
-    <check type="manual">Run init again — idempotent, doesn't duplicate hook code</check>
-    <check type="manual">In a repo with existing post-commit hook — narrate appends, doesn't clobber</check>
-    <check type="manual">Completes in < 2 seconds</check>
+    <check type="bash">grep -q "Exercise 5" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "EXERCISE 5 EXISTS"</check>
+    <check type="bash">grep -q "PostToolUse" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "HOOK TYPE PASS"</check>
+    <check type="bash">grep -q "settings.json" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "SETTINGS PATH PASS"</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Needs CLI entry point" />
-    <depends-on task-id="phase-1-task-6" reason="Needs hook-runner.js to reference in the installed hook" />
+    <depends-on task-id="phase-1-task-6" reason="Exercises are sequential in one file" />
   </dependencies>
 
-  <commit-message>feat: add narrate init command with hook conflict detection</commit-message>
+  <commit-message>docs(workshop): add Exercise 5 - Hooks with PostToolUse commit reminder</commit-message>
 </task-plan>
-
-<task-plan id="phase-1-task-8" wave="2">
-  <title>narrate log command</title>
-  <requirement>CMD-5, CMD-6, FMT-5</requirement>
-  <description>
-    Implement `narrate log` that pretty-prints CHANGELOG.human.md in the
-    terminal with optional --since date filtering. No raw markdown — 
-    designed for terminal readability.
-  </description>
-
-  <context>
-    <file path="rounds/witness/decisions.md" reason="Log command spec, --since flag, terminal rendering" />
-    <file path="deliverables/narrate-cli/bin/narrate.js" reason="CLI entry point to register log command" />
-    <file path="deliverables/narrate-cli/src/lib/changelog.js" reason="Changelog file path constant and format knowledge" />
-  </context>
-
-  <steps>
-    <step order="1">Create src/commands/log.js</step>
-    <step order="2">Read CHANGELOG.human.md from repo root</step>
-    <step order="3">Parse entries — split by date headers, extract date + summary + hash from each entry</step>
-    <step order="4">If --since flag provided: parse the date value (support "yesterday", "last week", ISO dates, relative like "3d"), filter entries to only those after the date</step>
-    <step order="5">Pretty-print to terminal: use ANSI colors if terminal supports them (dim for dates, normal for summaries, dim for hashes). No raw markdown symbols.</step>
-    <step order="6">Handle empty changelog gracefully: "No entries yet. Make a commit to get started."</step>
-    <step order="7">Wire into CLI entry point as the "log" subcommand with --since option</step>
-  </steps>
-
-  <verification>
-    <check type="manual">With entries in changelog: `narrate log` prints formatted output</check>
-    <check type="manual">With --since=yesterday: only recent entries shown</check>
-    <check type="manual">With empty/missing changelog: friendly message printed</check>
-    <check type="manual">No ## or ** or other markdown artifacts in output</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Needs CLI entry point" />
-    <depends-on task-id="phase-1-task-4" reason="Needs changelog format knowledge for parsing" />
-  </dependencies>
-
-  <commit-message>feat: add narrate log command with --since date filtering</commit-message>
-</task-plan>
+```
 
 ---
 
-### Wave 3 (After Wave 2)
+### Wave 3 (Sequential — High-Risk Exercises)
 
+These tasks implement the complex exercises 6 and 7 that require special handling.
+
+```xml
+<task-plan id="phase-1-task-8" wave="3">
+  <title>Create Exercise 6: Parallel Agent Debate (Hardened)</title>
+  <requirement>REQ-016: Two agents debating in parallel with error recovery</requirement>
+  <description>Write Exercise 6 - the climax of the workshop. Two agents with different personas debate in parallel. Must be hardened with explicit error recovery per Decision 2.</description>
+
+  <context>
+    <file path="prds/agents-assemble-workshop.md" reason="Exercise 6 specification" />
+    <file path="rounds/agents-assemble-workshop/decisions.md" reason="Decision 2: Exercise 6 stays, must be hardened" />
+    <file path=".planning/CLI-VERIFIED.md" reason="Verified parallel execution syntax" />
+  </context>
+
+  <steps>
+    <step order="1">Write Exercise 6 introduction:
+      - Title: "Exercise 6: Multi-Agent Debate — The Climax"
+      - Estimated time: 7 minutes (extended per Decision 2)
+      - Goal: Run two agents with different perspectives</step>
+    <step order="2">Write Step 1 - Create the debate prompt file:
+      ```bash
+      cat > debate-topic.md << 'EOF'
+      # Topic: Should we rewrite the auth module in Rust?
+
+      Current state:
+      - Python auth module with 500 LOC
+      - 3 security vulnerabilities reported last year
+      - Performance is "acceptable" but not great
+
+      Debate this decision.
+      EOF
+      ```</step>
+    <step order="3">Write Step 2 - Run parallel agents:
+      ```bash
+      # Agent 1: Steve Jobs perspective (design/UX focus)
+      claude -p "You are Steve Jobs. Read debate-topic.md. \
+        Argue from a user experience and simplicity perspective. \
+        Be direct and opinionated. Write to steve-opinion.md" \
+        --max-turns 5 --max-budget-usd 0.50 &
+      PID1=$!
+
+      # Agent 2: Elon Musk perspective (engineering/speed focus)
+      claude -p "You are Elon Musk. Read debate-topic.md. \
+        Argue from a first-principles engineering perspective. \
+        Be bold and contrarian. Write to elon-opinion.md" \
+        --max-turns 5 --max-budget-usd 0.50 &
+      PID2=$!
+
+      # Wait for both with timeout
+      wait $PID1 $PID2
+      ```</step>
+    <step order="4">Write Step 3 - Error recovery section:
+      ```bash
+      # If one agent fails, the other continues
+      # Check for output files:
+      if [ ! -f steve-opinion.md ]; then
+        echo "Steve's agent failed - check logs"
+      fi
+      if [ ! -f elon-opinion.md ]; then
+        echo "Elon's agent failed - check logs"
+      fi
+      ```</step>
+    <step order="5">Write Step 4 - Synthesize the debate:
+      ```bash
+      claude -p "Read steve-opinion.md and elon-opinion.md. \
+        Synthesize a final recommendation that considers both perspectives."
+      ```</step>
+    <step order="6">Write "Expected Output" section with multi-line sample</step>
+    <step order="7">Write "Troubleshooting" section:
+      - If agents timeout: reduce max-turns
+      - If agents conflict on files: use separate output files (done)
+      - If rate limited: add sleep between launches</step>
+    <step order="8">Write "What You Learned" summary:
+      - Multiple agents can work in parallel
+      - Different personas produce different insights
+      - Error recovery is critical for production
+      - This is how agent teams make decisions</step>
+  </steps>
+
+  <verification>
+    <check type="bash">grep -q "Exercise 6" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "EXERCISE 6 EXISTS"</check>
+    <check type="bash">grep -q "Steve Jobs\|Elon Musk" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "PERSONAS PASS"</check>
+    <check type="bash">grep -q "&amp;\|wait\|parallel" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "PARALLEL EXECUTION PASS"</check>
+    <check type="bash">grep -q "error\|fail\|recovery" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "ERROR RECOVERY PASS"</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-7" reason="Exercises are sequential in one file" />
+  </dependencies>
+
+  <commit-message>docs(workshop): add Exercise 6 - Parallel agent debate with error recovery</commit-message>
+</task-plan>
+```
+
+```xml
 <task-plan id="phase-1-task-9" wave="3">
-  <title>narrate backfill command</title>
-  <requirement>CMD-7, CMD-8</requirement>
-  <description>
-    Implement `narrate backfill --last=90d` that processes historical commits,
-    shows a cost preview with confirmation, and batch-processes with rate
-    limiting. Most complex command — needs progress display and resume support.
-  </description>
+  <title>Create Exercise 7: Great Minds Plugin + Local Fallback</title>
+  <requirement>REQ-017: Plugin installation with local fallback alternative</requirement>
+  <description>Write Exercise 7 demonstrating the Great Minds Plugin. Must include a local fallback that demonstrates the same concepts without external dependencies per Decision 4.</description>
 
   <context>
-    <file path="rounds/witness/decisions.md" reason="Backfill spec: cost preview, confirmation, --last flag" />
-    <file path="deliverables/narrate-cli/src/lib/summarize.js" reason="AI summarizer to call for each commit" />
-    <file path="deliverables/narrate-cli/src/lib/fallback.js" reason="Fallback if API fails mid-backfill" />
-    <file path="deliverables/narrate-cli/src/lib/changelog.js" reason="Append entries in chronological order" />
-    <file path="deliverables/narrate-cli/src/lib/git.js" reason="Git operations to list commits and get diffs" />
-    <file path="deliverables/narrate-cli/src/lib/config.js" reason="Config and API key" />
+    <file path="prds/agents-assemble-workshop.md" reason="Exercise 7 specification" />
+    <file path="rounds/agents-assemble-workshop/decisions.md" reason="Decision 4: Local fallback required" />
+    <file path="great-minds-plugin/" reason="Plugin structure for reference" />
   </context>
 
   <steps>
-    <step order="1">Create src/commands/backfill.js</step>
-    <step order="2">Parse --last flag: support "90d", "30d", "2w" etc. Convert to a date threshold.</step>
-    <step order="3">Use git log to list all commits since the threshold date</step>
-    <step order="4">Filter out commits that already have entries in CHANGELOG.human.md (by hash)</step>
-    <step order="5">Show cost preview: "Found {N} commits to summarize. Estimated cost: ~${X} (Haiku). Continue? [y/n]"</step>
-    <step order="6">On confirmation: process commits in batches (10 at a time) with 1-second delay between batches to avoid rate limits</step>
-    <step order="7">Show progress: "[{done}/{total}] Processing {hash} — {first 50 chars of commit msg}..."</step>
-    <step order="8">On completion: "Backfill complete. {N} entries added to CHANGELOG.human.md"</step>
-    <step order="9">Wire into CLI entry point as the "backfill" subcommand with --last option</step>
+    <step order="1">Write Exercise 7 introduction:
+      - Title: "Exercise 7: Great Minds Plugin — Your Agent Team Awaits"
+      - Estimated time: 5-10 minutes
+      - Goal: Experience a full agent agency</step>
+    <step order="2">Write Primary Path - Plugin Installation:
+      ```bash
+      # Install the Great Minds Plugin
+      npx @anthropic-ai/claude-code-mcp add sethshoultes/great-minds-plugin
+      ```</step>
+    <step order="3">Write Primary Path - Using the plugin:
+      ```
+      # Launch the agency
+      /agency-launch
+
+      # Or trigger a specific workflow
+      /agency-debate "Should we build a mobile app?"
+      ```</step>
+    <step order="4">Write FALLBACK section (if plugin fails):
+      ```bash
+      # Local Fallback: Create your own mini-agency
+
+      # Step 1: Create agent persona files
+      mkdir -p agents
+
+      cat > agents/designer.md << 'EOF'
+      You are a UX Designer. Focus on user experience,
+      simplicity, and visual appeal. Ask: "Will users love this?"
+      EOF
+
+      cat > agents/engineer.md << 'EOF'
+      You are a Senior Engineer. Focus on architecture,
+      performance, and maintainability. Ask: "Will this scale?"
+      EOF
+
+      # Step 2: Run your mini-agency
+      claude -p "Read agents/designer.md. Review the homepage design." &
+      claude -p "Read agents/engineer.md. Review the backend architecture." &
+      wait
+      ```</step>
+    <step order="5">Write "Expected Output" for both paths</step>
+    <step order="6">Write "What You Learned" summary:
+      - Plugins extend Claude Code with pre-built capabilities
+      - You can build your own agency with the patterns from this workshop
+      - The Great Minds Plugin demonstrates a full 14-agent system
+      - Go forth and build while you sleep!</step>
+    <step order="7">Write closing message:
+      - "You are now dangerous."
+      - Links to resources, community, further learning</step>
   </steps>
 
   <verification>
-    <check type="manual">narrate backfill --last=7d in a repo with recent commits shows cost preview</check>
-    <check type="manual">After confirming, entries appear in CHANGELOG.human.md in chronological order</check>
-    <check type="manual">Running backfill again skips already-processed commits</check>
-    <check type="manual">Progress output shows during processing</check>
+    <check type="bash">grep -q "Exercise 7" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "EXERCISE 7 EXISTS"</check>
+    <check type="bash">grep -q "great-minds-plugin" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "PLUGIN INSTALL PASS"</check>
+    <check type="bash">grep -q "FALLBACK\|Fallback\|fallback" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "FALLBACK PATH PASS"</check>
+    <check type="bash">grep -q "/agency-launch\|agency" docs/AGENTS-ASSEMBLE-EXERCISES.md &amp;&amp; echo "AGENCY COMMAND PASS"</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-6" reason="Needs git.js, summarizer, changelog writer" />
-    <depends-on task-id="phase-1-task-8" reason="Needs changelog parser to detect existing entries" />
+    <depends-on task-id="phase-1-task-8" reason="Exercises are sequential in one file" />
   </dependencies>
 
-  <commit-message>feat: add narrate backfill command with cost preview and batch processing</commit-message>
+  <commit-message>docs(workshop): add Exercise 7 - Great Minds Plugin with local fallback</commit-message>
 </task-plan>
+```
 
 ---
 
-### Wave 4 (After Wave 3 — Final verification)
+### Wave 4 (Sequential — Validation)
 
-<task-plan id="phase-1-task-10" wave="4">
-  <title>Integration test and dogfood on great-minds repo</title>
-  <requirement>QA-1, QA-2, QA-3, QA-4, QA-5, QA-6</requirement>
-  <description>
-    End-to-end verification: install narrate in the great-minds repo,
-    make test commits, verify changelog entries are accurate and well-formatted.
-    Run all commands. Fix any issues found. This is the dogfood test
-    specified in the PRD build notes.
-  </description>
+Final verification tasks to ensure quality.
+
+```xml
+<task-plan id="phase-1-task-12" wave="4">
+  <title>Validate Zero Placeholder Content</title>
+  <requirement>REQ-025: Zero placeholder content (HARD BLOCKER)</requirement>
+  <description>Run automated checks to ensure no placeholder content exists in any deliverable file.</description>
 
   <context>
-    <file path="deliverables/narrate-cli/package.json" reason="Package to install globally or link" />
-    <file path="deliverables/narrate-cli/bin/narrate.js" reason="CLI entry point" />
-    <file path="prds/witness.md" reason="Success criteria: installs cleanly, produces accurate entries on great-minds repo" />
+    <file path="prds/agents-assemble-workshop.md" reason="CRITICAL: NO PLACEHOLDER CONTENT" />
+    <file path="docs/AGENTS-ASSEMBLE-*.md" reason="All deliverable files to check" />
   </context>
 
   <steps>
-    <step order="1">From deliverables/narrate-cli/, run npm link to make narrate available globally</step>
-    <step order="2">In the great-minds repo root, run narrate init — verify exact output</step>
-    <step order="3">Make a test commit — verify CHANGELOG.human.md is created/updated within 5 seconds</step>
-    <step order="4">Verify entry format matches decisions.md: natural date, indented sentence starting with verb, hash with · separator</step>
-    <step order="5">Run narrate log — verify terminal output is clean (no markdown symbols)</step>
-    <step order="6">Run narrate log --since=today — verify filtering works</step>
-    <step order="7">Run narrate backfill --last=7d — verify cost preview, confirmation, and batch processing</step>
-    <step order="8">Unset ANTHROPIC_API_KEY and make a commit — verify offline fallback produces a sentence (not a file list)</step>
-    <step order="9">Test idempotent init (run narrate init again — no duplicate hook)</step>
-    <step order="10">Verify CHANGELOG.human.md is valid markdown and git-friendly (git diff shows clean changes)</step>
+    <step order="1">Run placeholder content grep:
+      ```bash
+      grep -riE "placeholder|coming soon|TODO|TBD|stub|\[from PRD\]|\[TBD\]|content in progress" docs/AGENTS-ASSEMBLE-*.md
+      ```
+      - Must return 0 matches</step>
+    <step order="2">Run bracket placeholder check:
+      ```bash
+      grep -E "\[.*\.\.\.\]|\[insert.*\]|\[add.*\]" docs/AGENTS-ASSEMBLE-*.md
+      ```
+      - Must return 0 matches</step>
+    <step order="3">Verify all 7 exercises are complete:
+      ```bash
+      grep -c "^## Exercise" docs/AGENTS-ASSEMBLE-EXERCISES.md
+      ```
+      - Must return 7</step>
+    <step order="4">Verify all 7 slides are complete:
+      ```bash
+      grep -c "^## Slide" docs/AGENTS-ASSEMBLE-SLIDES.md
+      ```
+      - Must return 7</step>
+    <step order="5">Verify expected output exists for each exercise:
+      ```bash
+      grep -c "Expected Output\|Expected Result" docs/AGENTS-ASSEMBLE-EXERCISES.md
+      ```
+      - Must return at least 7</step>
+    <step order="6">Document any issues found and fix them</step>
   </steps>
 
   <verification>
-    <check type="manual">narrate init prints exact 4-line output from decisions.md</check>
-    <check type="manual">Post-commit hook fires and changelog updates within 5 seconds</check>
-    <check type="manual">Entry format matches locked spec exactly</check>
-    <check type="manual">narrate log output has no raw markdown</check>
-    <check type="manual">narrate backfill processes historical commits with progress</check>
-    <check type="manual">Offline fallback produces grammatical sentence</check>
-    <check type="manual">Init is idempotent and doesn't clobber existing hooks</check>
+    <check type="bash">! grep -riE "placeholder|coming soon|TODO|TBD" docs/AGENTS-ASSEMBLE-*.md &amp;&amp; echo "ZERO PLACEHOLDERS PASS"</check>
+    <check type="bash">grep -c "^## Exercise" docs/AGENTS-ASSEMBLE-EXERCISES.md | grep -q "7" &amp;&amp; echo "7 EXERCISES PASS"</check>
+    <check type="bash">grep -c "^## Slide" docs/AGENTS-ASSEMBLE-SLIDES.md | grep -q "7" &amp;&amp; echo "7 SLIDES PASS"</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-7" reason="Needs init command" />
-    <depends-on task-id="phase-1-task-8" reason="Needs log command" />
-    <depends-on task-id="phase-1-task-9" reason="Needs backfill command" />
+    <depends-on task-id="phase-1-task-1" reason="Slides must be complete" />
+    <depends-on task-id="phase-1-task-2" reason="Script must be complete" />
+    <depends-on task-id="phase-1-task-9" reason="All exercises must be complete" />
   </dependencies>
 
-  <commit-message>test: integration test narrate-cli on great-minds repo (dogfood)</commit-message>
+  <commit-message>chore(qa): validate zero placeholder content in workshop materials</commit-message>
 </task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-13" wave="4">
+  <title>End-to-End Exercise Testing</title>
+  <requirement>REQ-032: Exercise 1 live execution; REQ-033: Exercise 6 pre-demo hardening</requirement>
+  <description>Run through all exercises to verify commands work and timing is realistic.</description>
+
+  <context>
+    <file path="docs/AGENTS-ASSEMBLE-EXERCISES.md" reason="Exercises to test" />
+    <file path="rounds/agents-assemble-workshop/decisions.md" reason="Decision 9: 45 minutes realistic" />
+  </context>
+
+  <steps>
+    <step order="1">Test Exercise 1 (Headless Mode):
+      - Run each command
+      - Verify output matches expected
+      - Time: should complete in &lt;7 minutes</step>
+    <step order="2">Test Exercise 2 (Ralph Loop):
+      - Run the bash script (with low iteration count)
+      - Verify it picks up TODO items
+      - Time: should demo in &lt;5 minutes</step>
+    <step order="3">Test Exercise 3 (/loop):
+      - Test /loop command in Claude Code
+      - Verify scheduling works
+      - Time: should complete in &lt;5 minutes</step>
+    <step order="4">Test Exercise 4 (Custom Commands):
+      - Create the /standup command
+      - Invoke it
+      - Verify output format
+      - Time: should complete in &lt;7 minutes</step>
+    <step order="5">Test Exercise 5 (Hooks):
+      - Create settings.json with hook
+      - Trigger a commit
+      - Verify hook fires
+      - Time: should complete in &lt;7 minutes</step>
+    <step order="6">Test Exercise 6 (Parallel Debate) - CRITICAL:
+      - Run both agents in parallel
+      - Verify both complete successfully
+      - Test error recovery path
+      - Run 5 times to verify stability
+      - Time: should complete in &lt;7 minutes</step>
+    <step order="7">Test Exercise 7 (Plugin):
+      - Test plugin install (or fallback)
+      - Verify /agency-launch works
+      - Time: should complete in &lt;7 minutes</step>
+    <step order="8">Total timing check:
+      - Sum all exercise times
+      - Should be &lt;45 minutes total</step>
+    <step order="9">Document any command corrections needed</step>
+  </steps>
+
+  <verification>
+    <check type="manual">Exercise 1-7 all complete successfully</check>
+    <check type="manual">Exercise 6 runs 5 times without failure</check>
+    <check type="manual">Total time &lt;45 minutes</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-12" reason="Content must be validated first" />
+  </dependencies>
+
+  <commit-message>test(workshop): validate all exercises run end-to-end in &lt;45 minutes</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-14" wave="4">
+  <title>Sara Blakely Customer Gut-Check</title>
+  <requirement>SKILL.md Step 7: Sara Blakely customer-value review</requirement>
+  <description>Spawn Sara Blakely persona to gut-check the workshop from a customer perspective.</description>
+
+  <context>
+    <file path="docs/AGENTS-ASSEMBLE-SLIDES.md" reason="Slides to review" />
+    <file path="docs/AGENTS-ASSEMBLE-SCRIPT.md" reason="Script to review" />
+    <file path="docs/AGENTS-ASSEMBLE-EXERCISES.md" reason="Exercises to review" />
+    <file path="prds/agents-assemble-workshop.md" reason="Original PRD for comparison" />
+  </context>
+
+  <steps>
+    <step order="1">Review all deliverables from customer perspective</step>
+    <step order="2">Answer:
+      - Would a developer pay for this workshop?
+      - What would make them say "shut up and take my money"?
+      - What feels like engineering vanity vs. customer value?</step>
+    <step order="3">Identify any gaps in the customer journey</step>
+    <step order="4">Write findings to .planning/sara-blakely-review.md</step>
+  </steps>
+
+  <verification>
+    <check type="bash">test -f .planning/sara-blakely-review.md &amp;&amp; echo "SARA REVIEW EXISTS"</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-13" reason="All content must be tested first" />
+  </dependencies>
+
+  <commit-message>review(workshop): Sara Blakely customer gut-check complete</commit-message>
+</task-plan>
+```
 
 ---
 
 ## Risk Notes
 
-**High Priority (mitigate during build):**
-- **Hook clobber risk** — Task 7 includes explicit hook conflict detection with append behavior and idempotency markers
-- **Detached process hang** — Task 6 includes 30-second timeout on API calls and unref() on spawned process
-- **Concurrent changelog writes** — During rapid commits, multiple detached workers could race. Mitigation: use append-only writes with fs.appendFile (atomic on most OS). Accept minor risk for v1.
+**From Risk Scanner Analysis:**
 
-**Medium Priority (address if time permits):**
-- **Rate limiting on backfill** — Task 9 includes 1-second delay between 10-commit batches. May need tuning.
-- **npm global PATH in hook** — Hook script should resolve narrate path explicitly. Task 7 should embed the full path to hook-worker.js rather than relying on PATH.
-- **ESM in hook context** — git hooks run in minimal shell. The hook spawns node directly with an absolute file path, avoiding PATH issues.
+### Critical Path Risks (Mitigated)
+1. **Placeholder content ships**: Automated grep validation in Wave 4
+2. **Commands don't work**: Wave 1 CLI verification before content creation
+3. **Exercise 6 fails in live demo**: Hardened with error recovery, 5x test runs
+4. **Windows compatibility**: FAQ section with PowerShell alternatives
+5. **Plugin dependency breaks**: Local fallback implemented in Exercise 7
+6. **Timing unrealistic**: Plan for 45 minutes per Decision 9, timed run-through
 
-**Low Priority (v1.1):**
-- **Windows compatibility** — v1 targets macOS/Linux. Windows (WSL) testing deferred.
-- **Package name collision** — Check `narrate-cli` availability on npm before publish.
+### Technical Execution Risks (Mitigated)
+- **CLI syntax changes**: Verify against official docs before content creation
+- **Rate limits during workshop**: Sleep delays in Ralph Loop, budget caps
+- **Parallel agent conflicts**: Separate output files, error recovery
+
+### Compliance Risks (Addressed)
+- **No placeholder content**: Automated validation
+- **Real commands**: CLI verification step
+- **Voice/brand consistency**: Script review for forbidden phrases
 
 ---
 
-## Execution Summary
+## Success Criteria
+
+**Technical Criteria**:
+- [ ] All 3 files exist with complete content
+- [ ] Zero placeholder text (grep validation passes)
+- [ ] Every command is verified and works
+- [ ] All 7 exercises complete in <45 minutes
+- [ ] Exercise 6 runs 5 times without failure
+
+**UX Criteria** (from decisions.md):
+- [ ] First 30 seconds = jaw drop moment
+- [ ] Voice is casual expertise, not corporate
+- [ ] Ends with silence - let them type
+
+**Business Criteria** (from PRD):
+- [ ] Developers leave "dangerous" not "informed"
+- [ ] No placeholder content (hard blocker)
+- [ ] Ready for Caseproof Retreat workshop
+
+---
+
+## Execution Checklist
 
 ```
-Wave 1: [task-1, task-2, task-3, task-4, task-5]  ← 5 parallel tasks (scaffold + modules)
-Wave 2: [task-6, task-7, task-8]                   ← 3 parallel tasks (hook + commands)
-Wave 3: [task-9]                                    ← 1 task (backfill, needs log parser)
-Wave 4: [task-10]                                   ← 1 task (integration test / dogfood)
+[ ] Wave 1: Foundation (parallel)
+    [ ] phase-1-task-10: Verify all CLI commands
+    [ ] phase-1-task-11: Create FAQ/troubleshooting
+
+[ ] Wave 2: Content (parallel)
+    [ ] phase-1-task-1: SLIDES.md (7 slides)
+    [ ] phase-1-task-2: SCRIPT.md (presenter notes)
+    [ ] phase-1-task-3: Exercise 1 (Headless Mode)
+    [ ] phase-1-task-4: Exercise 2 (Ralph Loop)
+    [ ] phase-1-task-5: Exercise 3 (/loop)
+    [ ] phase-1-task-6: Exercise 4 (Custom Commands)
+    [ ] phase-1-task-7: Exercise 5 (Hooks)
+
+[ ] Wave 3: High-Risk (sequential)
+    [ ] phase-1-task-8: Exercise 6 (Parallel Debate - hardened)
+    [ ] phase-1-task-9: Exercise 7 (Plugin + fallback)
+
+[ ] Wave 4: Validation (sequential)
+    [ ] phase-1-task-12: Zero placeholder validation
+    [ ] phase-1-task-13: End-to-end exercise testing
+    [ ] phase-1-task-14: Sara Blakely customer review
 ```
 
-**Estimated scope:** 10 tasks across 4 waves. Each task = 1 atomic commit.
+---
+
+## Files Created by This Plan
+
+| File | Path | Purpose |
+|------|------|---------|
+| AGENTS-ASSEMBLE-SLIDES.md | `docs/AGENTS-ASSEMBLE-SLIDES.md` | 7 slides for presentation |
+| AGENTS-ASSEMBLE-SCRIPT.md | `docs/AGENTS-ASSEMBLE-SCRIPT.md` | Presenter speaking notes |
+| AGENTS-ASSEMBLE-EXERCISES.md | `docs/AGENTS-ASSEMBLE-EXERCISES.md` | 7 hands-on exercises |
+| CLI-VERIFIED.md | `.planning/CLI-VERIFIED.md` | Verified command syntax |
+| sara-blakely-review.md | `.planning/sara-blakely-review.md` | Customer gut-check |
+
+---
+
+## Document Trail
+
+- **Requirements**: `.planning/REQUIREMENTS.md`
+- **Decisions**: `rounds/agents-assemble-workshop/decisions.md`
+- **PRD**: `prds/agents-assemble-workshop.md`
+- **Project Rules**: `CLAUDE.md`
+
+---
+
+## Verified Claude Code CLI Syntax
+
+Per research agent findings (April 2026 documentation):
+
+### Headless Mode
+```bash
+claude -p "prompt"                              # Basic
+claude -p "prompt" --max-turns 10               # Limit turns
+claude -p "prompt" --max-budget-usd 5.00        # Budget cap
+claude -p "prompt" --allowedTools "Bash,Read"   # Tool allowlist
+```
+
+### /loop Command
+```bash
+/loop 5m check build status                     # Every 5 minutes
+/loop check deployment every 10 minutes         # Natural language
+```
+
+### Skills
+```
+~/.claude/skills/<name>/SKILL.md                # Personal
+.claude/skills/<name>/SKILL.md                  # Project
+```
+
+### Hooks (settings.json)
+```json
+{
+  "hooks": {
+    "PostToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{ "type": "command", "command": "echo 'done' >&2" }]
+    }]
+  }
+}
+```
+
+**Sources:**
+- https://code.claude.com/docs/en/headless.md
+- https://code.claude.com/docs/en/scheduled-tasks.md
+- https://code.claude.com/docs/en/slash-commands.md
+- https://code.claude.com/docs/en/hooks-guide.md
+
+---
+
+**Plan Status**: READY FOR EXECUTION
+**Estimated Duration**: 6-8 hours focused session
+**Parallel Tasks**: Wave 1 (2 tasks), Wave 2 (7 tasks)
+**Sequential Blocks**: Wave 3 (2 tasks), Wave 4 (3 tasks)
+
+---
+
+*Plan generated by Great Minds Agency — Phase Planning Agent (GSD-Style)*
+*Cross-referenced against: CLAUDE.md (project rules), decisions.md (locked decisions), SKILL.md (planning methodology)*
+*CLI syntax verified from official Claude Code documentation (April 2026)*

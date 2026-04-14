@@ -1,0 +1,54 @@
+{
+  "business_type": "salon",
+  "display_name": "Salon / Spa",
+  "faqs": [
+    {
+      "question": "What are your hours of operation?",
+      "answer": "Our hours vary by day. Please call us or check our website for our current schedule and availability."
+    },
+    {
+      "question": "What services do you offer?",
+      "answer": "We offer a full range of salon services including haircuts, coloring, styling, treatments, and more. Contact us to learn about our complete service menu."
+    },
+    {
+      "question": "How do I book an appointment?",
+      "answer": "You can book by calling our salon, visiting our website, or using our online booking system if available. We'll match you with the right stylist."
+    },
+    {
+      "question": "How much do services cost?",
+      "answer": "Pricing varies based on the service and stylist. Contact us for a consultation and we'll provide pricing for your specific needs."
+    },
+    {
+      "question": "What is your cancellation policy?",
+      "answer": "We appreciate advance notice if you need to cancel or reschedule. Please contact us at least 24 hours before your appointment to avoid cancellation fees."
+    },
+    {
+      "question": "Do you accept walk-ins?",
+      "answer": "We welcome walk-ins based on availability. For guaranteed service, we recommend booking an appointment in advance."
+    },
+    {
+      "question": "Do you sell products?",
+      "answer": "Yes, we carry professional hair and beauty products. Ask your stylist for recommendations based on your hair type and needs."
+    },
+    {
+      "question": "Do you offer bridal or special event services?",
+      "answer": "We provide services for weddings and special occasions. Contact us to discuss your event and schedule a consultation."
+    },
+    {
+      "question": "Where are you located?",
+      "answer": "Please visit our website for our address, directions, and parking information. We're conveniently located and look forward to seeing you."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept most major credit cards, cash, and debit. Gratuities are appreciated and can be added to card payments."
+    },
+    {
+      "question": "Do you offer gift cards?",
+      "answer": "Yes! Gift cards are available for any amount and make wonderful gifts. Stop by or call to purchase."
+    },
+    {
+      "question": "Can you accommodate hair color corrections?",
+      "answer": "We handle color corrections with care. Please book a consultation so we can assess your hair and create a plan to achieve your desired results."
+    }
+  ]
+}

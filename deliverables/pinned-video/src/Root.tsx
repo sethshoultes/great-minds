@@ -1,5 +1,5 @@
 import React from "react";
-import { Audio, Composition, Sequence, staticFile } from "remotion";
+import { Composition, Sequence } from "remotion";
 import { DashboardHook } from "./scenes/DashboardHook";
 import { NotesCascade } from "./scenes/NotesCascade";
 import { AcknowledgeAndExpire } from "./scenes/AcknowledgeAndExpire";
@@ -8,15 +8,15 @@ import { ClosingCTA } from "./scenes/ClosingCTA";
 import { colors } from "./styles";
 
 const FPS = 30;
-const TOTAL_DURATION = 42 * FPS; // 1260 frames — matched to actual audio
+const TOTAL_DURATION = 45 * FPS; // 1350 frames — 45 seconds hard cap
 
-// Scene timings (in frames at 30fps) — matched to audio durations
+// Scene timings (in frames at 30fps)
 const SCENES = {
-  dashboardHook: { from: 0, duration: 8 * FPS }, // 0:00 - 0:08 (audio 6.4s)
-  notesCascade: { from: 8 * FPS, duration: 11 * FPS }, // 0:08 - 0:19 (audio 10.4s)
-  acknowledgeAndExpire: { from: 19 * FPS, duration: 10 * FPS }, // 0:19 - 0:29 (audio 9.5s)
-  fullDashboard: { from: 29 * FPS, duration: 8 * FPS }, // 0:29 - 0:37 (audio 7.2s)
-  closingCTA: { from: 37 * FPS, duration: 5 * FPS }, // 0:37 - 0:42 (audio 3.3s)
+  dashboardHook: { from: 0, duration: 5 * FPS }, // 0:00 - 0:05
+  notesCascade: { from: 5 * FPS, duration: 10 * FPS }, // 0:05 - 0:15
+  acknowledgeAndExpire: { from: 15 * FPS, duration: 13 * FPS }, // 0:15 - 0:28
+  fullDashboard: { from: 28 * FPS, duration: 10 * FPS }, // 0:28 - 0:38
+  closingCTA: { from: 38 * FPS, duration: 7 * FPS }, // 0:38 - 0:45
 } as const;
 
 const PinnedPromo: React.FC = () => {
@@ -37,9 +37,6 @@ const PinnedPromo: React.FC = () => {
       >
         <DashboardHook />
       </Sequence>
-      <Sequence from={SCENES.dashboardHook.from} durationInFrames={SCENES.dashboardHook.duration}>
-        <Audio src={staticFile("audio/scene1.mp3")} />
-      </Sequence>
 
       {/* Scene 2: Notes Cascade */}
       <Sequence
@@ -47,9 +44,6 @@ const PinnedPromo: React.FC = () => {
         durationInFrames={SCENES.notesCascade.duration}
       >
         <NotesCascade />
-      </Sequence>
-      <Sequence from={SCENES.notesCascade.from} durationInFrames={SCENES.notesCascade.duration}>
-        <Audio src={staticFile("audio/scene2.mp3")} />
       </Sequence>
 
       {/* Scene 3: Acknowledge & Expire */}
@@ -59,9 +53,6 @@ const PinnedPromo: React.FC = () => {
       >
         <AcknowledgeAndExpire />
       </Sequence>
-      <Sequence from={SCENES.acknowledgeAndExpire.from} durationInFrames={SCENES.acknowledgeAndExpire.duration}>
-        <Audio src={staticFile("audio/scene3.mp3")} />
-      </Sequence>
 
       {/* Scene 4: Full Dashboard Pull-back */}
       <Sequence
@@ -70,9 +61,6 @@ const PinnedPromo: React.FC = () => {
       >
         <FullDashboard />
       </Sequence>
-      <Sequence from={SCENES.fullDashboard.from} durationInFrames={SCENES.fullDashboard.duration}>
-        <Audio src={staticFile("audio/scene4.mp3")} />
-      </Sequence>
 
       {/* Scene 5: Closing CTA */}
       <Sequence
@@ -80,9 +68,6 @@ const PinnedPromo: React.FC = () => {
         durationInFrames={SCENES.closingCTA.duration}
       >
         <ClosingCTA />
-      </Sequence>
-      <Sequence from={SCENES.closingCTA.from} durationInFrames={SCENES.closingCTA.duration}>
-        <Audio src={staticFile("audio/scene5.mp3")} />
       </Sequence>
     </div>
   );

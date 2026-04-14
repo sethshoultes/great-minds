@@ -1,3 +1,59 @@
+Apr 9, 2026 — 6:36 PM
+
+  Stash changes in CHANGELOG.human.md  ·  e86b298
+
+Apr 9, 2026 — 6:36 PM
+
+  Workshop: simple, memorable, no SDK required — 7 slides + 4 hands-on exercises in AGENTS-ASSEMBLE-WORKSHOP.md  ·  1c592f5
+
+Apr 9, 2026 — 6:05 PM
+
+  Ship agents-assemble-workshop: slides, script, 7 exercises (1011 lines)  ·  5f735a8
+
+Apr 9, 2026 — 5:50 PM
+
+  Complete agents-assemble-workshop deliverables  ·  9bdee8a
+
+Apr 9, 2026 — 5:06 PM
+
+  Final commit: localgenius-lite in CHANGELOG.human.md  ·  1f99035
+
+Apr 9, 2026 — 5:06 PM
+
+  Add retrospective for localgenius-lite  ·  9d2877d
+
+Apr 9, 2026 — 4:30 PM
+
+  Final commit: pipeline-test in CHANGELOG.human.md  ·  a722202
+
+Apr 9, 2026 — 4:30 PM
+
+  Add retrospective for pipeline-test in CHANGELOG.human.md and retrospective.md  ·  e324aba
+
+Apr 9, 2026 — 4:29 PM
+
+  Ship pipeline-test: retrospective, planning artifacts, changelog  ·  c9ce0b1
+
+Apr 9, 2026 — 4:20 PM
+
+  Add README and example debate transcript in README.md and example-output.md  ·  ca82936
+
+Apr 9, 2026 — 4:00 PM
+
+  Push remaining uncommitted deliverables in CHANGELOG.human.md  ·  e55cbaa
+
+Apr 9, 2026 — 4:00 PM
+
+  Merge all feature branches to main — resolve conflicts accepting newest in Root.tsx  ·  3a88455
+
+Apr 6, 2026 — 5:30 PM
+
+  Document daemon resilience and developer intelligence features  ·  abfbd16
+
+Apr 5, 2026 — 8:50 PM
+
+  Fix daemon crash — path → filePath in chokidar watcher  ·  7bcd83a
+
 Apr 5, 2026 — 4:34 PM
 
   Add Great Minds Agency movie script -- 4-act, 10-scene video blueprint  ·  40b8eb3

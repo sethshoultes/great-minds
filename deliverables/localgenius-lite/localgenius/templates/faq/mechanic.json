@@ -1,0 +1,54 @@
+{
+  "business_type": "mechanic",
+  "display_name": "Auto Repair",
+  "faqs": [
+    {
+      "question": "What are your hours of operation?",
+      "answer": "Our shop hours vary by day. Please call us or check our website for our current schedule and drop-off availability."
+    },
+    {
+      "question": "What services do you offer?",
+      "answer": "We offer full automotive services including oil changes, brake repair, engine diagnostics, tire services, AC repair, and more. Contact us with your vehicle's needs."
+    },
+    {
+      "question": "Do you offer free estimates?",
+      "answer": "Yes, we provide estimates before beginning work. Bring your vehicle in for a diagnosis and we'll give you an honest assessment."
+    },
+    {
+      "question": "How do I schedule an appointment?",
+      "answer": "You can schedule by calling our shop or requesting an appointment online. We also accept drop-offs and walk-ins based on availability."
+    },
+    {
+      "question": "What makes and models do you work on?",
+      "answer": "We service most makes and models of cars and light trucks. Contact us to confirm we can work on your specific vehicle."
+    },
+    {
+      "question": "Do you offer a warranty on repairs?",
+      "answer": "Yes, we warranty our parts and labor. Ask us about warranty details for your specific repair when you bring in your vehicle."
+    },
+    {
+      "question": "How long will my repair take?",
+      "answer": "Repair time depends on the work needed. We'll give you an estimated completion time and keep you updated throughout the process."
+    },
+    {
+      "question": "Do you offer loaner cars or shuttle service?",
+      "answer": "Transportation options vary by shop. Please ask us about loaner vehicles or local shuttle service when you schedule your appointment."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept most major credit cards, debit cards, and cash. We may also offer financing for larger repairs."
+    },
+    {
+      "question": "Where are you located?",
+      "answer": "Please visit our website or call for our address and directions. We have customer parking available."
+    },
+    {
+      "question": "Can you help with state inspections?",
+      "answer": "Inspection services vary by location and state requirements. Contact us to confirm if we perform inspections and what documentation you need."
+    },
+    {
+      "question": "Do you use quality parts?",
+      "answer": "We use quality OEM and aftermarket parts. We'll discuss part options with you so you can make the best choice for your budget and vehicle."
+    }
+  ]
+}

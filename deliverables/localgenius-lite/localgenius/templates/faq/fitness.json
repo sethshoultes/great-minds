@@ -1,0 +1,54 @@
+{
+  "business_type": "fitness",
+  "display_name": "Fitness / Gym",
+  "faqs": [
+    {
+      "question": "What are your hours of operation?",
+      "answer": "Our hours vary by day and may differ on weekends and holidays. Please check our website or call for our current schedule."
+    },
+    {
+      "question": "What membership options do you offer?",
+      "answer": "We offer various membership plans to fit different needs and budgets. Contact us or visit to learn about our current membership options and pricing."
+    },
+    {
+      "question": "Do you offer free trials or guest passes?",
+      "answer": "We often have trial passes available for new members. Contact us to request a free trial and experience our facility."
+    },
+    {
+      "question": "What classes do you offer?",
+      "answer": "We offer a variety of fitness classes including group fitness, yoga, spinning, and more. Check our class schedule for times and descriptions."
+    },
+    {
+      "question": "Do you have personal training?",
+      "answer": "Yes, we offer personal training services with certified trainers. Contact us to learn about training packages and book a session."
+    },
+    {
+      "question": "What equipment do you have?",
+      "answer": "Our facility includes cardio machines, free weights, weight machines, and functional training areas. Visit us for a tour of our equipment."
+    },
+    {
+      "question": "What is your cancellation policy?",
+      "answer": "Membership cancellation policies vary by plan type. Please review your membership agreement or contact us for specific cancellation terms."
+    },
+    {
+      "question": "Do you offer family memberships?",
+      "answer": "Yes, we have options for families and couples. Ask about our family membership rates and benefits when you visit."
+    },
+    {
+      "question": "Where are you located?",
+      "answer": "Please visit our website for our address, directions, and parking information. We'd love to show you around our facility."
+    },
+    {
+      "question": "Do you have locker rooms and showers?",
+      "answer": "Yes, we have full locker room facilities with showers. We also provide lockers for your belongings during your workout."
+    },
+    {
+      "question": "Are there any joining fees?",
+      "answer": "Enrollment fees and specials vary by membership type and current promotions. Contact us to learn about our current offers."
+    },
+    {
+      "question": "Can I freeze my membership?",
+      "answer": "Membership freeze policies vary. If you need to temporarily suspend your membership, contact us to discuss your options."
+    }
+  ]
+}

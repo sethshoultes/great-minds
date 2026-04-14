@@ -1,0 +1,54 @@
+{
+  "business_type": "restaurant",
+  "display_name": "Restaurant / Cafe",
+  "faqs": [
+    {
+      "question": "What are your hours of operation?",
+      "answer": "Our hours vary by day and may change for holidays. Please check our website or call us for our current schedule."
+    },
+    {
+      "question": "Do you take reservations?",
+      "answer": "Reservation policies vary. Please call us or check our website to see if we accept reservations and to book a table."
+    },
+    {
+      "question": "Do you have vegetarian or vegan options?",
+      "answer": "We offer a variety of menu options to accommodate different dietary preferences. Let us know your needs and we'll help find something for you."
+    },
+    {
+      "question": "Do you offer delivery or takeout?",
+      "answer": "We offer takeout and may be available on delivery platforms. Contact us directly to place an order or ask about delivery options."
+    },
+    {
+      "question": "Can you accommodate food allergies?",
+      "answer": "We take food allergies seriously. Please inform your server of any allergies when ordering, and we'll do our best to accommodate your needs."
+    },
+    {
+      "question": "Do you host private events?",
+      "answer": "We may be able to accommodate private parties and special events. Contact us to discuss your event needs and availability."
+    },
+    {
+      "question": "Do you have a kids menu?",
+      "answer": "We offer options suitable for children. Ask your server about our kid-friendly selections when you visit."
+    },
+    {
+      "question": "Where are you located?",
+      "answer": "Please visit our website for our full address, directions, and parking information. We look forward to seeing you."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept most major credit cards and cash. Some locations may also accept mobile payments. Ask your server for details."
+    },
+    {
+      "question": "Do you have outdoor seating?",
+      "answer": "Outdoor seating availability depends on our location and weather. Please call ahead or ask when you arrive about patio options."
+    },
+    {
+      "question": "Do you offer gift cards?",
+      "answer": "Yes, we offer gift cards that make great presents for any occasion. Ask your server or contact us to purchase."
+    },
+    {
+      "question": "Is there a dress code?",
+      "answer": "Our atmosphere is welcoming and casual. Come as you are and enjoy your dining experience with us."
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "business_type": "lawyer",
+  "display_name": "Legal Services",
+  "faqs": [
+    {
+      "question": "What areas of law do you practice?",
+      "answer": "Our practice areas vary. Please contact our office to discuss your legal matter and confirm we can assist with your specific needs."
+    },
+    {
+      "question": "Do you offer free consultations?",
+      "answer": "Consultation policies vary by case type. Contact our office to ask about an initial consultation and learn more about how we can help."
+    },
+    {
+      "question": "What are your fees?",
+      "answer": "Fee structures depend on the type of case and complexity involved. We'll discuss fees and billing arrangements during your consultation."
+    },
+    {
+      "question": "What are your hours of operation?",
+      "answer": "Our office hours vary. Please call to schedule an appointment or leave a message and we'll return your call promptly."
+    },
+    {
+      "question": "How do I schedule an appointment?",
+      "answer": "You can schedule by calling our office during business hours. We'll find a time that works for your initial consultation."
+    },
+    {
+      "question": "Is my consultation confidential?",
+      "answer": "Yes, all communications with our office are protected by attorney-client privilege. Your privacy and confidentiality are our priority."
+    },
+    {
+      "question": "Where are you located?",
+      "answer": "Please visit our website for our office address, directions, and parking information. We're happy to meet with you at our office."
+    },
+    {
+      "question": "How long will my case take?",
+      "answer": "Case timelines vary significantly based on complexity, court schedules, and other factors. We'll provide realistic expectations after reviewing your case."
+    },
+    {
+      "question": "What should I bring to my first meeting?",
+      "answer": "Please bring any relevant documents, correspondence, or evidence related to your matter. A list of questions and a timeline of events is also helpful."
+    },
+    {
+      "question": "Do you handle cases outside your local area?",
+      "answer": "Our jurisdiction and service area depends on the type of case. Contact us to discuss whether we can represent you in your matter."
+    },
+    {
+      "question": "What payment options do you offer?",
+      "answer": "We accept various payment methods and may offer payment plans for certain cases. We'll discuss payment options during your consultation."
+    },
+    {
+      "question": "How will you keep me updated on my case?",
+      "answer": "We maintain regular communication with our clients. You'll receive updates on significant developments and can contact us with questions anytime."
+    }
+  ]
+}
