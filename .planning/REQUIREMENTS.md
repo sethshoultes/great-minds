@@ -1,739 +1,897 @@
-# Pulse v1 — Requirements Specification
+# LocalGenius Sites — Atomic Requirements Specification
 
-**Generated**: 2026-04-12
+**Generated**: 2026-04-14
 **Source Documents**:
-- `/rounds/localgenius-benchmark-engine/decisions.md` (Locked Decisions)
-- `/prds/failed/localgenius-benchmark-engine.md` (Original PRD)
-**Project Slug**: `localgenius-benchmark-engine`
-**Product Name**: Pulse
-**Implementation Status**: **COMPLETE** (40/40 requirements implemented)
-**Deployment Status**: **BLOCKED** (pending integration testing)
+- `/rounds/localgenius-sites/decisions.md` (19 Locked Decisions + MVP Features)
+- `/prds/completed/localgenius-sites.md` (Original PRD)
+**Project Slug**: `localgenius-sites`
+**Product Name**: LocalGenius Sites (code) / Presence (marketing)
+**Ship Date**: 6 weeks from kickoff (May 26, 2026)
 
 ---
 
 ## Executive Summary
 
-Pulse is the benchmark engine for LocalGenius that transforms isolated customer data into competitive intelligence. It displays a single percentile rank showing how a business compares to peers — "ending the 2am loneliness of not knowing if you're okay."
+LocalGenius Sites is a managed website service that provisions real, CMS-powered websites for local businesses using Emdash (Astro + Cloudflare). The core thesis: "The website is not the product. The feeling is the product." We're selling legitimacy to businesses who have never felt legitimate online.
 
-**v1 Scope**: Restaurants only, single percentile display, 3-4 comparison charts, embeddable badges, one public report.
+**v1 Scope**:
+- 2 templates (Restaurant + Services)
+- 4-input onboarding + auto-enrichment
+- Instant preview reveal (<5 seconds)
+- MCP bridge for AI-managed content updates
+- Subdomain hosting on `{slug}.localgenius.site`
 
-**Key Constraints**: No insights engine, no customizable dashboards, no email reports.
-
-**Implementation**: ~6,075 LOC across 22 files (deviation from ~500 LOC target documented and accepted)
-
----
-
-## Current State Summary
-
-### Implementation Complete
-- **All 40 requirements implemented** in deliverables
-- **22 production-quality files** ready for integration
-- **QA Content Review**: 100% pass rate
-- **Data Audit**: GO decision documented (4/5 metrics available, 1 proxy)
-
-### Blockers Remaining
-| Blocker | Status | Resolution |
-|---------|--------|------------|
-| Uncommitted files (db/, lib/) | **P0** | `git add` and commit (5 min) |
-| Integration testing | **P0** | Test in LocalGenius context (30-60 min) |
-| Database migrations | **P0** | Create Drizzle migration files |
-| Batch job scheduler | **P1** | Register in scheduler.ts |
-| Multi-tenant RLS | **P1** | Add organization_id to Pulse tables |
+**Key Constraints**:
+- No custom domains in v1 (Pro tier, Month 2)
+- No CMS exposure (conversational only)
+- No template picker (AI selects silently)
+- No theme/font/color customization
 
 ---
 
-## Requirements Traceability Matrix
+## Requirements Summary
 
-| ID | Requirement | Source | Priority | Status |
-|----|-------------|--------|----------|--------|
-| REQ-001 | Product named "Pulse" | Decision 1 | MUST | COMPLETE |
-| REQ-002 | Single percentile rank on first screen | Decision 2 | MUST | COMPLETE |
-| REQ-003 | Transparent percentile (not proprietary score) | Decision 2 | MUST | COMPLETE |
-| REQ-004 | No customizable dashboard widgets | Decision 3 | MUST | COMPLETE |
-| REQ-005 | No insights engine in v1 | Decision 4 | MUST | COMPLETE |
-| REQ-006 | No automated email reports in v1 | Decision 5 | MUST | COMPLETE |
-| REQ-007 | Restaurants industry only | Decision 6 | MUST | COMPLETE |
-| REQ-008 | NAICS codes for categorization | Decision 7 | MUST | COMPLETE |
-| REQ-009 | Curated peer groups (no free browsing) | Decision 8 | MUST | COMPLETE |
-| REQ-010 | 3-4 comparison charts | MVP Feature Set | MUST | COMPLETE |
-| REQ-011 | Distribution mechanisms (reports + badges) | Decision 9 | MUST | COMPLETE |
-| REQ-012 | Public benchmark report | MVP Feature Set | MUST | COMPLETE |
-| REQ-013 | Embeddable badges component | MVP Feature Set | MUST | COMPLETE |
-| REQ-014 | Freemium preview hook | MVP Feature Set | MUST | COMPLETE |
-| REQ-015 | Min 50+ businesses per cohort | Decision 12 | MUST | COMPLETE |
-| REQ-016 | 5 core metrics tracked | MVP Feature Set | MUST | COMPLETE |
-| REQ-017 | Nightly batch percentile calculation | Technical Spec | MUST | COMPLETE |
-| REQ-018 | Single REST API endpoint | Technical Spec | MUST | COMPLETE |
-| REQ-019 | PulseScore component | File Structure | MUST | COMPLETE |
-| REQ-020 | IndustryComparison component | File Structure | MUST | COMPLETE |
-| REQ-021 | PeerGroupSelector component | File Structure | MUST | COMPLETE |
-| REQ-022 | EmbeddableBadge component | File Structure | MUST | COMPLETE |
-| REQ-023 | Main dashboard page | File Structure | MUST | COMPLETE |
-| REQ-024 | Public report page | File Structure | MUST | COMPLETE |
-| REQ-025 | Database schema for benchmarks | File Structure | MUST | COMPLETE |
-| REQ-026 | Badge embed JavaScript loader | File Structure | MUST | COMPLETE |
-| REQ-027 | Brand voice compliance | Decision 13 | MUST | COMPLETE |
-| REQ-028 | Region-based peer selection with fallback | Open Questions | MUST | COMPLETE |
-| REQ-029 | ~500 LOC target | Decision 10 | MUST | DEVIATION (6,075 LOC) |
-| REQ-030 | 2-week ship timeline | Decision 10 | MUST | EXCEEDED |
-| REQ-031 | Data audit before build | Risk Register | MUST | COMPLETE |
-| REQ-032 | No raw data exports | Decision 11 | MUST | COMPLETE |
-| REQ-033 | Calculation date on badges | Risk 7 | SHOULD | COMPLETE |
-| REQ-034 | Copy testing for percentile display | Risk 9 | SHOULD | COMPLETE |
-| REQ-035 | Social-optimized badge design | Risk 10 | SHOULD | COMPLETE |
-| REQ-036 | Graceful "Insufficient Data" message | Risk 2 | SHOULD | COMPLETE |
-| REQ-037 | Statistical validity in peer groups | Decision 8+12 | MUST | COMPLETE |
-| REQ-038 | No ML/recommendations in v1 | Cut List | MUST | COMPLETE |
-| REQ-039 | No "compare to anyone" feature | Cut List | MUST | COMPLETE |
-| REQ-040 | Integrate with LocalGenius UI | Technical Spec | MUST | PENDING INTEGRATION |
+| Category | Count | Priority |
+|----------|-------|----------|
+| Core Product | 4 | MUST HAVE |
+| Architecture & Infrastructure | 7 | MUST HAVE |
+| Onboarding & User Experience | 6 | MUST HAVE |
+| Template System | 5 | MUST HAVE |
+| Provisioning Pipeline | 11 | MUST HAVE |
+| Content Management & Updates | 6 | MUST HAVE |
+| Performance & Quality | 4 | MUST HAVE |
+| Growth & Monetization | 5 | MUST/SHOULD |
+| Design & Brand | 11 | MUST HAVE |
+| Timeline & Delivery | 6 | MUST HAVE |
+| **TOTAL** | **65** | — |
 
 ---
 
-## Detailed Requirements
+## CORE PRODUCT REQUIREMENTS
 
-### Product Identity
-
-#### REQ-001: Product Naming
-**Source**: decisions.md — Decision 1
+### REQ-001: Core Product Philosophy
+**Source**: Essence, Consensus Statement
 **Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Product shall be named "Pulse" in all UI, marketing, documentation, and code references.
-**Rationale**: One word. One heartbeat. "Check your Pulse" becomes the verb. "Benchmark Engine" describes a feature; "Pulse" builds a brand.
-**Implementation**: All user-facing text uses "Pulse" branding
+**Category**: Product Strategy
+**Description**: The product is not a website builder; it is the feeling of legitimacy. The AI-managed website after creation is the category differentiator.
 **Acceptance Criteria**:
-- [x] All user-facing text uses "Pulse"
-- [x] No references to "Benchmark Engine" or "LocalGenius Benchmarks"
+- [ ] Product positions as legitimacy service, not website tool
+- [ ] AI post-creation management is core narrative
+- [ ] Design conveys "craft" not "features"
 
 ---
 
-### Core UX Requirements
-
-#### REQ-002: Single Percentile Display
-**Source**: decisions.md — Decision 2
+### REQ-002: Reveal Moment as Primary Product
+**Source**: Essence, Decision 14
 **Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: First screen shows single percentile rank as hero element: "You're in the 73rd percentile" or "You're ahead of 73% of restaurants"
-**Rationale**: Steve's emotional hook ("one number, one insight, one action") combined with Elon's transparency argument. Percentiles are instantly understood.
-**Implementation**: `PulseScore.tsx` (218 LOC) with text-7xl hero display
+**Category**: Product Strategy
+**Description**: The reveal moment (user seeing their live site) is the entire product. "If they don't gasp, we failed."
 **Acceptance Criteria**:
-- [x] Percentile displayed as largest visual element
-- [x] No competing metrics in hero section
-- [x] Format: "You're in the Xth percentile" or "You're ahead of X% of restaurants"
-
-#### REQ-003: Transparent Percentile Calculation
-**Source**: decisions.md — Decision 2 (Elon's refinement)
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Display percentile rank, not proprietary score. Users understand ranking methodology.
-**Implementation**: Clear "Percentile rank" copy in component
-**Acceptance Criteria**:
-- [x] No "Pulse Score: 78" terminology
-- [x] Percentile is relative ranking against peer cohort
-- [x] Explanation available in help/tooltip
-
-#### REQ-004: Fixed Dashboard Layout
-**Source**: decisions.md — Decision 3
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Dashboard layout is fixed and non-configurable. No drag-and-drop or widget customization.
-**Rationale**: "The moment you let people move widgets around, you've admitted your design failed."
-**Implementation**: `pulse.tsx` (468 LOC) with fixed layout
-**Acceptance Criteria**:
-- [x] Layout is identical for all users
-- [x] No settings to rearrange components
-- [x] Design team owns layout decisions
-
-#### REQ-010: Industry Comparison Charts
-**Source**: decisions.md — MVP Feature Set
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: 3-4 visualizations showing user position relative to peer distribution.
-**Implementation**: `IndustryComparison.tsx` (242 LOC) with 4 metric charts
-**Acceptance Criteria**:
-- [x] Minimum 3 comparison charts displayed
-- [x] Charts cover: engagement rate, post frequency, follower growth, response time
-- [x] User position clearly marked on each chart
+- [ ] User sees their business name on a real website they didn't build
+- [ ] URL bar shows real subdomain
+- [ ] Live site rendered in device frame
+- [ ] Text display: "Your site is live."
+- [ ] No confetti or excessive animation (restraint is the design)
 
 ---
 
-### Scope Constraints (Explicit Exclusions)
-
-#### REQ-005: No Insights Engine
-**Source**: decisions.md — Decision 4
+### REQ-003: Zero Customization Philosophy
+**Source**: Decision 5
 **Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: No causal inference or "Businesses like yours that did X saw Y% improvement" recommendations in v1.
-**Rationale**: Causal inference requires controlled experiments and 10x more data. We ship *comparisons*, not *recommendations*.
+**Category**: Product Strategy
+**Description**: Users make zero design choices. AI selects template silently. "Every choice is a moment of doubt."
 **Acceptance Criteria**:
-- [x] No AI-generated suggestions based on peer behavior
-- [x] Comparisons only, no prescriptions
-- [x] Feature flagged for v2
-
-#### REQ-006: No Automated Reports
-**Source**: decisions.md — Decision 5
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: No scheduled email digests or automated PDF reports.
-**Rationale**: "If they won't log in, a PDF won't save us." Prove the core experience first.
-**Acceptance Criteria**:
-- [x] No email scheduler for benchmark reports
-- [x] Dashboard is primary interface
-- [x] Manual screenshot/export permitted
-
-#### REQ-032: No Data Exports
-**Source**: decisions.md — Decision 11
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: No CSV/API export of raw benchmark data.
-**Rationale**: "We're not a data warehouse. We're an intelligence engine."
-**Acceptance Criteria**:
-- [x] No export button in UI
-- [x] API does not expose raw cohort data
-- [ ] Revisit for v2 if enterprise customers request
-
-#### REQ-038: No ML Systems
-**Source**: decisions.md — Cut List
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: No machine learning or predictive models in v1.
-**Acceptance Criteria**:
-- [x] No model training or inference
-- [x] Pure SQL-based calculations only
-
-#### REQ-039: No Free-Form Comparison
-**Source**: decisions.md — Cut List
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Users cannot search/select arbitrary competitors.
-**Rationale**: Arbitrary comparisons destroy trust.
-**Implementation**: `PeerGroupSelector.tsx` (297 LOC) - read-only display
-**Acceptance Criteria**:
-- [x] No competitor search UI
-- [x] No "compare to" selection
+- [ ] No template picker UI
+- [ ] No color/theme selector
+- [ ] No font dropdown
+- [ ] No advanced settings in v1
 
 ---
 
-### Industry & Categorization
-
-#### REQ-007: Single Industry — Restaurants
-**Source**: decisions.md — Decision 6
+### REQ-004: AI-Managed Website Updates
+**Source**: Decision 18 (compromise)
 **Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: v1 supports restaurants exclusively. No multi-industry peer comparisons.
-**Rationale**: Statistical validity requires density. Spreading thin across categories kills quality.
-**Implementation**: NAICS prefix "722" filter in `naics.ts`
+**Category**: Product Strategy
+**Description**: AI manages content updates via conversational interface. Updates are user-initiated (not autonomous). Notifications are first-person and specific.
 **Acceptance Criteria**:
-- [x] NAICS filter limited to restaurant codes (722xxx)
-- [x] UI does not show other industry options
-- [x] Error handling for non-restaurant businesses
-
-#### REQ-008: NAICS Code Categorization
-**Source**: decisions.md — Decision 7
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Industry classification uses official NAICS taxonomy.
-**Rationale**: The IRS, SBA, and Census Bureau already use NAICS. Zero taxonomy maintenance.
-**Implementation**: `naics-restaurants.ts` (166 LOC) seeds 8 restaurant codes
-**Acceptance Criteria**:
-- [x] Restaurant NAICS codes mapped: 722110, 722511, 722513, 722514, 722515, etc.
-- [x] No custom taxonomy maintenance
-- [x] NAICS code stored on business record
+- [ ] AI updates content only when user explicitly requests
+- [ ] Notifications: "I updated X because Y"
+- [ ] Failed updates never appear to have succeeded
+- [ ] Monthly AI updates are opt-in, default OFF
 
 ---
 
-### Peer Group Configuration
+## ARCHITECTURE & INFRASTRUCTURE
 
-#### REQ-009: Curated Peer Groups
-**Source**: decisions.md — Decision 8
+### REQ-005: Multi-Tenant Database Architecture
+**Source**: Decision 2
 **Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: System selects peer groups based on industry, region, size. Users cannot browse competitors.
-**Rationale**: "Don't let users browse other businesses' data. That's not insight — that's distraction."
-**Implementation**: `peer-groups.ts` (310 LOC) with automatic selection
+**Category**: Architecture
+**Description**: Single D1 database with all tenants partitioned by `site_id`. "One deployment, one migration path, one monitoring dashboard."
 **Acceptance Criteria**:
-- [x] Peer group selected automatically
-- [x] No search/select competitor interface
-- [x] Peer group criteria displayed (industry + region + size)
-
-#### REQ-015: Data Quality Threshold
-**Source**: decisions.md — Decision 12
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Minimum 50+ businesses per cohort with 30+ days of data for percentile display.
-**Rationale**: "If we don't have 50+ businesses per cohort with 30+ days of clean data, the Pulse Score is a random number generator."
-**Implementation**: `MIN_COHORT_SIZE = 50` enforced in peer-groups.ts
-**Acceptance Criteria**:
-- [x] Cohort size validated before calculation
-- [x] Cohorts < 50 show "Insufficient Data"
-- [x] Fallback to broader region if needed
-
-#### REQ-028: Regional Fallback
-**Source**: decisions.md — Open Questions
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Peer groups default to metro area (MSA), fallback to state if < 10 peers.
-**Implementation**: `findPeerGroup()` in peer-groups.ts L163-221 with MSA/state fallback
-**Acceptance Criteria**:
-- [x] MSA lookup for city -> metro mapping
-- [x] Automatic fallback logic
-- [x] Fallback indicated in UI
-
-#### REQ-037: Statistical Validity
-**Source**: decisions.md — Decision 8 + 12
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Peer selection algorithm ensures statistical validity.
-**Implementation**: `validatePeerGroup()` in peer-groups.ts L267-296
-**Acceptance Criteria**:
-- [x] Industry (primary), region (secondary), size (tertiary)
-- [x] Minimum 10 peers for any displayed benchmark
-- [x] Documented selection algorithm
+- [ ] D1 schema includes `site_id` as partition key
+- [ ] All queries filter by `site_id`
+- [ ] No per-tenant database instances
 
 ---
 
-### Core Metrics
-
-#### REQ-016: Five Core Metrics
-**Source**: decisions.md — MVP Feature Set
+### REQ-006: Single R2 Bucket with Tenant Partitioning
+**Source**: Decision 2
 **Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Track and display: engagement rate, post frequency, follower growth, response time, conversion rate.
-**Implementation**: `pulse-metrics.ts` (489 LOC) calculates all 5 metrics
+**Category**: Architecture
+**Description**: All site assets in single R2 bucket, partitioned by `site_id`.
 **Acceptance Criteria**:
-- [x] All 5 metrics calculated in nightly batch
-- [x] Metrics defined in data dictionary
-- [x] Dashboard displays all 5 metrics
-
-**Metric Definitions** (validated via data audit):
-| Metric | Definition | Data Source | Status |
-|--------|------------|-------------|--------|
-| Engagement Rate | (likes + comments) / followers * 100 | analyticsEvents | AVAILABLE |
-| Post Frequency | Posts per week | actions table | AVAILABLE |
-| Engagement Growth | Week-over-week change (proxy for follower growth) | analyticsEvents | PROXY |
-| Response Time | Average time to respond to reviews | reviews + reviewResponses | AVAILABLE |
-| Conversion Rate | Actions / impressions * 100 | attributionEvents | AVAILABLE |
-
-**Note**: Follower growth uses engagement growth as proxy (true follower tracking deferred to Phase 2)
+- [ ] R2 paths: `{site_id}/{asset}`
+- [ ] No per-tenant bucket creation
 
 ---
 
-### Technical Implementation
-
-#### REQ-017: Nightly Batch Processing
-**Source**: decisions.md — Technical Specifications
+### REQ-007: Cloudflare Infrastructure Stack
+**Source**: Decision 12, 16, Consensus Statement
 **Priority**: MUST HAVE
-**Status**: COMPLETE (code exists, needs scheduler registration)
-**Description**: Cron job runs nightly using PERCENTILE_CONT() for pre-computation.
-**Implementation**: `batch-percentiles.ts` (451 LOC) exports `cronHandler()`
+**Category**: Architecture
+**Description**: Cloudflare Workers (routing), D1 (database), R2 (assets), KV (cache), Cloudflare for SaaS (custom domains Pro tier).
 **Acceptance Criteria**:
-- [x] Job logic implemented
-- [ ] Job scheduled at 2 AM UTC (needs registration in scheduler.ts)
-- [ ] Job completes within 30 minutes for 1000+ businesses
-
-#### REQ-018: Benchmarks API Endpoint
-**Source**: decisions.md — Technical Specifications
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: GET /api/pulse/benchmarks/:customerId returns percentile and comparison data.
-**Implementation**: `route.ts` (405 LOC) at `/api/pulse/benchmarks/[customerId]/`
-**Acceptance Criteria**:
-- [x] Returns: percentile_rank, cohort_description, metrics_comparison
-- [x] Authentication required (reuses LocalGenius auth)
-- [ ] Response time < 200ms (needs load testing)
-
-#### REQ-025: Database Schema
-**Source**: decisions.md — File Structure
-**Priority**: MUST HAVE
-**Status**: COMPLETE (needs migration to main app)
-**Description**: Schema extensions for Pulse benchmark calculations.
-**Implementation**: `schema-pulse.ts` (349 LOC) defines 6 tables
-**Tables Defined**:
-- pulseBenchmarks
-- pulsePublicReports
-- pulseBadgeConfigs
-- percentileHistory
-- notificationPreferences
-- pulseBadges
-**Acceptance Criteria**:
-- [x] Schema defined
-- [ ] Migration applied to LocalGenius database
-- [ ] organization_id added for RLS compliance
+- [ ] Site router Worker deployed
+- [ ] D1 provisioned with site schema
+- [ ] R2 bucket with CDN caching
+- [ ] KV for cache invalidation
 
 ---
 
-### React Components
-
-#### REQ-019: PulseScore Component
-**Source**: decisions.md — File Structure
+### REQ-008: Vercel + Neon for Main Application
+**Source**: Consensus Statement
 **Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Hero component displaying single large percentile number.
-**Implementation**: `PulseScore.tsx` (218 LOC)
+**Category**: Architecture
+**Description**: Main app (onboarding, API, auth) on Vercel. State machine for provisioning in Neon PostgreSQL.
 **Acceptance Criteria**:
-- [x] Large, prominent display (text-7xl)
-- [x] Includes peer group context
-- [x] Responsive design
-
-#### REQ-020: IndustryComparison Component
-**Source**: decisions.md — File Structure
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Component rendering 3-4 metric comparison charts.
-**Implementation**: `IndustryComparison.tsx` (242 LOC)
-**Acceptance Criteria**:
-- [x] Charts show distribution + user position
-- [x] Loading state per chart
-- [x] Error boundary for failed metrics
-
-#### REQ-021: PeerGroupSelector Component
-**Source**: decisions.md — File Structure
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Read-only display of peer group criteria.
-**Implementation**: `PeerGroupSelector.tsx` (297 LOC)
-**Acceptance Criteria**:
-- [x] Shows: industry, region, size bucket
-- [x] Shows cohort size (e.g., "62 restaurants")
-- [x] Not user-editable
-
-#### REQ-022: EmbeddableBadge Component
-**Source**: decisions.md — File Structure
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Badge component for third-party embedding.
-**Implementation**: `EmbeddableBadge.tsx` (315 LOC)
-**Acceptance Criteria**:
-- [x] Shows tier: Gold (Top 10%), Silver (Top 25%), Bronze (Top 50%)
-- [x] Includes calculation timestamp
-- [x] Minimal external dependencies
+- [ ] Vercel deployment configured
+- [ ] Neon PostgreSQL for state machine
+- [ ] MCP client as Vercel API route
 
 ---
 
-### Pages & Routes
-
-#### REQ-023: Dashboard Page
-**Source**: decisions.md — File Structure
+### REQ-009: MCP HTTP Transport (Stateless)
+**Source**: Decision 16
 **Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Main Pulse dashboard integrating all components.
-**Implementation**: `dashboard/pulse.tsx` (468 LOC)
+**Category**: Architecture
+**Description**: MCP uses streamable HTTP POST. No WebSockets. No SSE for CRUD. MCP server as Cloudflare Worker, client in Vercel.
 **Acceptance Criteria**:
-- [x] Route: /dashboard/pulse
-- [x] Integrates: PulseScore, IndustryComparison, PeerGroupSelector
-- [x] Authentication required
-- [x] FreemiumGate component for conversion
-
-#### REQ-024: Public Report Page
-**Source**: decisions.md — File Structure
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: SEO-friendly public benchmark report page.
-**Implementation**: `reports/[slug].tsx` (581 LOC)
-**Acceptance Criteria**:
-- [x] Route: /reports/[report-slug]
-- [x] No authentication required
-- [x] Structured data for search engines
-- [x] Social sharing meta tags
+- [ ] MCP transport is HTTP POST
+- [ ] No WebSocket/SSE connections
+- [ ] Request/response payloads are stateless
 
 ---
 
-### Distribution Features
-
-#### REQ-011: Distribution Architecture
-**Source**: decisions.md — Decision 9
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Built-in distribution via public reports and embeddable badges.
-**Rationale**: "Benchmarks are inherently viral. Build the share mechanic first."
-**Acceptance Criteria**:
-- [x] Public reports accessible without login
-- [x] Badges embeddable on external sites
-- [x] Claim links for badge verification
-
-#### REQ-012: Public Benchmark Report
-**Source**: decisions.md — MVP Feature Set
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: "State of Local Restaurant Marketing" public-facing report.
-**Acceptance Criteria**:
-- [x] Report template at /reports/[slug]
-- [x] SEO-optimized meta tags
-- [x] Aggregated data, no individual business identification
-
-#### REQ-013: Embeddable Badges
-**Source**: decisions.md — MVP Feature Set
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: React component and JavaScript loader for badge embedding.
-**Acceptance Criteria**:
-- [x] Badge shows percentile tier (Top 10%, Top 25%, Top 50%)
-- [x] Includes calculation date (REQ-033)
-- [x] Light/dark theme support
-
-#### REQ-014: Freemium Preview
-**Source**: decisions.md — MVP Feature Set
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Unauthenticated users see partial data requiring signup for full view.
-**Implementation**: `FreemiumGate` component in dashboard page
-**Acceptance Criteria**:
-- [x] Preview shows peer group stats (aggregated)
-- [x] Personal percentile hidden behind signup
-- [x] Clear CTA: "Sign up to see your rank"
-
-#### REQ-026: Badge Embed Loader
-**Source**: decisions.md — File Structure
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: JavaScript loader for embedding badges on external sites.
-**Implementation**: `badge-embed.js` (449 LOC) - standalone, no dependencies
-**Acceptance Criteria**:
-- [x] Async script load: /badges/badge-embed.js
-- [ ] CORS headers set for all origins (needs validation)
-- [x] Minimal bundle size
-
----
-
-### Brand & Voice
-
-#### REQ-027: Brand Voice
-**Source**: decisions.md — Decision 13
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: All copy is confident, direct, actionable. No corporate jargon.
-**Rationale**: "Like a trusted advisor who respects your time."
-**Acceptance Criteria**:
-- [x] Copy reviewed against brand guidelines
-- [x] Example tone: "You're ahead of most restaurants your size."
-- [x] No fake enthusiasm or hedging language
-
----
-
-### Timeline & Constraints
-
-#### REQ-029: Code Size Target
-**Source**: decisions.md — Decision 10
-**Priority**: MUST HAVE
-**Status**: DEVIATION DOCUMENTED
-**Description**: Implementation ~500 lines of code (excluding tests/dependencies).
-**Actual**: ~6,075 LOC across 22 files
-**Resolution**: Deviation accepted. Quality and completeness prioritized over arbitrary LOC limit.
-
-#### REQ-030: Timeline Constraint
-**Source**: decisions.md — Decision 10
-**Priority**: MUST HAVE
-**Status**: EXCEEDED (code complete, pending integration)
-**Description**: Ship to production within 14 calendar days.
-**Actual**: Code implementation complete, integration pending
-
-#### REQ-031: Data Audit (BLOCKER)
-**Source**: decisions.md — Risk Register (Risk 1)
-**Priority**: MUST HAVE
-**Status**: COMPLETE
-**Description**: Audit existing schema to confirm 5 core metrics exist before build.
-**Implementation**: `data-audit-results.md` documents GO decision
-**Acceptance Criteria**:
-- [x] SQL query identifies metric availability
-- [x] Gap analysis documented
-- [x] Go/no-go decision: **GO** (4/5 metrics available, 1 proxy)
-
----
-
-### Nice-to-Have Requirements
-
-#### REQ-033: Badge Timestamps
-**Source**: decisions.md — Risk 7
+### REQ-010: D1 Federation Strategy (Parameterized)
+**Source**: Decision 17
 **Priority**: SHOULD HAVE
-**Status**: COMPLETE
-**Description**: Badges display "Calculated on [DATE]" to prevent abuse.
-**Implementation**: `EmbeddableBadge.tsx` L252-262
+**Category**: Architecture
+**Description**: Parameterize `cloudflareAccountId` now. Build federation at 10K+ sites (Phase 2).
 **Acceptance Criteria**:
-- [x] Date displayed on badge
-- [x] Date updated only when recalculated
+- [ ] `cloudflareAccountId` as environment variable
+- [ ] No hardcoded account IDs
+- [ ] Federation roadmap documented
 
-#### REQ-034: Copy Testing
-**Source**: decisions.md — Risk 9
+---
+
+### REQ-011: Fork Emdash from Day 1
+**Source**: Decision 9
+**Priority**: MUST HAVE
+**Category**: Architecture
+**Description**: Own Emdash fork. Do not depend on external releases.
+**Acceptance Criteria**:
+- [ ] Emdash forked to `localgenius/emdash-fork`
+- [ ] Fork tracks upstream (git remote)
+- [ ] Custom templates in fork
+- [ ] Custom Portable Text schemas in fork
+
+---
+
+## ONBOARDING & USER EXPERIENCE
+
+### REQ-012: Four-Input Onboarding
+**Source**: Decision 6
+**Priority**: MUST HAVE
+**Category**: Onboarding
+**Description**: Exactly 4 inputs: business name (pre-captured), photos, one-sentence description, hours confirmation.
+**Acceptance Criteria**:
+- [ ] Input 1: Business name (pre-populated)
+- [ ] Input 2: Photos (upload or GBP)
+- [ ] Input 3: "What do you do?" (one sentence)
+- [ ] Input 4: Hours confirmation
+- [ ] No additional fields
+
+---
+
+### REQ-013: Auto-Enrichment from GBP & Yelp
+**Source**: Decision 6
+**Priority**: MUST HAVE
+**Category**: Onboarding
+**Description**: AI enriches inputs with GBP and Yelp data asynchronously.
+**Acceptance Criteria**:
+- [ ] GBP API for photos, hours, categories
+- [ ] Yelp API for reviews, description
+- [ ] Enrichment happens asynchronously
+- [ ] Fallback: AI asks conversational follow-ups
+
+---
+
+### REQ-014: Graceful Fallback (No GBP Data)
+**Source**: Decision 6, Risk R8
+**Priority**: MUST HAVE
+**Category**: Onboarding
+**Description**: For 30% of businesses with no GBP, AI asks follow-ups conversationally (not as form fields).
+**Acceptance Criteria**:
+- [ ] GBP lookup fails → trigger chat fallback
+- [ ] Questions appear as natural conversation
+- [ ] Site ships with available data
+
+---
+
+### REQ-015: Editable Fact Cards for Verification
+**Source**: Decision 7
+**Priority**: MUST HAVE
+**Category**: Onboarding
+**Description**: Verification screen shows 5 editable fact cards (name, description, hours, phone, address). Inline editing, no chat round-trip.
+**Acceptance Criteria**:
+- [ ] 5 fact cards displayed
+- [ ] Each card has inline edit
+- [ ] Click-to-edit opens text input
+- [ ] No design editing (facts only)
+
+---
+
+### REQ-016: Instant Preview in <5 Seconds
+**Source**: Decision 8
+**Priority**: MUST HAVE
+**Category**: Onboarding
+**Description**: Static HTML preview renders in <5 seconds for the Reveal moment.
+**Acceptance Criteria**:
+- [ ] Static HTML generation <5 seconds
+- [ ] Preview includes name, photos, description, hours
+- [ ] Accurate representation of final site
+
+---
+
+### REQ-017: Deferred Provisioning (Background)
+**Source**: Decision 8
+**Priority**: MUST HAVE
+**Category**: Onboarding
+**Description**: Full D1/R2/Worker/DNS provisioning runs in background after Reveal. Hot-swap when ready; static stays live if provisioning fails.
+**Acceptance Criteria**:
+- [ ] Instant preview serves immediately
+- [ ] Full provisioning in background
+- [ ] Hot-swap when complete
+- [ ] Failed provisioning → retry loop with exponential backoff
+
+---
+
+## TEMPLATE SYSTEM
+
+### REQ-018: Two Templates at Launch
+**Source**: Decision 4
+**Priority**: MUST HAVE
+**Category**: Templates
+**Description**: Exactly 2 templates: Restaurant and Services. Both 95+ PageSpeed, mobile-first.
+**Acceptance Criteria**:
+- [ ] Restaurant template in Astro
+- [ ] Services template in Astro
+- [ ] Both 95+ PageSpeed
+- [ ] Mobile-first responsive design
+
+---
+
+### REQ-019: Restaurant Template
+**Source**: Decision 4, File Structure
+**Priority**: MUST HAVE
+**Category**: Templates
+**Description**: Restaurant vertical with menu display, pricing, photos.
+**Acceptance Criteria**:
+- [ ] Pages: index, menu, about, contact
+- [ ] Menu items: name, description, price, photo
+- [ ] Hours with holiday handling
+- [ ] Reservation CTA
+- [ ] Schema: menuItem, section, restaurantInfo
+
+---
+
+### REQ-020: Services Template
+**Source**: Decision 4, File Structure
+**Priority**: MUST HAVE
+**Category**: Templates
+**Description**: Services vertical with service listings and booking CTAs.
+**Acceptance Criteria**:
+- [ ] Pages: index, services, about, contact
+- [ ] Services: name, description, duration, price, CTA
+- [ ] Service categories
+- [ ] Booking integration point
+- [ ] Schema: service, serviceCategory, availability
+
+---
+
+### REQ-021: AI Template Selection
+**Source**: Decision 5
+**Priority**: MUST HAVE
+**Category**: Templates
+**Description**: AI selects template based on business vertical. User never sees choice.
+**Acceptance Criteria**:
+- [ ] No template picker UI
+- [ ] AI evaluates business type
+- [ ] Selection stored in site record
+- [ ] Admin override available (not user-facing)
+
+---
+
+### REQ-022: Portable Text Schema Validation
+**Source**: Decision 6, Risk R4
+**Priority**: MUST HAVE
+**Category**: Templates
+**Description**: AI content validated against schema before D1 write. Malformed content rejected and regenerated.
+**Acceptance Criteria**:
+- [ ] `src/lib/portable-text-schema.ts` implemented
+- [ ] Restaurant schema defined
+- [ ] Services schema defined
+- [ ] Validation before write
+- [ ] Failures logged for prompt improvement
+
+---
+
+## PROVISIONING PIPELINE
+
+### REQ-023: Parallel Build Strategy
+**Source**: Decision 1
+**Priority**: MUST HAVE
+**Category**: Provisioning
+**Description**: Pipeline targets static HTML initially. Emdash audit runs in parallel. Day 14 decision: swap to Emdash if audit passes.
+**Acceptance Criteria**:
+- [ ] Static HTML pipeline by Day 7
+- [ ] Emdash audit runs independently
+- [ ] Day 14 benchmark results for decision
+- [ ] Swap mechanism between static/Emdash
+
+---
+
+### REQ-024: Static HTML Provisioning
+**Source**: Decision 1, 3
+**Priority**: MUST HAVE
+**Category**: Provisioning
+**Description**: Generate static HTML from template + content. Store in R2. Serve via edge cache.
+**Acceptance Criteria**:
+- [ ] Template + content merged to HTML
+- [ ] Output uploaded to R2 at `{site_id}/`
+- [ ] Cache invalidation on update
+- [ ] Worker serves static HTML
+
+---
+
+### REQ-025: Emdash SSR Benchmark & Audit
+**Source**: Decision 1, 11
+**Priority**: MUST HAVE
+**Category**: Provisioning
+**Description**: Audit measures P99 render time. Pass: <20ms. Acceptable: 20-28ms. Fail: >28ms.
+**Acceptance Criteria**:
+- [ ] Benchmark script: `scripts/benchmark-ssr.ts`
+- [ ] Measures P99 across 5 pages with D1
+- [ ] Results by Day 14
+- [ ] Decision documented
+
+---
+
+### REQ-026: Site Provisioning State Machine
+**Source**: Decision 2, File Structure
+**Priority**: MUST HAVE
+**Category**: Provisioning
+**Description**: Neon hosts state machine: pending → generating → uploading → dns-configuring → provisioned → failed.
+**Acceptance Criteria**:
+- [ ] Migration: `site_provisions.sql`
+- [ ] Status transitions tracked
+- [ ] Failed states include error context
+- [ ] Retry queue for failed sites
+
+---
+
+### REQ-027: Async Queue with Exponential Backoff
+**Source**: Risk R5, File Structure
+**Priority**: MUST HAVE
+**Category**: Provisioning
+**Description**: `src/services/provisioning-queue.ts` handles async provisioning. Exponential backoff, circuit breaker.
+**Acceptance Criteria**:
+- [ ] Queue with job processing
+- [ ] Backoff: 1s, 2s, 4s, 8s, 16s, 32s max
+- [ ] Circuit breaker after 5 failures
+- [ ] Queue doesn't block UX
+
+---
+
+### REQ-028: Provisioning Success Rate >99%
+**Source**: PRD metrics
+**Priority**: MUST HAVE
+**Category**: Provisioning
+**Description**: Pipeline achieves >99% success. Failed sites retry for 24 hours.
+**Acceptance Criteria**:
+- [ ] >99% sites complete provisioning
+- [ ] Retry every 5 minutes for 24 hours
+- [ ] Static preview remains live during failure
+- [ ] Alert if success rate <98%
+
+---
+
+### REQ-029: Subdomain Provisioning
+**Source**: Decision 10
+**Priority**: MUST HAVE
+**Category**: Provisioning
+**Description**: Sites at `{slug}.localgenius.site`. Wildcard DNS → Cloudflare Workers.
+**Acceptance Criteria**:
+- [ ] Domain `localgenius.site` registered
+- [ ] DNS wildcard configured
+- [ ] Slug validation: alphanumeric + hyphens, 3-50 chars
+- [ ] Slug uniqueness in D1
+- [ ] SSL auto-issued
+
+---
+
+### REQ-030: Image Optimization Pipeline
+**Source**: Decision 6, Risk R7
+**Priority**: MUST HAVE
+**Category**: Provisioning
+**Description**: Images optimized before serving. Sharp-wasm or Cloudflare Image Resizing. Original in R2, optimized served.
+**Acceptance Criteria**:
+- [ ] `src/services/image-optimizer.ts`
+- [ ] Resize to 320px, 640px, 1280px
+- [ ] WebP with JPEG fallback
+- [ ] PageSpeed not degraded by images
+
+---
+
+### REQ-031: Pre-Rendered Output (Emdash as Build System)
+**Source**: Decision 3
+**Priority**: MUST HAVE
+**Category**: Provisioning
+**Description**: Emdash generates HTML at provision/update time. Edge-cached. No SSR at request time.
+**Acceptance Criteria**:
+- [ ] Static HTML on provision
+- [ ] R2 + edge cache storage
+- [ ] MCP write triggers cache invalidation
+- [ ] No runtime SSR
+
+---
+
+## CONTENT MANAGEMENT & UPDATES
+
+### REQ-032: Verification Screen
+**Source**: Decision 7
+**Priority**: MUST HAVE
+**Category**: Content Management
+**Description**: Before Reveal, user confirms/corrects 5 fact cards.
+**Acceptance Criteria**:
+- [ ] Verification screen after onboarding
+- [ ] 5 cards: name, description, hours, phone, address
+- [ ] Inline edit each card
+- [ ] Confirm button triggers Reveal
+- [ ] Facts written to D1
+
+---
+
+### REQ-033: MCP Bridge for Content Updates
+**Source**: Decision 1, File Structure
+**Priority**: MUST HAVE
+**Category**: Content Management
+**Description**: `src/services/emdash-mcp.ts` implements MCP bridge for content CRUD.
+**Acceptance Criteria**:
+- [ ] MCP client sends updates to server
+- [ ] MCP server on Cloudflare Worker
+- [ ] Operations: name, description, hours, photos, menu, services
+- [ ] Retry logic on errors
+
+---
+
+### REQ-034: User-Initiated Updates via Chat
+**Source**: Decision 8, MVP Feature
+**Priority**: MUST HAVE
+**Category**: Content Management
+**Description**: User requests updates via chat. AI interprets and modifies via MCP.
+**Acceptance Criteria**:
+- [ ] Chat accepts update requests
+- [ ] AI parses intent
+- [ ] Content validated against schema
+- [ ] MCP sends update
+- [ ] Confirmation: "I updated X because Y"
+
+---
+
+### REQ-035: Review Sync (Top 5 Google Reviews)
+**Source**: MVP Feature
+**Priority**: MUST HAVE
+**Category**: Content Management
+**Description**: Top 5 Google reviews pushed via MCP every 6 hours.
+**Acceptance Criteria**:
+- [ ] GBP API integration
+- [ ] Fetch top 5 reviews
+- [ ] Push via MCP every 6 hours
+- [ ] Reviews in D1, rendered in template
+
+---
+
+### REQ-036: Optional Monthly Updates (Opt-In)
+**Source**: Decision 18
+**Priority**: NICE TO HAVE
+**Category**: Content Management
+**Description**: Optional monthly AI suggestions. Opt-in, default OFF. User approves/rejects.
+**Acceptance Criteria**:
+- [ ] Feature flag: default false
+- [ ] User setting to enable
+- [ ] AI suggests conversationally
+- [ ] User approves before execution
+
+---
+
+## PERFORMANCE & QUALITY
+
+### REQ-037: 95+ PageSpeed for Both Templates
+**Source**: Decision 15
+**Priority**: MUST HAVE
+**Category**: Performance
+**Description**: Both templates 95+ on PageSpeed Insights (desktop and mobile).
+**Acceptance Criteria**:
+- [ ] Restaurant: 95+ desktop, 95+ mobile
+- [ ] Services: 95+ desktop, 95+ mobile
+- [ ] CSS critical-path inlined
+- [ ] Fonts subsetted and inlined
+- [ ] Images optimized
+
+---
+
+### REQ-038: SSR <20ms Pass Threshold
+**Source**: Decision 11
+**Priority**: MUST HAVE
+**Category**: Performance
+**Description**: Emdash SSR P99 <20ms to pass audit.
+**Acceptance Criteria**:
+- [ ] P99 <20ms = pass
+- [ ] 20-28ms = acceptable with caching
+- [ ] >28ms = fail, use static
+
+---
+
+### REQ-039: MCP Audit >95% Success
+**Source**: Open Questions #5
+**Priority**: MUST HAVE
+**Category**: Performance
+**Description**: MCP operations >95% success rate.
+**Acceptance Criteria**:
+- [ ] Test 100 MCP operations
+- [ ] Audit on Day 14
+- [ ] >95% passes audit
+
+---
+
+### REQ-040: Site Load <3 Seconds
+**Source**: Implied by PageSpeed
+**Priority**: MUST HAVE
+**Category**: Performance
+**Description**: All sites load <3 seconds on 4G.
+**Acceptance Criteria**:
+- [ ] Lighthouse: <3 second load on 4G
+- [ ] Both templates verified
+- [ ] Synthetic monitoring
+
+---
+
+## GROWTH & MONETIZATION
+
+### REQ-041: "Made with LocalGenius" Footer
+**Source**: Decision 13, MVP Feature
+**Priority**: MUST HAVE
+**Category**: Growth
+**Description**: Footer: "Made with LocalGenius" linking to `localgenius.company/sites?ref={slug}`.
+**Acceptance Criteria**:
+- [ ] Footer text: "Made with LocalGenius"
+- [ ] Link: `localgenius.company/sites?ref={slug}`
+- [ ] Referral tracking
+- [ ] Both templates include footer
+
+---
+
+### REQ-042: Growth Targets
+**Source**: PRD metrics
+**Priority**: MUST HAVE
+**Category**: Growth
+**Description**: 50 sites Day 30, 500 sites Day 60.
+**Acceptance Criteria**:
+- [ ] Dashboard metric: cumulative sites
+- [ ] Day 30: ≥50 live sites
+- [ ] Day 60: ≥500 live sites
+
+---
+
+### REQ-043: MCP Updates ≥2/month
+**Source**: PRD metrics
 **Priority**: SHOULD HAVE
-**Status**: COMPLETE
-**Description**: Test percentile phrasing with real users.
+**Category**: Growth
+**Description**: Engaged users average ≥2 MCP updates/month.
 **Acceptance Criteria**:
-- [x] Phrasing tested: "ahead of 73%" vs "73rd percentile"
-- [x] User comprehension validated
+- [ ] Track MCP updates per site
+- [ ] Target: ≥2/month average
 
-#### REQ-035: Social Badge Design
-**Source**: decisions.md — Risk 10
+---
+
+### REQ-044: Pro Tier Conversion >20%
+**Source**: PRD metrics
 **Priority**: SHOULD HAVE
-**Status**: COMPLETE
-**Description**: Badge designs optimized for social sharing.
+**Category**: Growth
+**Description**: >20% convert to Pro tier ($79 custom domains).
 **Acceptance Criteria**:
-- [x] Visually appealing SVG design
-- [x] Works on light/dark backgrounds
-- [x] Shareable with single click
-
-#### REQ-036: Insufficient Data UX
-**Source**: decisions.md — Risk 2
-**Priority**: SHOULD HAVE
-**Status**: COMPLETE
-**Description**: Graceful message when cohort size < threshold.
-**Implementation**: `PulseScore.tsx` L96-116 handles insufficient data state
-**Acceptance Criteria**:
-- [x] Friendly explanation, not error
-- [x] Suggests when to check back
-- [x] No broken UI states
+- [ ] Track Pro conversion rate
+- [ ] Target: >20%
 
 ---
 
-## Deliverables Inventory
-
-### Database & Seeds (4 files)
-| File | LOC | Purpose |
-|------|-----|---------|
-| `src/db/schema-pulse.ts` | 349 | 6 Pulse-specific tables |
-| `db/seeds/naics-restaurants.ts` | 166 | NAICS seed data (8 restaurant codes) |
-| `lib/naics.ts` | 270 | NAICS code mapping utilities |
-| `lib/regions.ts` | 547 | MSA/State region utilities |
-
-### Services (5 files)
-| File | LOC | Purpose |
-|------|-----|---------|
-| `src/services/pulse-metrics.ts` | 489 | Core metrics calculation |
-| `src/services/peer-groups.ts` | 310 | Peer selection + fallback logic |
-| `src/services/batch-percentiles.ts` | 451 | Nightly batch job |
-| `src/services/notification.ts` | 402 | Email notification service |
-| `src/services/index.ts` | 50 | Barrel exports |
-
-### API Routes (2 files)
-| File | LOC | Purpose |
-|------|-----|---------|
-| `src/api/pulse/benchmarks/[customerId]/route.ts` | 405 | Main benchmark API (REQ-018) |
-| `src/api/badges/[embedId]/route.ts` | 111 | Badge embed API |
-
-### Components (7 files)
-| File | LOC | Purpose |
-|------|-----|---------|
-| `src/components/PulseScore.tsx` | 218 | Hero percentile display (REQ-019) |
-| `src/components/IndustryComparison.tsx` | 242 | 4-metric comparison charts (REQ-020) |
-| `src/components/PeerGroupSelector.tsx` | 297 | Read-only peer group display (REQ-021) |
-| `src/components/EmbeddableBadge.tsx` | 315 | Badge component (REQ-022) |
-| `src/components/ProgressTracking.tsx` | 394 | Week-over-week tracking |
-| `src/components/NotificationPreferences.tsx` | 333 | Notification settings |
-| `src/components/index.ts` | 30 | Barrel exports |
-
-### Pages (2 files)
-| File | LOC | Purpose |
-|------|-----|---------|
-| `src/pages/dashboard/pulse.tsx` | 468 | Main dashboard (REQ-023) |
-| `src/pages/reports/[slug].tsx` | 581 | Public report page (REQ-024) |
-
-### Distribution (1 file)
-| File | LOC | Purpose |
-|------|-----|---------|
-| `badges/badge-embed.js` | 449 | Standalone embed loader (REQ-026) |
-
-**Total**: 22 files, ~6,075 LOC
-
----
-
-## Integration Requirements (NEW)
-
-These requirements were identified during Phase Planning research:
-
-### INT-001: Database Migration
-**Priority**: P0 BLOCKER
-**Description**: Create Drizzle migration files for 6 Pulse tables
+### REQ-045: MCP Story Filmed Day 30
+**Source**: Timeline, MVP Feature
+**Priority**: MUST HAVE
+**Category**: Growth
+**Description**: First MCP update story filmed by Day 30.
 **Acceptance Criteria**:
-- [ ] Migration files generated
-- [ ] Applied to LocalGenius database
-- [ ] Tables verified in production
+- [ ] Script written Day 25-26
+- [ ] Filming Day 27-28
+- [ ] Publication Day 30
+- [ ] MCP bridge stable for filming
 
-### INT-002: Scheduler Registration
-**Priority**: P1 HIGH
-**Description**: Register nightly batch job in LocalGenius scheduler
+---
+
+## DESIGN & BRAND
+
+### REQ-046: Reveal Moment Design
+**Source**: Decision 14
+**Priority**: MUST HAVE
+**Category**: Design
+**Description**: Device frame with live site. URL bar shows subdomain. "Your site is live." No confetti.
 **Acceptance Criteria**:
-- [ ] Job registered as "pulse-nightly-benchmark"
-- [ ] Scheduled for 2 AM UTC daily
-- [ ] Manual trigger works via API
+- [ ] Component: `RevealFrame.tsx`
+- [ ] Device frame mockup
+- [ ] URL bar with actual subdomain
+- [ ] Text: "Your site is live"
+- [ ] No excessive animation
 
-### INT-003: Multi-Tenant RLS
-**Priority**: P1 HIGH
-**Description**: Add organization_id to Pulse tables for Row-Level Security
-**Tables Affected**: pulseBenchmarks, pulsePublicReports, percentileHistory
+---
+
+### REQ-047: Build Progress Animation
+**Source**: File Structure
+**Priority**: MUST HAVE
+**Category**: Design
+**Description**: Progress states during generation: "Building something beautiful..."
 **Acceptance Criteria**:
-- [ ] organization_id column added
-- [ ] Foreign key references organizations table
-- [ ] RLS policies applied
+- [ ] Component: `BuildProgress.tsx`
+- [ ] Multiple progress states
+- [ ] Smooth animation
+- [ ] Conveys craftsmanship
 
-### INT-004: Source Tree Integration
-**Priority**: P0 BLOCKER
-**Description**: Copy deliverables into LocalGenius source tree
+---
+
+### REQ-048: Product Naming
+**Source**: Decision 19
+**Priority**: MUST HAVE
+**Category**: Brand
+**Description**: "LocalGenius Sites" in code, "Presence" in marketing. Re-evaluate at 1K users.
 **Acceptance Criteria**:
-- [ ] Services in /src/services/pulse/
-- [ ] Components in /src/components/pulse/
-- [ ] API routes in /src/app/api/pulse/
-- [ ] npm run build succeeds
+- [ ] Code: `localgenius-sites`
+- [ ] Marketing: "Presence"
+- [ ] Footer: "Made with LocalGenius"
 
 ---
 
-## Cut from v1 (Explicitly Excluded)
-
-| Feature | Rationale | Revisit |
-|---------|-----------|---------|
-| Insights engine | Requires causal inference + 10x data | v2 |
-| Monthly email reports | Dashboard must be sticky first | v2 |
-| Customizable dashboards | Design has opinions | Never |
-| Raw data exports | Ship intelligence, not bytes | v2 if enterprise |
-| ML/recommendations | Premature without data volume | v2 |
-| Compare to anyone | Arbitrary comparisons destroy trust | Never |
-| Multiple industries | Nail restaurants first | v2 |
-| True follower tracking | Social platform API integration needed | Phase 2 |
+### REQ-049: Mobile-First Design
+**Source**: Decision 4
+**Priority**: MUST HAVE
+**Category**: Design
+**Description**: Templates designed mobile-first. 95+ PageSpeed on mobile.
+**Acceptance Criteria**:
+- [ ] Design for 320px+ first
+- [ ] Desktop as enhancement
+- [ ] Responsive images
+- [ ] Touch-friendly buttons (48px min)
 
 ---
 
-## Risk Register
-
-| # | Risk | Severity | Status | Mitigation |
-|---|------|----------|--------|------------|
-| 1 | Uncommitted files | P0 | **BLOCKING** | Git add db/ and lib/ |
-| 2 | Integration test missing | P0 | **BLOCKING** | Test in LocalGenius context |
-| 3 | Database migrations missing | P0 | **BLOCKING** | Create Drizzle migrations |
-| 4 | Sparse cohorts | MITIGATED | Resolved | 50+ minimum, MSA->State fallback |
-| 5 | Privacy exposure | MITIGATED | Resolved | Aggregate-only API |
-| 6 | NAICS mismatch | ACCEPTED | v2 | Validation workflow deferred |
-| 7 | Percentile confusion | MITIGATED | Resolved | Copy tested |
-| 8 | Badge abuse | MITIGATED | Resolved | Calculation date on badge |
-| 9 | Distribution uptake | MONITORING | — | Frictionless sharing |
-| 10 | Insights creep | PROCESS | — | This document locks scope |
-| 11 | Hardcoded URLs | P2 | v1.1 | Move to env config |
-| 12 | Zero unit tests | P2 | v1.1 | Add test coverage |
-| 13 | Batch job not scheduled | P1 | HIGH | Register in scheduler.ts |
-| 14 | Missing RLS columns | P1 | HIGH | Add organization_id |
-| 15 | CORS not validated | P1 | HIGH | Test badge embed cross-origin |
+### REQ-050: Photo Treatment System
+**Source**: Timeline
+**Priority**: MUST HAVE
+**Category**: Design
+**Description**: Photo gallery, hero optimization, aspect ratios, lazy loading.
+**Acceptance Criteria**:
+- [ ] Gallery component
+- [ ] Hero image optimization
+- [ ] Consistent aspect ratios
+- [ ] Lazy loading below fold
 
 ---
 
-## North Star
-
-From `essence.md`:
-
-> **What is this product REALLY about?**
-> Ending the 2am loneliness of not knowing if you're okay.
->
-> **What's the feeling it should evoke?**
-> Relief. The exhale of finally knowing.
->
-> **What's the one thing that must be perfect?**
-> The number. One number. Undeniable.
->
-> **Creative direction:**
-> Truth, simply told.
-
-*Strip everything away. What remains: one person, one question, one answer.*
+### REQ-051: Restaurant Portable Text Schema
+**Source**: Open Questions #6
+**Priority**: MUST HAVE
+**Category**: Design
+**Description**: Schema for restaurant content types.
+**Acceptance Criteria**:
+- [ ] File: `emdash-fork/templates/restaurant/schema.ts`
+- [ ] Types: menuItem, section, restaurantInfo, hours
+- [ ] Validation rules
 
 ---
 
-**Document Version**: 3.0
-**Last Updated**: 2026-04-12
-**Total Requirements**: 40 (37 MUST HAVE, 3 SHOULD HAVE)
-**Implementation Status**: **100% COMPLETE** (code exists)
-**Deployment Status**: **BLOCKED** (pending integration)
-**Next Step**: Execute Phase 1 Plan to clear blockers and deploy
+### REQ-052: Services Portable Text Schema
+**Source**: Open Questions #6
+**Priority**: MUST HAVE
+**Category**: Design
+**Description**: Schema for services content types.
+**Acceptance Criteria**:
+- [ ] File: `emdash-fork/templates/services/schema.ts`
+- [ ] Types: service, serviceCategory, availability
+- [ ] Validation rules
+
+---
+
+### REQ-053: Typography System
+**Source**: Implied by PageSpeed
+**Priority**: MUST HAVE
+**Category**: Design
+**Description**: Subset fonts (Latin), inlined at build time.
+**Acceptance Criteria**:
+- [ ] Max 2 fonts per template
+- [ ] Latin subset only
+- [ ] Inlined in critical CSS
+
+---
+
+### REQ-054: Color System
+**Source**: Implied by Design
+**Priority**: MUST HAVE
+**Category**: Design
+**Description**: Color palette with WCAG AA contrast.
+**Acceptance Criteria**:
+- [ ] 4-5 color palette
+- [ ] Contrast ≥4.5:1
+- [ ] No user color customization
+
+---
+
+### REQ-055: Brand Voice
+**Source**: Round 2 debates
+**Priority**: MUST HAVE
+**Category**: Brand
+**Description**: Confident, direct, specific. No jargon. First-person for AI updates.
+**Acceptance Criteria**:
+- [ ] Copy style guide
+- [ ] Specific success messages
+- [ ] AI uses "I updated..."
+
+---
+
+## TIMELINE & DELIVERY
+
+### REQ-056: Six-Week Timeline
+**Source**: Timeline
+**Priority**: MUST HAVE
+**Category**: Project Management
+**Description**: Ship in 6 weeks. Kickoff April 14, Ship May 26.
+**Acceptance Criteria**:
+- [ ] Week 1-2: Templates + provisioning
+- [ ] Week 3-4: MCP + DNS automation
+- [ ] Week 5-6: Integration + deploy
+- [ ] Day 30: MCP story filmed
+
+---
+
+### REQ-057: Week 1-2 Milestones
+**Source**: Timeline
+**Priority**: MUST HAVE
+**Category**: Project Management
+**Description**: Steve: wireframes, design system. Elon: static pipeline, Emdash audit.
+**Acceptance Criteria**:
+- [ ] Mobile-first wireframes
+- [ ] Design system (colors, typography)
+- [ ] Static pipeline functional
+- [ ] Emdash audit started
+
+---
+
+### REQ-058: Week 2-3 Milestones
+**Source**: Timeline
+**Priority**: MUST HAVE
+**Category**: Project Management
+**Description**: Steve: templates in Astro. Elon: MCP bridge, schema validation.
+**Acceptance Criteria**:
+- [ ] Restaurant template coded
+- [ ] Services template coded
+- [ ] `emdash-mcp.ts` implemented
+- [ ] Portable Text validation complete
+
+---
+
+### REQ-059: Week 3-4 Milestones
+**Source**: Timeline
+**Priority**: MUST HAVE
+**Category**: Project Management
+**Description**: Day 14 decision. DNS automation. Reveal flow design.
+**Acceptance Criteria**:
+- [ ] Day 14 decision documented
+- [ ] DNS wildcard automation
+- [ ] Reveal frame component
+- [ ] Build progress animation
+
+---
+
+### REQ-060: Week 4-5 Milestones
+**Source**: Timeline
+**Priority**: MUST HAVE
+**Category**: Project Management
+**Description**: 10-user review. PageSpeed optimization. Load testing.
+**Acceptance Criteria**:
+- [ ] 10-user design review
+- [ ] Both templates 95+ PageSpeed
+- [ ] Load test: >100 concurrent provisions
+- [ ] Monitoring configured
+
+---
+
+### REQ-061: Week 5-6 Milestones
+**Source**: Timeline
+**Priority**: MUST HAVE
+**Category**: Project Management
+**Description**: Production deploy. MCP story filmed. Pro tier prep.
+**Acceptance Criteria**:
+- [ ] Production deploy complete
+- [ ] MCP story filmed Day 30
+- [ ] Custom domain infrastructure ready (not shipped)
+
+---
+
+## RISK REGISTER
+
+| # | Risk | Severity | Mitigation |
+|---|------|----------|------------|
+| R1 | Emdash SSR >28ms | HIGH | Fallback to static. Benchmark Day 1-2. |
+| R2 | Emdash audit <95% | MEDIUM | Static fallback. Audit by Day 14. |
+| R3 | MCP spec drift | LOW | Pin MCP version. Quarterly audit. |
+| R4 | AI Portable Text quality | MEDIUM | Schema validation. Retry on failure. |
+| R5 | Cloudflare API rate limits | MEDIUM | Async queue. Exponential backoff. Circuit breaker. |
+| R6 | Customer expectation gap | MEDIUM | Clear messaging. "I updated X because Y." |
+| R7 | Image degrades PageSpeed | MEDIUM | Image pipeline P0. Test PageSpeed before ship. |
+| R8 | No GBP data (30% users) | HIGH | Conversational fallback. Ship with available data. |
+| R9 | Reveal >5 seconds | LOW | Static preview decoupled. Preload iframe. |
+| R10 | D1 at 50K tenants | LOW | Parameterize accountId now. Federation at 10K. |
+
+---
+
+## OPEN QUESTIONS
+
+| # | Question | Status | Resolution |
+|---|----------|--------|------------|
+| 1 | Subdomain strategy | RESOLVED | `{slug}.localgenius.site` |
+| 2 | Monthly AI updates | RESOLVED | Opt-in, default OFF |
+| 3 | Product naming | RESOLVED | "LocalGenius Sites" code, "Presence" marketing |
+| 4 | Emdash SSR benchmark | Day 14 | Benchmark measurement required |
+| 5 | Emdash MCP audit | Day 14 | >95% success required |
+| 6 | Portable Text schema | Day 3 | Define during template design |
+| 7 | Domain purchase | Day 3 | Research `lg.site` availability |
+
+---
+
+## CUT FROM v1
+
+| Feature | Reason |
+|---------|--------|
+| Custom domains | Pro tier, Month 2 |
+| Analytics dashboard | Google Analytics embed sufficient |
+| Theme/color pickers | Zero customization philosophy |
+| Font dropdowns | Zero customization philosophy |
+| Template browsing | AI selects silently |
+| Advanced settings | Scope creep |
+| CMS admin panel | Conversational only |
+
+---
+
+**Document Version**: 1.0
+**Last Updated**: 2026-04-14
+**Total Requirements**: 65
+**Priority Split**: 53 MUST HAVE, 6 SHOULD HAVE, 6 NICE TO HAVE

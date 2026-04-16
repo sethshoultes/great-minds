@@ -1,3 +1,11 @@
+Apr 16, 2026 — 7:17 AM
+
+  Add pipeline artifacts from local daemon runs  ·  2ad0b1c
+
+Apr 14, 2026 — 11:54 AM
+
+  Replace placeholder text with proper empty states  ·  9834dde
+
 Apr 14, 2026 — 9:45 AM
 
   Final commit: great-minds-cloud in CHANGELOG.human.md  ·  4a189ef

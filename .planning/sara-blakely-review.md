@@ -1,28 +1,28 @@
-# Sara Blakely Gut-Check: Phase 1 Integration Plan
+# Sara Blakely Gut-Check: LocalGenius Sites Phase 1
 
 ## Would a customer pay for this?
 
-**Not yet.** This plan is all plumbing — git commits, migrations, RLS columns. That's fine, you gotta build the pipes. But 12 tasks deep and I still don't see: What does the customer GET that makes them reach for their wallet? A "PulseScore hero component" isn't a reason to buy. "You're outperforming 78% of taquerias in Houston" is. Lead with the outcome, not the architecture.
+**Not yet.** 18 tasks, 14 days, and not one asks: "Did the restaurant owner smile when she saw her site?" You're building a provisioning state machine before proving anyone wants what gets provisioned. That's backwards. The plan is all infrastructure and zero customer moment.
 
 ## What's confusing / bounce risk?
 
-- **No onboarding mentioned.** First-time user lands on dashboard and sees... what? Empty state? Error? Plan doesn't say.
-- **Badge system buried at task #8.** That's your distribution engine. Should be validated Day 1, not Day 3.
-- **"Percentile" is jargon.** Your customer didn't finish college, she started a restaurant. Say "Top 25%" not "75th percentile."
-- **4 metric charts = decision paralysis.** One number. One action. That's what busy people need.
+- **No demo by Day 14.** You get a "decision document" — not a live site a real business can click on. That's terrifying.
+- **"Portable Text schema"** — your customer doesn't know or care. She cares: "Does my menu look good on my phone?"
+- **Two templates, neither built.** Pick ONE. Restaurant. Ship it. Prove it. Then services.
+- **Wave 3 = "wireframes."** Wireframes don't get customers. Working websites do.
 
 ## 30-Second Elevator Pitch
 
-*"Pulse gives restaurant owners one number that shows exactly how they stack up against similar spots nearby. Updated weekly. Top performers get a badge for their website — free marketing that says 'we're better than the rest.' It's like a credit score for your restaurant's hustle."*
+*"LocalGenius gives you a gorgeous website for your restaurant in 60 seconds. No login. No design skills. Just answer 3 questions about your business and we build it live in front of you. Free subdomain. Loads instantly. Done."*
 
 ## $0 Marketing Test
 
-**Skip the dashboard. Test the badge first.** Mock up the gold badge. Call 10 restaurant owners: "Would you put this on your website if it meant free credibility?" 7+ enthusiastic yes = green light. Anything less = redesign the hook before writing another line of code.
+Walk into 3 local restaurants this week with a laptop. Say: "Can I build you a free website in 5 minutes?" If they say yes and love what they see, you have a business. If they shrug, no amount of D1 schemas will save you.
 
 ## Retention Hook
 
-**Currently missing.** Weekly percentile updates aren't sticky. Add: *"Maria's Tacos just passed you in Google reviews this week."* Competition creates habit. Leaderboards create addiction. A static score creates a one-time glance.
+**None. That's the gap.** What brings them back? Static sites don't create stickiness. Maybe: *"Your site got 47 views this week. Want to add online ordering?"* Give them a reason to return — or you've built a one-time transaction, not a relationship.
 
 ---
 
-**Bottom line:** You've got solid engineering rigor. But this reads like a deployment checklist, not a customer acquisition plan. Ship it, sure — but know that the real work starts after task #12.
+**Bottom line:** Ship one ugly site to one real business by Day 7. Then refactor. Infrastructure without customers is a hobby, not a company.
