@@ -1,0 +1,200 @@
+{
+  "pinned": [
+    {
+      "event": "note_created",
+      "description": "User created a new note",
+      "outcome_focused": true,
+      "properties_schema": {
+        "note_id": "string",
+        "word_count": "integer",
+        "has_mention": "boolean"
+      }
+    },
+    {
+      "event": "note_acknowledged",
+      "description": "User acknowledged a note they received",
+      "outcome_focused": true,
+      "properties_schema": {
+        "note_id": "string",
+        "time_to_ack_minutes": "integer"
+      }
+    },
+    {
+      "event": "mention_sent",
+      "description": "User sent a mention to another user",
+      "outcome_focused": true,
+      "properties_schema": {
+        "note_id": "string",
+        "recipient_count": "integer"
+      }
+    },
+    {
+      "event": "daily_active_session",
+      "description": "User had an active session (tracked once per day)",
+      "outcome_focused": false,
+      "properties_schema": {
+        "session_duration_seconds": "integer",
+        "notes_viewed": "integer"
+      }
+    }
+  ],
+  "dash": [
+    {
+      "event": "command_executed",
+      "description": "User executed a command via Dash",
+      "outcome_focused": true,
+      "properties_schema": {
+        "command_type": "string",
+        "execution_time_ms": "integer",
+        "success": "boolean"
+      }
+    },
+    {
+      "event": "search_performed",
+      "description": "User performed a search",
+      "outcome_focused": true,
+      "properties_schema": {
+        "query_length": "integer",
+        "results_found": "integer",
+        "result_clicked": "boolean"
+      }
+    },
+    {
+      "event": "shortcut_used",
+      "description": "User triggered a custom shortcut",
+      "outcome_focused": true,
+      "properties_schema": {
+        "shortcut_id": "string",
+        "execution_time_ms": "integer"
+      }
+    },
+    {
+      "event": "session_active",
+      "description": "User had an active session (tracked once per day)",
+      "outcome_focused": false,
+      "properties_schema": {
+        "session_duration_seconds": "integer",
+        "commands_executed": "integer"
+      }
+    }
+  ],
+  "localgenius": [
+    {
+      "event": "trial_started",
+      "description": "User started a trial subscription",
+      "outcome_focused": true,
+      "properties_schema": {
+        "plan_type": "string",
+        "source": "string"
+      }
+    },
+    {
+      "event": "subscription_started",
+      "description": "User started a paid subscription",
+      "outcome_focused": true,
+      "properties_schema": {
+        "plan_type": "string",
+        "monthly_value_cents": "integer"
+      }
+    },
+    {
+      "event": "post_generated",
+      "description": "User generated a social media post",
+      "outcome_focused": true,
+      "properties_schema": {
+        "post_type": "string",
+        "character_count": "integer",
+        "platform": "string"
+      }
+    },
+    {
+      "event": "review_responded",
+      "description": "User generated a review response",
+      "outcome_focused": true,
+      "properties_schema": {
+        "review_rating": "integer",
+        "response_length": "integer"
+      }
+    }
+  ],
+  "shipyard": [
+    {
+      "event": "project_started",
+      "description": "User started a new project",
+      "outcome_focused": true,
+      "properties_schema": {
+        "project_type": "string",
+        "estimated_duration_days": "integer"
+      }
+    },
+    {
+      "event": "stage_completed",
+      "description": "User completed a project stage",
+      "outcome_focused": true,
+      "properties_schema": {
+        "project_id": "string",
+        "stage_name": "string",
+        "duration_days": "integer"
+      }
+    },
+    {
+      "event": "project_delivered",
+      "description": "User delivered a completed project",
+      "outcome_focused": true,
+      "properties_schema": {
+        "project_id": "string",
+        "total_duration_days": "integer",
+        "client_satisfaction": "integer"
+      }
+    },
+    {
+      "event": "revision_requested",
+      "description": "Client requested a project revision",
+      "outcome_focused": true,
+      "properties_schema": {
+        "project_id": "string",
+        "revision_count": "integer"
+      }
+    }
+  ],
+  "great-minds": [
+    {
+      "event": "prd_submitted",
+      "description": "User submitted a PRD for review",
+      "outcome_focused": true,
+      "properties_schema": {
+        "prd_id": "string",
+        "word_count": "integer"
+      }
+    },
+    {
+      "event": "debate_completed",
+      "description": "User completed a debate session",
+      "outcome_focused": true,
+      "properties_schema": {
+        "prd_id": "string",
+        "message_count": "integer",
+        "duration_minutes": "integer"
+      }
+    },
+    {
+      "event": "plan_approved",
+      "description": "User approved an implementation plan",
+      "outcome_focused": true,
+      "properties_schema": {
+        "plan_id": "string",
+        "task_count": "integer"
+      }
+    },
+    {
+      "event": "project_shipped",
+      "description": "User shipped a completed project",
+      "outcome_focused": true,
+      "properties_schema": {
+        "project_id": "string",
+        "total_duration_days": "integer",
+        "tasks_completed": "integer"
+      }
+    }
+  ]
+}
