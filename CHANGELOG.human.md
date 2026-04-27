@@ -1,3 +1,11 @@
+Apr 19, 2026 — 12:08 AM
+
+  Ship persona testbed with real Claude + debate + export  ·  c7eef02
+
+Apr 18, 2026 — 7:37 AM
+
+  Import operational artifacts from great-minds-plugin  ·  8f9b0d4
+
 Apr 16, 2026 — 8:08 AM
 
   Commit daemon planning artifacts + persona image update  ·  e8385c2
