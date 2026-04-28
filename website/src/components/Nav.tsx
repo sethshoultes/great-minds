@@ -17,7 +17,7 @@ const navLinks = [
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  if (pathname?.startsWith("/personas")) return null;
+  const hideOnPersonas = pathname?.startsWith("/personas") ?? false;
 
   // Close menu on route change
   useEffect(() => {
@@ -47,6 +47,8 @@ export default function Nav() {
       return () => document.removeEventListener("keydown", handleKeyDown);
     }
   }, [open, handleKeyDown]);
+
+  if (hideOnPersonas) return null;
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl">
