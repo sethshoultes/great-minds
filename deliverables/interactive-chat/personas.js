@@ -401,4 +401,5 @@ window.PLUGINS = [
   { id: "great-designers",  label: "Designers",  accent: "#3EB489" },
   { id: "great-operators",  label: "Operators",  accent: "#E9C23B" },
   { id: "great-counsels",   label: "Counsels",   accent: "#A8A29E" },
+  { id: "great-researchers", label: "Researchers", accent: "#5EBDC0" },
 ];

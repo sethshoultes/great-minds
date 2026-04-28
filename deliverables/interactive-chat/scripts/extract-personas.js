@@ -15,6 +15,7 @@ const PLUGINS = {
   "great-designers-plugin":   { plugin: "great-designers",   label: "Designers",   accent: "#3EB489", role: "Designer" },
   "great-operators-plugin":   { plugin: "great-operators",   label: "Operators",   accent: "#E9C23B", role: "Operator" },
   "great-counsels-plugin":    { plugin: "great-counsels",    label: "Counsels",    accent: "#A8A29E", role: "Counsel" },
+  "great-researchers-plugin": { plugin: "great-researchers", label: "Researchers", accent: "#5EBDC0", role: "Researcher" },
 };
 
 const COLOR_MAP = {
@@ -102,7 +103,7 @@ function buildPersonaPrompt(body, name) {
 
 const SUFFIXES = ["persona", "engineer", "counsel", "designer", "operator", "marketer",
   "publisher", "editor", "creative", "narrative", "copywriter", "pioneer",
-  "art-director", "strategist", "behavioral", "direct-response"];
+  "art-director", "strategist", "behavioral", "direct-response", "researcher"];
 
 const all = [];
 
