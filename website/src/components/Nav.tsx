@@ -8,6 +8,7 @@ const navLinks = [
   { href: "/services", label: "Services" },
   { href: "/how", label: "How It Works" },
   { href: "/team", label: "Team" },
+  { href: "/personas", label: "Personas" },
   { href: "/work", label: "Work" },
   { href: "/docs", label: "Docs" },
   { href: "/blog", label: "Blog" },
@@ -16,6 +17,7 @@ const navLinks = [
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  if (pathname?.startsWith("/personas")) return null;
 
   // Close menu on route change
   useEffect(() => {
