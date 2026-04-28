@@ -10,8 +10,15 @@ function App() {
   const [active, setActive] = useStateA(null);
   const [theme, setTheme] = useStateA(TWEAK_DEFAULTS.theme);
   const [tweakMode, setTweakMode] = useStateA(false);
+  const [pluginFilter, setPluginFilter] = useStateA(() => localStorage.getItem("gm_plugin") || "great-minds");
 
-  const personas = window.PERSONAS;
+  const allPersonas = useMemoA(() => window.PERSONAS.filter(p => p.tier !== "founder"), []);
+  const personas = useMemoA(
+    () => pluginFilter === "all" ? allPersonas : allPersonas.filter(p => p.plugin === pluginFilter),
+    [pluginFilter, allPersonas]
+  );
+
+  useEffectA(() => { localStorage.setItem("gm_plugin", pluginFilter); }, [pluginFilter]);
 
   useEffectA(() => { localStorage.setItem("gm_view", view); }, [view]);
 
@@ -38,7 +45,11 @@ function App() {
   return (
     <div className="app">
       <header className="topbar">
-        <div className="brand">
+        <button
+          className="brand"
+          onClick={() => { setView("org"); setPluginFilter("all"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+          aria-label="Home"
+        >
           <div className="brand-mark">
             <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden>
               <circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" strokeWidth="1.2" />
@@ -49,7 +60,7 @@ function App() {
             <div className="brand-name">Great Minds</div>
             <div className="brand-sub">persona testbed · v0.1</div>
           </div>
-        </div>
+        </button>
         <nav className="tabs">
           <button className={`tab ${view === "org" ? "is-active" : ""}`} onClick={() => setView("org")}>
             <Icon.org width="14" height="14" /> <span>Team</span>
@@ -62,12 +73,21 @@ function App() {
           </button>
         </nav>
         <div className="topbar-right">
-          <span className="count">14 minds · 0 meetings</span>
+          <span className="count">{personas.length} minds · 0 meetings</span>
         </div>
       </header>
 
+      {view === "org" && (
+        <DisciplineStrip
+          plugins={window.PLUGINS}
+          personas={allPersonas}
+          active={pluginFilter}
+          onChange={setPluginFilter}
+        />
+      )}
+
       <main className="main">
-        {view === "org" && <TeamView personas={personas} onOpen={setActive} />}
+        {view === "org" && <TeamView personas={personas} pluginFilter={pluginFilter} onOpen={setActive} />}
         {view === "boardroom" && <Boardroom personas={personas} />}
         {view === "compare" && <Compare personas={personas} />}
       </main>
@@ -100,29 +120,105 @@ function App() {
   );
 }
 
-// ——— TEAM VIEW (hero + org chart) ———
-function TeamView({ personas, onOpen }) {
+// ——— DISCIPLINE FILTER STRIP ———
+function DisciplineStrip({ plugins, personas, active, onChange }) {
+  const counts = useMemoA(() => {
+    const c = { all: personas.length };
+    plugins.forEach(p => { c[p.id] = personas.filter(x => x.plugin === p.id).length; });
+    return c;
+  }, [plugins, personas]);
+
+  return (
+    <div className="discipline-strip">
+      <div className="discipline-strip-inner">
+        {plugins.map(p => (
+          <button
+            key={p.id}
+            className={`discipline-pill ${active === p.id ? "is-active" : ""}`}
+            onClick={() => onChange(p.id)}
+            style={{ '--accent': p.accent }}
+          >
+            {p.label} <span className="discipline-count">{counts[p.id] || 0}</span>
+          </button>
+        ))}
+        <button
+          className={`discipline-pill ${active === "all" ? "is-active" : ""}`}
+          onClick={() => onChange("all")}
+          style={{ '--accent': "#E9A23B" }}
+        >
+          All <span className="discipline-count">{counts.all}</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ——— TEAM VIEW (hero + roster) ———
+function TeamView({ personas, pluginFilter, onOpen }) {
+  const isAll = pluginFilter === "all";
+  const isMinds = pluginFilter === "great-minds";
+  const activePlugin = window.PLUGINS.find(p => p.id === pluginFilter);
+  const totalMinds = personas.length;
+  const disciplineCount = window.PLUGINS.length;
+
   return (
     <div className="team-view">
       <section className="hero">
-        <div className="eyebrow">THE TEAM</div>
+        <div className="eyebrow">{activePlugin ? activePlugin.label.toUpperCase() : "THE CONSTELLATION"}</div>
         <h1 className="hero-title">
-          <span className="hero-num">14</span>
-          <span className="hero-word">minds.</span>
-          <span className="hero-num">0</span>
-          <span className="hero-word">meetings.</span>
+          <span className="hero-num">{totalMinds}</span>
+          <span className="hero-word">{totalMinds === 1 ? "mind." : "minds."}</span>
+          {isAll && <>
+            <span className="hero-num">{disciplineCount}</span>
+            <span className="hero-word">disciplines.</span>
+          </>}
         </h1>
         <p className="hero-sub">
-          Every project runs the same five-phase pipeline. They have different values, different instincts, and different views of what makes something great. <em>That disagreement is load-bearing.</em>
+          Ninety personas across nine disciplines. Click any portrait to read their philosophy and test their voice. Convene them in the boardroom. Compare two minds on the same question.
         </p>
-        <div className="hero-meta">
-          <div className="meta-item"><span className="meta-num">01</span> Click any portrait → read the philosophy, test the voice.</div>
-          <div className="meta-item"><span className="meta-num">02</span> <strong>Boardroom</strong> → submit a PRD, get reactions in parallel.</div>
-          <div className="meta-item"><span className="meta-num">03</span> <strong>Compare</strong> → same question, two minds, see the gap.</div>
-        </div>
       </section>
 
-      <OrgChart personas={personas} onOpen={onOpen} />
+      {isAll && <ConstellationOverview personas={personas} onOpen={onOpen} />}
+      {isMinds && <OrgChart personas={personas.filter(p => p.plugin === "great-minds" || p.tier === "founder")} onOpen={onOpen} />}
+      {!isAll && !isMinds && <PluginRoster personas={personas.filter(p => p.tier !== "founder")} onOpen={onOpen} />}
+    </div>
+  );
+}
+
+// ——— CONSTELLATION OVERVIEW (all plugins, sectioned) ———
+function ConstellationOverview({ personas, onOpen }) {
+  return (
+    <div className="constellation">
+      {window.PLUGINS.map(plugin => {
+        const group = personas.filter(p => p.plugin === plugin.id && p.tier !== "founder");
+        if (group.length === 0) return null;
+        return (
+          <section key={plugin.id} className="constellation-section" style={{ '--accent': plugin.accent }}>
+            <div className="constellation-section-head">
+              <div className="constellation-section-eyebrow">{plugin.label.toUpperCase()} <span className="constellation-section-count">· {group.length}</span></div>
+              <div className="constellation-section-rule" />
+            </div>
+            <div className="plugin-roster-grid">
+              {group.map(p => (
+                <PersonaNode key={p.id} persona={p} onOpen={onOpen} />
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+// ——— FLAT PLUGIN ROSTER (non-minds disciplines) ———
+function PluginRoster({ personas, onOpen }) {
+  return (
+    <div className="plugin-roster">
+      <div className="plugin-roster-grid">
+        {personas.map(p => (
+          <PersonaNode key={p.id} persona={p} onOpen={onOpen} />
+        ))}
+      </div>
     </div>
   );
 }

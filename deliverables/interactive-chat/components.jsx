@@ -19,23 +19,50 @@ const Icon = {
 // ——— PORTRAIT ———
 function Portrait({ persona, size = 56, className = "", ring = true }) {
   const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const imgRef = useRef(null);
+  useEffect(() => { setLoaded(false); setFailed(false); }, [persona?.id]);
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete) {
+      if (img.naturalWidth > 0) setLoaded(true);
+      else setFailed(true);
+    }
+  }, [persona?.id, persona?.portrait]);
+  const initials = persona.name.split(" ").filter(Boolean).slice(0, 2).map(w => w[0]).join("");
+  const showImg = persona.portrait && !failed;
   return (
     <div
       className={"portrait " + className}
       style={{
         width: size, height: size,
         boxShadow: ring ? `0 0 0 1px ${persona.color}33, inset 0 0 0 1px rgba(255,255,255,0.04)` : "none",
+        background: !showImg || !loaded ? `radial-gradient(circle at 30% 30%, ${persona.color}33, ${persona.color}0d 70%)` : undefined,
       }}
     >
-      <img
-        src={persona.portrait}
-        alt={persona.name}
-        onLoad={() => setLoaded(true)}
-        style={{ opacity: loaded ? 1 : 0 }}
-      />
-      {!loaded && (
-        <div className="portrait-fallback" style={{ color: persona.color }}>
-          {persona.name.split(" ").map(w => w[0]).join("")}
+      {showImg && (
+        <img
+          ref={imgRef}
+          src={persona.portrait}
+          alt={persona.name}
+          loading={persona.plugin === "great-minds" ? "eager" : "lazy"}
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => setFailed(true)}
+          style={{ opacity: loaded ? 1 : 0 }}
+        />
+      )}
+      {(!showImg || !loaded) && (
+        <div
+          className="portrait-fallback"
+          style={{
+            color: persona.color,
+            fontSize: Math.max(11, size * 0.32),
+            fontWeight: 600,
+            letterSpacing: "0.04em",
+          }}
+        >
+          {initials}
         </div>
       )}
     </div>
@@ -73,7 +100,6 @@ function PersonaCard({ persona, onOpen, selectable, selected, onToggleSelect, co
 
 // ——— ORG CHART ———
 function OrgChart({ personas, onOpen }) {
-  const founder = personas.find(p => p.tier === "founder");
   const board = personas.filter(p => p.tier === "board");
   const directors = personas.filter(p => p.tier === "director");
   const subsByDirector = {
@@ -83,15 +109,6 @@ function OrgChart({ personas, onOpen }) {
 
   return (
     <div className="org-wrap">
-      <div className="org-row org-founder">
-        <div className="org-label">FOUNDER</div>
-        <div className="org-row-inner">
-          <PersonaNode persona={founder} onOpen={onOpen} big />
-        </div>
-      </div>
-
-      <div className="org-connector" />
-
       <div className="org-row">
         <div className="org-label">BOARD OF DIRECTORS</div>
         <div className="org-row-inner">

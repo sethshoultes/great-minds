@@ -72,7 +72,8 @@ input, textarea, select { font-family: inherit; }
   backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--line);
 }
-.brand { display: flex; align-items: center; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 12px; background: transparent; border: 0; padding: 0; cursor: pointer; color: inherit; text-align: left; transition: opacity 140ms ease; }
+.brand:hover { opacity: 0.8; }
 .brand-mark { color: var(--amber); display: grid; place-items: center; }
 .brand-name { font-family: var(--serif); font-weight: 600; font-size: 18px; letter-spacing: -0.01em; }
 .brand-sub { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; }
@@ -264,6 +265,7 @@ input, textarea, select { font-family: inherit; }
 
 .drawer-section { margin-top: 28px; }
 .drawer-heading { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 12px; }
+.drawer-bio { font-size: 14px; line-height: 1.65; color: var(--ink-dim); margin: 0; }
 .drawer-phil { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .drawer-phil li { font-size: 14px; line-height: 1.5; color: var(--ink-dim); padding-left: 20px; position: relative; }
 .drawer-phil li svg { position: absolute; left: 0; top: 4px; color: var(--accent); opacity: 0.7; }
@@ -591,3 +593,115 @@ input, textarea, select { font-family: inherit; }
   transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
 }
 .export-btn:hover { border-color: var(--amber); color: var(--amber); background: rgba(245, 180, 80, 0.04); }
+
+/* ——— DISCIPLINE FILTER STRIP ——— */
+.discipline-strip {
+  position: sticky;
+  top: 56px;
+  z-index: 5;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line-soft);
+}
+.discipline-strip-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 12px 32px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.discipline-strip-inner::-webkit-scrollbar { display: none; }
+.discipline-pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+.discipline-pill:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+.discipline-pill.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.discipline-count {
+  font-size: 10px;
+  opacity: 0.7;
+  font-weight: 600;
+}
+.discipline-pill.is-active .discipline-count { opacity: 0.85; }
+
+@media (max-width: 720px) {
+  .discipline-strip-inner { padding: 10px 16px; }
+}
+
+/* ——— FLAT PLUGIN ROSTER ——— */
+.plugin-roster {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+}
+.plugin-roster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 24px 20px;
+}
+@media (max-width: 720px) {
+  .plugin-roster { padding: 24px 16px 60px; }
+  .plugin-roster-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 18px 12px;
+  }
+}
+
+/* ——— CONSTELLATION OVERVIEW ——— */
+.constellation {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+}
+.constellation-section {
+  margin-bottom: 56px;
+}
+.constellation-section-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.constellation-section-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--accent, var(--amber));
+  flex: 0 0 auto;
+}
+.constellation-section-count {
+  color: var(--ink-dim);
+  letter-spacing: 0.1em;
+  font-weight: 400;
+}
+.constellation-section-rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(to right, var(--line) 0%, transparent 100%);
+}
+@media (max-width: 720px) {
+  .constellation { padding: 16px 16px 60px; }
+  .constellation-section { margin-bottom: 40px; }
+}

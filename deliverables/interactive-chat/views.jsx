@@ -29,6 +29,13 @@ function PersonaDrawer({ persona, onClose }) {
             <div className="drawer-title">{persona.title}</div>
             <div className="drawer-tagline">{persona.tagline}</div>
 
+            {persona.bio && (
+              <div className="drawer-section">
+                <div className="drawer-heading">Background</div>
+                <p className="drawer-bio">{persona.bio}</p>
+              </div>
+            )}
+
             <div className="drawer-section">
               <div className="drawer-heading">Philosophy</div>
               <ul className="drawer-phil">
@@ -94,6 +101,7 @@ function Boardroom({ personas }) {
     board: personas.filter(p => p.tier === "board"),
     director: personas.filter(p => p.tier === "director"),
     sub: personas.filter(p => p.tier === "sub"),
+    specialist: personas.filter(p => p.tier === "specialist"),
   };
 
   const examples = [
@@ -139,9 +147,9 @@ function Boardroom({ personas }) {
             <div className="step-label">Who's in the room · <span className="muted">{selected.length} selected</span></div>
           </div>
           <div className="boardroom-picker">
-            {["board", "director", "sub"].map(tier => (
+            {["board", "director", "sub", "specialist"].filter(t => byTier[t].length > 0).map(tier => (
               <div key={tier} className="picker-tier">
-                <div className="picker-tier-label">{tier === "board" ? "Board" : tier === "director" ? "Directors" : "Sub-agents"}</div>
+                <div className="picker-tier-label">{tier === "board" ? "Board" : tier === "director" ? "Directors" : tier === "sub" ? "Sub-agents" : "Specialists"}</div>
                 <div className="picker-tier-grid">
                   {byTier[tier].map(p => (
                     <button
@@ -223,8 +231,13 @@ function Compare({ personas }) {
   const [debating, setDebating] = useState2(false);
   const [synthesis, setSynthesis] = useState2(null); // string | "thinking" | null
 
-  const left = personas.find(p => p.id === leftId);
-  const right = personas.find(p => p.id === rightId);
+  const left = personas.find(p => p.id === leftId) || personas[0];
+  const right = personas.find(p => p.id === rightId) || personas[1] || personas[0];
+  useEffect2(() => {
+    if (!personas.find(p => p.id === leftId) && personas[0]) setLeftId(personas[0].id);
+    if (!personas.find(p => p.id === rightId) && personas[1]) setRightId(personas[1].id);
+  }, [personas]);
+  if (!left || !right) return <div className="compare"><p style={{padding: 40, color: "var(--ink-dim)"}}>Need at least two personas to compare. Switch the discipline pill.</p></div>;
   const marcus = personas.find(p => p.id === "marcus-aurelius");
 
   const resetDebate = () => { setDebate([]); setSynthesis(null); };

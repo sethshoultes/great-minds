@@ -378,3 +378,27 @@ window.PERSONAS = [
     doesNot: "Start with scale. Hide behind data instead of talking to people."
   }
 ];
+
+// Stamp every great-minds persona with its plugin id, then merge in constellation roster.
+window.PERSONAS.forEach(p => { if (!p.plugin) p.plugin = "great-minds"; });
+if (window.CONSTELLATION_PERSONAS) {
+  window.PERSONAS = window.PERSONAS.concat(window.CONSTELLATION_PERSONAS);
+}
+
+// Attach bios from bios.json if loaded.
+if (window.BIOS) {
+  window.PERSONAS.forEach(p => { if (window.BIOS[p.id]) p.bio = window.BIOS[p.id]; });
+}
+
+// Plugin → display label + accent color for filter UI.
+window.PLUGINS = [
+  { id: "great-minds",      label: "Minds",      accent: "#E9A23B" },
+  { id: "great-authors",    label: "Authors",    accent: "#E8DCC8" },
+  { id: "great-filmmakers", label: "Filmmakers", accent: "#C75A5A" },
+  { id: "great-publishers", label: "Publishers", accent: "#9B7EBD" },
+  { id: "great-marketers",  label: "Marketers",  accent: "#D87FB8" },
+  { id: "great-engineers",  label: "Engineers",  accent: "#6BA3C7" },
+  { id: "great-designers",  label: "Designers",  accent: "#3EB489" },
+  { id: "great-operators",  label: "Operators",  accent: "#E9C23B" },
+  { id: "great-counsels",   label: "Counsels",   accent: "#A8A29E" },
+];
