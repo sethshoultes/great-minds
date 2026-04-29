@@ -865,31 +865,12 @@ export default function PersonaApp() {
 
   return (
     <div className="app gm-personas-app" data-theme="dark">
-      <header className="topbar">
-        <button
-          className="brand"
-          onClick={() => { setView("org"); setPluginFilter("all"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-          aria-label="Home"
-        >
-          <div className="brand-mark">
-            <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden>
-              <circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" strokeWidth="1.2" />
-              <path d="M10 20 L16 10 L22 20 Z" fill="currentColor" opacity="0.9" />
-            </svg>
-          </div>
-          <div className="brand-text">
-            <div className="brand-name">Great Minds</div>
-            <div className="brand-sub">persona testbed · v0.2</div>
-          </div>
-        </button>
+      <header className="topbar topbar-subnav">
         <nav className="tabs">
           <button className={`tab ${view === "org" ? "is-active" : ""}`} onClick={() => setView("org")}><Icon.org width="14" height="14" /> <span>Team</span></button>
           <button className={`tab ${view === "boardroom" ? "is-active" : ""}`} onClick={() => setView("boardroom")}><Icon.board width="14" height="14" /> <span>Boardroom</span></button>
           <button className={`tab ${view === "compare" ? "is-active" : ""}`} onClick={() => setView("compare")}><Icon.compare width="14" height="14" /> <span>Compare</span></button>
         </nav>
-        <div className="topbar-right">
-          <span className="count">{personas.length} minds · 0 meetings</span>
-        </div>
       </header>
       {view === "org" && (
         <DisciplineStrip personas={allPersonas} active={pluginFilter} onChange={setPluginFilter} />

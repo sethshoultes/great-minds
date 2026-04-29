@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 function Footer() {
   return (
@@ -27,11 +24,6 @@ function Footer() {
 }
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const isPersonas = pathname?.startsWith("/personas");
-  if (isPersonas) {
-    return <main className="flex-1">{children}</main>;
-  }
   return (
     <>
       <main className="flex-1 pt-14">{children}</main>

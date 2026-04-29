@@ -86,6 +86,11 @@ input, textarea, select { font-family: inherit; }
 .topbar-right { justify-self: end; }
 .count { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); letter-spacing: 0.04em; }
 
+/* Sub-nav variant: lives under site primary nav (h-14 = 56px). Centers tabs only. */
+.topbar.topbar-subnav { grid-template-columns: 1fr; padding: 12px 28px; top: 56px; }
+.topbar.topbar-subnav .tabs { justify-self: center; }
+.discipline-strip { top: calc(56px + 49px); }
+
 /* ——— MAIN ——— */
 .main { max-width: 1280px; margin: 0 auto; padding: 56px 28px 120px; }
 

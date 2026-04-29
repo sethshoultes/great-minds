@@ -66,11 +66,85 @@ const deliverables = [
 export default function HomePage() {
   return (
     <div className="flex flex-col">
+      {/* Meet the Minds — testbed CTA band, top of page */}
+      <section className="px-6 pt-20 pb-20 sm:pt-28 sm:pb-24 bg-gradient-to-b from-amber-950/15 via-amber-950/5 to-transparent">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div>
+              <p className="text-amber-500 font-mono text-xs font-semibold tracking-widest uppercase mb-4">
+                Meet the Minds
+              </p>
+              <h2 className="text-3xl sm:text-5xl font-bold text-zinc-100 mb-5 leading-[1.05] tracking-tight">
+                99 personas.
+                <br />
+                <span className="text-zinc-500">10 disciplines.</span>
+                <br />
+                <span className="text-amber-500">0 meetings.</span>
+              </h2>
+              <p className="text-zinc-400 leading-relaxed text-base sm:text-lg max-w-xl mb-8">
+                Click any portrait to read their philosophy and test their voice. Convene them in the boardroom. Compare two minds on the same question.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/personas"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-amber-500 text-zinc-950 font-semibold text-sm hover:bg-amber-400 transition-colors no-underline"
+                >
+                  Browse the constellation
+                  <span className="text-amber-800">→</span>
+                </Link>
+                <Link
+                  href="/personas"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-zinc-700 text-zinc-300 font-medium text-sm hover:border-zinc-500 hover:text-zinc-100 transition-colors no-underline"
+                >
+                  Try the boardroom
+                </Link>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                {[
+                  { id: "steve-jobs", name: "Steve Jobs", role: "Design Director" },
+                  { id: "elon-musk", name: "Elon Musk", role: "Product Director" },
+                  { id: "hemingway-persona", name: "Hemingway", role: "Author" },
+                  { id: "john-carmack-engineer", name: "Carmack", role: "Engineer" },
+                  { id: "kubrick-persona", name: "Kubrick", role: "Filmmaker" },
+                  { id: "carl-sagan-researcher", name: "Sagan", role: "Researcher" },
+                ].map((p) => (
+                  <Link
+                    key={p.id}
+                    href="/personas"
+                    className="group relative rounded-xl border border-zinc-800 hover:border-amber-500/40 bg-zinc-900/40 overflow-hidden transition-colors no-underline"
+                  >
+                    <div className="aspect-square">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`/portraits/${p.id}.webp`}
+                        alt={p.name}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="px-3 py-2.5 border-t border-zinc-800/80">
+                      <div className="text-zinc-100 text-sm font-medium leading-tight">{p.name}</div>
+                      <div className="text-zinc-500 text-[11px] font-mono tracking-wider uppercase mt-0.5">{p.role}</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <div className="text-center mt-5 text-xs font-mono text-zinc-500 tracking-widest uppercase">
+                + 93 more across 10 disciplines
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero */}
-      <section className="px-6 pt-28 pb-24 sm:pt-40 sm:pb-32">
+      <section className="px-6 pt-20 pb-24 sm:pt-28 sm:pb-32 border-t border-zinc-800/50">
         <div className="max-w-4xl mx-auto">
           <p className="text-amber-500 font-mono text-xs font-semibold tracking-widest uppercase mb-6">
-            AI Agency — Austin, TX
+            AI Agency — Saint George, UT
           </p>
           <h1 className="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05] text-zinc-50">
             Drop in a PRD.
